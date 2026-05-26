@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude / AI tooling
+.claude/
+.codex/
+.agents/
+.impeccable.md
+openspec/
+skills-lock.json

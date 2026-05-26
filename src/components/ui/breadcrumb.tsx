@@ -50,7 +50,10 @@ function BreadcrumbLink({
   return (
     <Comp
       data-slot="breadcrumb-link"
-      className={cn("transition-colors hover:text-foreground", className)}
+      className={cn(
+        "transition-[color,transform] duration-[var(--page-slide-dur)] ease-[var(--page-slide-ease)] hover:text-foreground",
+        className
+      )}
       {...props}
     />
   )
@@ -79,7 +82,10 @@ function BreadcrumbSeparator({
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
-      className={cn("[&>svg]:size-3.5", className)}
+      className={cn(
+        "transition-[opacity,transform] duration-[var(--icon-swap-dur)] ease-[var(--icon-swap-ease)] [&>svg]:size-3.5",
+        className
+      )}
       {...props}
     >
       {children ?? (

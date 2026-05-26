@@ -14,13 +14,13 @@ export function ShowCode({ code }: ShowCodeProps) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 rounded-lg border border-border bg-muted/25 p-2">
       <Button
         type="button"
         variant="ghost"
         size="sm"
         onClick={() => setOpen((v) => !v)}
-        className="gap-1.5"
+        className="w-full justify-start gap-1.5 text-muted-foreground hover:text-foreground"
       >
         <ChevronDown
           className={
@@ -31,7 +31,7 @@ export function ShowCode({ code }: ShowCodeProps) {
         {open ? "Hide code" : "Show code"}
       </Button>
       {open && (
-        <div className="mt-3">
+        <div className="mt-2">
           <CodeBlock code={code} />
         </div>
       )}

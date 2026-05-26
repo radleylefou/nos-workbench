@@ -90,6 +90,14 @@ export const navigation = {
   ] as const,
   tokens: ["color", "typography", "spacing", "radius", "motion"] as const,
   instructions: ["agents", "rules"] as const,
+  patterns: [
+    "workspace-shell",
+    "portfolio-dashboard",
+    "domain-model-board",
+    "estimation-screen",
+    "scope-document",
+    "reporting-admin",
+  ] as const,
 }
 
 export type ComponentSlug = (typeof navigation.components)[number]
@@ -619,17 +627,17 @@ export const componentEntries: Record<ComponentSlug, ComponentEntry> = {
 // Token data
 
 export const brandScale = [
-  { name: "brand-50", value: "oklch(97% 0.03 292.58)" },
-  { name: "brand-100", value: "oklch(93% 0.06 292.58)" },
-  { name: "brand-200", value: "oklch(87% 0.10 292.58)" },
-  { name: "brand-300", value: "oklch(78% 0.15 292.58)" },
-  { name: "brand-400", value: "oklch(67% 0.20 292.58)" },
-  { name: "brand-500", value: "oklch(58% 0.23 292.58)" },
-  { name: "brand-600", value: "oklch(50.18% 0.243 292.58)", primary: true },
-  { name: "brand-700", value: "oklch(43% 0.24 292.58)" },
-  { name: "brand-800", value: "oklch(36% 0.22 292.58)" },
-  { name: "brand-900", value: "oklch(28% 0.18 292.58)" },
-  { name: "brand-950", value: "oklch(18% 0.12 292.58)" },
+  { name: "brand-50",  value: "#F7F6FF" },
+  { name: "brand-100", value: "#EEECFF" },
+  { name: "brand-200", value: "#D8D9FF" },
+  { name: "brand-300", value: "#B5B9FC" },
+  { name: "brand-400", value: "#9DA0FC" },
+  { name: "brand-500", value: "#6A6CE3" },
+  { name: "brand-600", value: "#5D58E2", primary: true },
+  { name: "brand-700", value: "#5547EB" },
+  { name: "brand-800", value: "#4D35D5" },
+  { name: "brand-900", value: "#2C1F7F" },
+  { name: "brand-950", value: "#120D35" },
 ]
 
 export const neutralScale = [

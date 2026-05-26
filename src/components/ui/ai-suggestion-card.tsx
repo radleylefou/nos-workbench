@@ -1,0 +1,72 @@
+import { AlertTriangle, GitMerge, Lightbulb, Sparkles } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+
+type SuggestionType = "suggestion" | "hint" | "match" | "warning"
+
+interface AISuggestionCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  type: SuggestionType
+  title: string
+  description: string
+  onApply?: () => void
+  onDismiss?: () => void
+}
+
+const typeConfig: Record<SuggestionType, { Icon: React.ElementType; label: string }> = {
+  suggestion: { Icon: Sparkles, label: "Suggestion" },
+  hint: { Icon: Lightbulb, label: "Hint" },
+  match: { Icon: GitMerge, label: "Match" },
+  warning: { Icon: AlertTriangle, label: "Warning" },
+}
+
+export function AISuggestionCard({
+  type,
+  title,
+  description,
+  onApply,
+  onDismiss,
+  className,
+  ...props
+}: AISuggestionCardProps) {
+  const { Icon, label } = typeConfig[type]
+
+  return (
+    <Card className={cn("w-full max-w-sm gap-0 py-0", className)} {...props}>
+      <CardContent className="p-5">
+        <div className="flex items-start gap-3">
+          <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
+                {label}
+              </Badge>
+            </div>
+            <h3 className="mt-2 text-sm font-semibold leading-snug text-foreground">
+              {title}
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {description}
+            </p>
+          </div>
+        </div>
+        {(onApply || onDismiss) && (
+          <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-3">
+            {onApply && (
+              <Button size="sm" className="h-7 px-2 text-xs" onClick={onApply}>
+                Apply
+              </Button>
+            )}
+            {onDismiss && (
+              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={onDismiss}>
+                Dismiss
+              </Button>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}

@@ -102,6 +102,50 @@ function AvatarGroupCount({
   )
 }
 
+// ── AvatarGroupCompact ──────────────────────────────────────────────────────
+
+type AvatarGroupCompactSize = "lg" | "md" | "sm"
+
+function AvatarGroupCompact({
+  className,
+  size = "md",
+  variant = "default",
+  ...props
+}: React.ComponentProps<"div"> & {
+  size?: AvatarGroupCompactSize
+  variant?: "default" | "stroke"
+}) {
+  return (
+    <div
+      data-slot="avatar-group-compact"
+      data-size={size}
+      data-variant={variant}
+      className={cn(
+        "flex -space-x-2",
+        variant === "stroke" && "*:ring-2 *:ring-background",
+        size === "lg" && "[&_[data-slot=avatar]]:size-10 [&_[data-slot=avatar-group-compact-overflow]]:size-10",
+        size === "md" && "[&_[data-slot=avatar]]:size-8 [&_[data-slot=avatar-group-compact-overflow]]:size-8",
+        size === "sm" && "[&_[data-slot=avatar]]:size-6 [&_[data-slot=avatar-group-compact-overflow]]:size-6",
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+function AvatarGroupCompactOverflow({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="avatar-group-compact-overflow"
+      className={cn(
+        "relative flex shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground",
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
 export {
   Avatar,
   AvatarImage,
@@ -109,4 +153,6 @@ export {
   AvatarGroup,
   AvatarGroupCount,
   AvatarBadge,
+  AvatarGroupCompact,
+  AvatarGroupCompactOverflow,
 }

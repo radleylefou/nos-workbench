@@ -34,6 +34,13 @@ Every app built at Nymbl should import from this system.
   Do not hardcode transition values.
 - Do not animate layout properties (width, height, padding, margin).
   Use `transform` and `opacity` instead.
+- Do not use decorative accent chrome on cards or large components:
+  no colored top borders, side stripes, corner dots, or ornamental accent marks.
+  Accent color is reserved for primary actions, active/selected states, and
+  real orientation cues.
+- Larger compound components should use consistent, sectioned spacing. Prefer
+  `gap-0 py-0` on the outer card and `p-5` content regions, with separators
+  only between meaningful sections.
 
 ## Before you build any screen
 1. Read `SPEC.md` if it exists in the project — it defines the object model,

@@ -34,7 +34,15 @@ The full build specification lives in:
 4. **Motion uses tokens.** All transitions and animations reference
    `var(--duration-*)` and `var(--ease-*)`. Animate `transform` / `opacity` only —
    never layout properties.
-5. **Verify after each phase** when following a multi-phase build plan. Do not
+5. **No decorative accent chrome on cards.** Do not use colored top borders,
+   side stripes, corner dots, or ornamental accent marks on larger components.
+   Brand purple is for primary actions, active/selected states, and orientation
+   cues only. Use badges, metadata, full-border state changes, or subtle tints.
+6. **Compound card spacing is sectioned.** Larger cards should use logical
+   internal sections, typically `gap-0 py-0` on the card and `p-5` on content
+   regions. Avoid arbitrary `p-3`, `pb-3`, `pt-0` mixtures unless the component
+   is intentionally compact.
+7. **Verify after each phase** when following a multi-phase build plan. Do not
    batch verifications.
 
 ## Project layout
