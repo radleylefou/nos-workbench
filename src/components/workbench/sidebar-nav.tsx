@@ -148,7 +148,7 @@ const topLevelItems: TopLevelItem[] = [
   {
     key: "instructions",
     label: "Instructions",
-    href: "/workbench/instructions/agent-rules",
+    href: "/workbench/instructions/agents",
     icon: FileText,
     count: navigation.instructions.length,
   },

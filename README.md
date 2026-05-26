@@ -1,12 +1,14 @@
 # NOS Design System v3
 
-The shared component and token library for all Nymbl apps. Drop the `ui/` folder and token variables into any Next.js project and start building with the full NOS visual language.
+The shared component and token library for all Nymbl apps. Use the workbench to orient your coding agent before building new internal product UI.
 
 ## Using NOS in a new Nymbl app
 
-1. Copy `src/components/ui/` into your project's `src/components/ui/`
-2. Copy the NOS token block from `src/app/globals.css` into your project's `globals.css`
-3. Import and use: `import { Button } from "@/components/ui/button"`
+Start with the starter prompt on the Instructions page:
+
+https://nos-workbench.vercel.app/workbench/instructions/agents
+
+Paste it into your coding agent before building. The agent should use the workbench as visual reference and the repo as implementation truth.
 
 See [`instructions/AGENTS.md`](instructions/AGENTS.md) for the full usage rules (also available in the workbench).
 
@@ -35,7 +37,7 @@ Open [http://localhost:3000](http://localhost:3000) — redirects to the workben
 
 | Path | Contents |
 |---|---|
-| `src/components/ui/` | All NOS components — copy this into your app |
-| `src/app/globals.css` | Token definitions — copy the NOS blocks into your app |
+| `src/components/ui/` | Canonical NOS component implementations |
+| `src/app/globals.css` | Token definitions and CSS variables |
 | `instructions/AGENTS.md` | Rules for AI coders building apps that consume NOS |
 | `instructions/rules.md` | NOS design principles |

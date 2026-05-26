@@ -14,11 +14,13 @@ Every app built at Nymbl should import from this system.
 
 ## How to use in a new app
 
-1. Copy `components/ui/` into your project's `components/ui/` folder
-2. Copy `globals.css` token variables into your project's `globals.css`
-3. Import components: `import { Button } from "@/components/ui/button"`
-4. Use Tailwind utility classes — do not write custom CSS unless
-   Tailwind cannot handle the case
+Start by giving your coding agent the NOS starter prompt from:
+
+https://nos-workbench.vercel.app/workbench/instructions/agents
+
+Then have the agent use the workbench as the visual reference and this repo as
+the implementation reference. The agent should inspect existing components,
+tokens, and rules before creating new UI.
 
 ## Rules
 
