@@ -47,3 +47,7 @@ next-env.d.ts
 .impeccable.md
 openspec/
 skills-lock.json
+
+# Internal AI and planning files
+CLAUDE.md
+IMPLEMENTATION_PLAN.md

@@ -49,4 +49,4 @@ Every app built at Nymbl should import from this system.
 3. Build Phase 1 screens first, verify in the browser, then proceed.
 
 ## Visual reference
-<!-- Vercel URL — added after deployment -->
+https://nos-workbench.vercel.app

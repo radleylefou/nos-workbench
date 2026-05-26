@@ -35,7 +35,7 @@ export default function WorkbenchLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
             <a
-              href="https://github.com/radleylefou/nos-design-system-v2"
+              href="https://github.com/radleylefou/nos-workbench"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"

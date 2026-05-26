@@ -7,8 +7,8 @@ import { MarkdownView } from "@/components/workbench/markdown-view"
 import { navigation, type InstructionSlug } from "@/lib/workbench-data"
 
 const slugToFile: Record<InstructionSlug, { file: string; title: string }> = {
-  agents: { file: "AGENTS.md", title: "Agents" },
-  rules: { file: "rules.md", title: "Rules" },
+  "agent-rules": { file: "AGENTS.md", title: "Agent Rules" },
+  rules: { file: "rules.md", title: "Design Rules" },
 }
 
 export function generateStaticParams() {
