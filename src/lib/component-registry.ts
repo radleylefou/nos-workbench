@@ -191,8 +191,6 @@ export const components: ComponentMeta[] = [
   // Extended UI
   { slug: "compact-button", name: "Compact Button", category: "Extended UI",
     description: "Icon-only square button for constrained layouts, with stroke, ghost, and white variants." },
-  { slug: "fancy-button", name: "Fancy Button", category: "Extended UI",
-    description: "Decorative button with gradient shimmer overlay in neutral, primary, and destructive styles." },
   { slug: "link-button", name: "Link Button", category: "Extended UI",
     description: "Text-only inline link button with underline decoration in gray, primary, and error variants." },
   { slug: "banner", name: "Banner", category: "Extended UI",

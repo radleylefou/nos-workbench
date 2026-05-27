@@ -48,6 +48,54 @@ then build the app in chunks.
 - Larger compound components should use consistent, sectioned spacing. Prefer
   `gap-0 py-0` on the outer card and `p-5` content regions, with separators
   only between meaningful sections.
+- Apps are light mode only. Do not install next-themes, add a ThemeProvider,
+  or use `dark:` Tailwind variants on any component outside of app-sidebar.tsx.
+  The dark sidebar is handled internally by NymblAppSidebar.
+- When copying NOS tokens into a new app's globals.css, copy the token blocks
+  verbatim from `src/app/globals.css` in the NOS repo. Do not rename variables
+  or invent token names from memory. Required blocks to copy: the :root color
+  tokens, brand scale (--brand-50 through --brand-950), semantic tokens
+  (--success, --warning, --error, --info and their foreground pairs), motion
+  tokens (--duration-instant/fast/normal/slow/slower and --ease-standard/enter/
+  exit/sharp), and the sidebar token block (--sidebar-*).
+- Wrap `children` in `<TooltipProvider>` in app/layout.tsx. Shadcn Tooltip
+  components require this at the app root. See the App shell section above.
+
+## App shell
+
+Every Nymbl app uses `NymblAppSidebar` from `@/components/ui/app-sidebar` as
+the primary left navigation. Never build a custom sidebar or navigation shell.
+
+Copy `src/components/ui/app-sidebar.tsx` from the NOS repo into your app's
+`src/components/ui/` folder. Edit the `mainSections` array at the top of the
+file to match the app's navigation items. Keep the dark background, avatar,
+logo slot, search row, and keyboard shortcut display intact.
+
+The root layout must follow this structure exactly:
+
+```tsx
+// app/layout.tsx — server component (no "use client")
+import { GeistSans } from "geist/font/sans"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { NymblAppSidebar } from "@/components/ui/app-sidebar"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={GeistSans.variable}>
+      <body>
+        <TooltipProvider>
+          <div className="flex min-h-screen bg-background">
+            <NymblAppSidebar />
+            <div className="flex flex-1 flex-col overflow-hidden">
+              {children}
+            </div>
+          </div>
+        </TooltipProvider>
+      </body>
+    </html>
+  )
+}
+```
 
 ## Before you build any screen
 1. If an app PRD exists, read it in full and convert it into `SPEC.md` or an
@@ -58,6 +106,8 @@ then build the app in chunks.
 3. Read `SPEC.md` if it exists in the project — it defines the object model,
    all screens, sample data, and component mappings for that specific app.
 4. Check the workbench for the component you need before building a new one.
+   Components to check first: StatCard, StatusBadge, HealthIndicator, Tag, Empty,
+   Rating, DotStepper, Banner, Notification, IdChip, LinkedChip, Timeline.
 5. Build one approved chunk at a time, verify it in the browser, then proceed.
 
 ## Visual reference

@@ -244,7 +244,6 @@ import { ReconciliationPanel } from "@/components/ui/reconciliation-panel"
 import { TeamRosterPanel } from "@/components/ui/team-roster-panel"
 import { PortfolioPipelineView } from "@/components/ui/portfolio-pipeline-view"
 import { CompactButton } from "@/components/ui/compact-button"
-import { FancyButton } from "@/components/ui/fancy-button"
 import { LinkButton } from "@/components/ui/link-button"
 import { Banner } from "@/components/ui/banner"
 import { ProgressCircle } from "@/components/ui/progress-circle"
@@ -2962,6 +2961,7 @@ toast.error("Something went wrong.")`,
   "app-sidebar": {
     importLine: `import { NymblAppSidebar, NymblEngagementSidebar } from "@/components/ui/app-sidebar"`,
     exampleCode: `<NymblAppSidebar />
+<NymblAppSidebar appName="Scope" />
 <NymblEngagementSidebar />`,
     variants: [
       {
@@ -2969,8 +2969,12 @@ toast.error("Something went wrong.")`,
         node: <NymblAppSidebar />,
       },
       {
+        label: "subproduct",
+        node: <NymblAppSidebar appName="Scope" />,
+      },
+      {
         label: "engagement workflow",
-        node: <NymblEngagementSidebar />,
+        node: <NymblEngagementSidebar appName="Engage" />,
       },
     ],
   },
@@ -2985,19 +2989,6 @@ toast.error("Something went wrong.")`,
       { label: "white", node: <div className="p-2 bg-muted rounded"><CompactButton variant="white"><SearchIcon className="size-4" /></CompactButton></div> },
       { label: "sm size", node: <CompactButton size="sm" variant="stroke"><SearchIcon className="size-3.5" /></CompactButton> },
       { label: "full radius", node: <CompactButton fullRadius variant="stroke"><SearchIcon className="size-4" /></CompactButton> },
-    ],
-  },
-
-  "fancy-button": {
-    importLine: `import { FancyButton } from "@/components/ui/fancy-button"`,
-    exampleCode: `<FancyButton variant="primary">Get started</FancyButton>`,
-    variants: [
-      { label: "neutral", node: <FancyButton variant="neutral">Neutral</FancyButton> },
-      { label: "primary", node: <FancyButton variant="primary">Primary</FancyButton> },
-      { label: "destructive", node: <FancyButton variant="destructive">Destructive</FancyButton> },
-      { label: "basic", node: <FancyButton variant="basic">Basic</FancyButton> },
-      { label: "sm", node: <FancyButton variant="primary" size="sm">Small</FancyButton> },
-      { label: "xs", node: <FancyButton variant="primary" size="xs">Extra Small</FancyButton> },
     ],
   },
 

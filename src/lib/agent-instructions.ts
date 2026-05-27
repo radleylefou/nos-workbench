@@ -31,11 +31,15 @@ Before coding:
 
 Rules:
 - Never hardcode colors, spacing, or radius values. Reference CSS variables from globals.css.
-- Use existing NOS components before creating new ones.
+- Use existing NOS components before creating new ones. Check these first: StatCard, StatusBadge, HealthIndicator, Tag, Empty, Rating, DotStepper, Banner, Notification, IdChip, LinkedChip, Timeline.
 - TypeScript and TSX only. No .jsx files.
 - All transitions must use motion tokens (--duration-*, --ease-*).
 - Do not install other component libraries (MUI, Chakra, Radix directly). Shadcn already wraps Radix.
 - Do not use decorative chrome: no colored top borders, side stripes, corner ornaments, or decorative accent marks.
+- Apps are light mode only. Do not install next-themes or add a dark mode toggle.
+- Use NymblAppSidebar from app-sidebar.tsx as the primary navigation. Never build a custom sidebar.
+- Copy NOS token variable names verbatim from src/app/globals.css — do not rename or invent names from memory.
+- Wrap children in TooltipProvider in app/layout.tsx.
 
 If a needed component does not exist in the workbench, build it as a Shadcn-compatible component following the existing file conventions in src/components/ui/.`
 
@@ -160,4 +164,8 @@ export const generatedAppChecklist = [
   "Use NOS token variables for color, spacing, radius, and motion decisions.",
   "Keep new primitives Shadcn-compatible and place them in src/components/ui/.",
   "Use TSX only and avoid bringing in another component library.",
+  "Use NymblAppSidebar from NOS for all left navigation. Do not build a custom sidebar.",
+  "Wrap children in TooltipProvider in app/layout.tsx.",
+  "Copy token variable names verbatim from NOS src/app/globals.css — do not rename.",
+  "Apps are light mode only — do not add dark mode or next-themes.",
 ] as const
