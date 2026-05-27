@@ -35,6 +35,7 @@ import { navigation, type InstructionSlug } from "@/lib/workbench-data"
 const slugToFile: Record<InstructionSlug, { file: string; title: string }> = {
   agents: { file: "AGENTS.md", title: "Instructions" },
   rules: { file: "rules.md", title: "Design Rules" },
+  compositions: { file: "compositions.md", title: "Compositions" },
 }
 
 const referenceLinks = [

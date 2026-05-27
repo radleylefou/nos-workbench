@@ -27,11 +27,19 @@ response should be a plan, not implementation code. The agent should convert
 the PRD into `SPEC.md` or an equivalent build plan, get the plan approved, and
 then build the app in chunks.
 
+During the first implementation chunk, persist these NOS instructions into the
+generated app so future agent turns keep the same constraints. Create or update
+the app's root `AGENTS.md` with the NOS app-building rules, and copy
+`instructions/rules.md` into `docs/NOS_RULES.md` or an equivalent local docs
+path. The build plan must include a "NOS compliance setup" acceptance check.
+
 ## Rules
 
 - Never hardcode colors, spacing, or radius values.
   Use Tailwind classes that reference the CSS variables in `globals.css`.
 - Use existing NOS components before creating new ones.
+- Copy canonical NOS components from this repo before editing behavior. Do not
+  recreate an existing NOS component from memory.
 - If a needed component does not exist, build it as a Shadcn-compatible
   component in `components/ui/` following the existing file conventions.
 - Do not install other component libraries (MUI, Chakra, Radix directly, etc.)
@@ -60,6 +68,9 @@ then build the app in chunks.
   exit/sharp), and the sidebar token block (--sidebar-*).
 - Wrap `children` in `<TooltipProvider>` in app/layout.tsx. Shadcn Tooltip
   components require this at the app root. See the App shell section above.
+- Generated apps must not contain `--motion-duration-*`, custom app shells, or
+  local rewrites of existing NOS components such as StatCard, StatusBadge, or
+  HealthIndicator.
 
 ## App shell
 
@@ -70,6 +81,10 @@ Copy `src/components/ui/app-sidebar.tsx` from the NOS repo into your app's
 `src/components/ui/` folder. Edit the `mainSections` array at the top of the
 file to match the app's navigation items. Keep the dark background, avatar,
 logo slot, search row, and keyboard shortcut display intact.
+
+For shell setup, copy these from NOS before writing app screens: `app-sidebar.tsx`,
+`tooltip.tsx`, the required Shadcn primitives, and the exact token blocks from
+`src/app/globals.css`. Copy only the primitives needed by the approved screens.
 
 The root layout must follow this structure exactly:
 
@@ -103,12 +118,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 2. The build plan should define the product summary, users, goals, non-goals,
    routes, screens, flows, data model, sample states, NOS component mappings,
    ordered chunks, and acceptance checks.
-3. Read `SPEC.md` if it exists in the project — it defines the object model,
+3. Add a "NOS compliance setup" acceptance check to Chunk 1: root `AGENTS.md`
+   contains the NOS rules, `docs/NOS_RULES.md` or equivalent exists, canonical
+   tokens are copied verbatim, and `NymblAppSidebar` is installed.
+4. Read `SPEC.md` if it exists in the project — it defines the object model,
    all screens, sample data, and component mappings for that specific app.
-4. Check the workbench for the component you need before building a new one.
+5. Check the workbench for the component you need before building a new one.
    Components to check first: StatCard, StatusBadge, HealthIndicator, Tag, Empty,
    Rating, DotStepper, Banner, Notification, IdChip, LinkedChip, Timeline.
-5. Build one approved chunk at a time, verify it in the browser, then proceed.
+6. Build one approved chunk at a time, verify it in the browser, then proceed.
+
+## Visual parity checks
+
+Before marking any generated app complete, confirm:
+- The sidebar matches the App Sidebar component.
+- Brand purple appears only in primary actions and selected states.
+- No decorative card accents are present.
+- No custom shell or custom sidebar exists.
+- Token names match NOS exactly.
+- No `next-themes` or dark mode setup exists.
+- Every data surface has empty, loading, and error states.
+- Desktop and mobile browser screenshots have been reviewed after each chunk.
+
+## Deployment parity checks for this workbench
+
+After changing and pushing the workbench, verify GitHub `main`, Vercel
+production, and the local workbench render the same component counts and routes.
+Check `/workbench/instructions/agents`, `/workbench/components/app-sidebar`,
+and `/workbench/patterns/portfolio-dashboard`.
 
 ## Visual reference
 https://nos-workbench.vercel.app

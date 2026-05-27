@@ -89,7 +89,7 @@ export const navigation = {
     "textarea",
   ] as const,
   tokens: ["color", "typography", "spacing", "radius", "motion"] as const,
-  instructions: ["agents", "rules"] as const,
+  instructions: ["agents", "rules", "compositions"] as const,
   patterns: [
     "portfolio-dashboard",
     "domain-model-board",

@@ -59,6 +59,10 @@ Not spacious. Not cramped. Enterprise-appropriate.
 Every app screen uses one of three shell patterns. Never build a full-page
 layout without `NymblAppSidebar`.
 
+Use `instructions/compositions.md` as the implementation cookbook when mapping
+a PRD to app screens. It defines the required NOS components and acceptance
+checks for app shells, dashboards, directories, detail workflows, and settings.
+
 1. **Standard page** — `NymblAppSidebar` + full-width main content.
    Main content: `<div className="flex flex-col gap-6 p-6 lg:p-8">`.
 
@@ -96,6 +100,30 @@ Every list, table, and data surface must implement all three states:
 - **Loading** — Use `Skeleton` components matching the loaded content shape.
   Minimum 3 skeleton rows for tables; skeleton cards for card grids.
 - **Error** — Use `Alert` (destructive variant) with a retry button.
+
+## Source-of-truth copying
+
+- Copy canonical NOS components before editing them. Do not rebuild existing
+  NOS components from memory.
+- For shell setup, copy `app-sidebar.tsx`, `tooltip.tsx`, required primitives,
+  and token blocks from `src/app/globals.css` before implementing screens.
+- If a component exists in the workbench, use it or copy it verbatim before
+  making app-specific changes.
+- Generated apps must not contain custom rewrites of existing NOS components
+  such as `StatCard`, `StatusBadge`, or `HealthIndicator`.
+
+## Visual parity checklist
+
+Before a generated app is considered complete:
+
+- Sidebar matches the `App Sidebar` component.
+- Brand purple appears only in primary actions and selected states.
+- No decorative card accents, top borders, side stripes, or corner ornaments.
+- No custom shell or custom sidebar.
+- Token names match NOS exactly; no `--motion-duration-*` aliases.
+- No `next-themes`, dark mode toggle, or app-wide dark mode setup.
+- Every data surface has empty, loading, and error states.
+- Desktop and mobile screenshots have been reviewed after each build chunk.
 
 ## Table composition
 

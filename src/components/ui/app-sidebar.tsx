@@ -41,7 +41,9 @@ type TeamMember = {
   tone: string
 }
 
-type AppSidebarProps = ComponentProps<"aside">
+type AppSidebarProps = ComponentProps<"aside"> & {
+  appName?: string
+}
 
 const mainSections: { label: string; items: SidebarItem[] }[] = [
   {
@@ -112,10 +114,17 @@ function SidebarShell({ className, children, ...props }: AppSidebarProps) {
   )
 }
 
-function SidebarTop() {
+function SidebarTop({ appName }: { appName?: string }) {
   return (
     <div className="flex items-center justify-between px-5 pt-7">
-      <NosLogo />
+      <div className="flex min-w-0 items-center gap-3">
+        <NosLogo />
+        {appName ? (
+          <span className="min-w-0 truncate text-sm font-semibold tracking-tight text-white">
+            {appName}
+          </span>
+        ) : null}
+      </div>
       <button
         type="button"
         className="relative inline-flex size-8 items-center justify-center rounded-md text-white/70 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
@@ -191,10 +200,10 @@ function UserFooter() {
   )
 }
 
-export function NymblAppSidebar({ className, ...props }: AppSidebarProps) {
+export function NymblAppSidebar({ className, appName, ...props }: AppSidebarProps) {
   return (
     <SidebarShell className={className} {...props}>
-      <SidebarTop />
+      <SidebarTop appName={appName} />
       <SidebarSearch />
       <nav className="flex flex-col gap-7 pt-5" aria-label="Main navigation">
         {mainSections.map((section) => (
@@ -282,10 +291,10 @@ function TeamFooter() {
   )
 }
 
-export function NymblEngagementSidebar({ className, ...props }: AppSidebarProps) {
+export function NymblEngagementSidebar({ className, appName, ...props }: AppSidebarProps) {
   return (
     <SidebarShell className={className} {...props}>
-      <SidebarTop />
+      <SidebarTop appName={appName} />
       <SidebarSearch />
       <EngagementHeader />
       <WorkflowNav />
