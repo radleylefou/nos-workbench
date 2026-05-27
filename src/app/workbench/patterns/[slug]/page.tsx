@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import { WorkspaceShellPattern } from "@/components/workbench/patterns/workspace-shell"
 import { PortfolioDashboardPattern } from "@/components/workbench/patterns/portfolio-dashboard"
 import { DomainModelBoardPattern } from "@/components/workbench/patterns/domain-model-board"
 import { EstimationScreenPattern } from "@/components/workbench/patterns/estimation-screen"
@@ -13,11 +12,6 @@ import {
 } from "@/components/workbench/docs-shell"
 
 const patterns: Record<string, { title: string; description: string; component: React.ComponentType }> = {
-  "workspace-shell": {
-    title: "Engagement Workspace Shell",
-    description: "The persistent outer shell: left rail, top bar, main content, and collapsible right panel.",
-    component: WorkspaceShellPattern,
-  },
   "portfolio-dashboard": {
     title: "Portfolio Dashboard",
     description: "Overview page composing StatCard tiles, DataTable, ActivityFeed, and AvatarGroup.",

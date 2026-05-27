@@ -91,7 +91,6 @@ export const navigation = {
   tokens: ["color", "typography", "spacing", "radius", "motion"] as const,
   instructions: ["agents", "rules"] as const,
   patterns: [
-    "workspace-shell",
     "portfolio-dashboard",
     "domain-model-board",
     "estimation-screen",

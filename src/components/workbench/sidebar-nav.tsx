@@ -162,7 +162,7 @@ const topLevelItems: TopLevelItem[] = [
   {
     key: "patterns",
     label: "Patterns",
-    href: "/workbench/patterns/workspace-shell",
+    href: "/workbench/patterns/portfolio-dashboard",
     icon: PanelLeft,
     count: navigation.patterns.length,
   },
@@ -189,9 +189,10 @@ function SectionRailItem({
     <Link
       href={item.href}
       className={cn(
-        "group/rail flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/35",
-        "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-950 focus-visible:ring-zinc-950/15",
-        active && "bg-zinc-950 text-white ring-1 ring-zinc-950",
+        "group/rail flex size-10 items-center justify-center rounded-lg transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-3",
+        active
+          ? "bg-zinc-100 text-zinc-950 ring-1 ring-zinc-200 focus-visible:ring-zinc-950/15"
+          : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-950 focus-visible:ring-zinc-950/15",
       )}
       aria-label={item.label}
       title={item.label}
@@ -208,7 +209,7 @@ function SecondaryHeader({ item }: { item: TopLevelItem }) {
     <div className="flex h-[81px] items-center border-b border-zinc-200 px-5">
       <div className="flex items-center gap-3">
         <div
-          className="flex size-9 items-center justify-center rounded-lg bg-zinc-950 text-white ring-1 ring-zinc-950"
+          className="flex size-9 items-center justify-center rounded-lg bg-zinc-100 text-zinc-950 ring-1 ring-zinc-200"
           aria-hidden
         >
           <Icon className="size-4" />

@@ -51,7 +51,7 @@ const referenceLinks = [
   {
     label: "Patterns",
     description: "Composed product screens and layout templates.",
-    href: "/workbench/patterns/workspace-shell",
+    href: "/workbench/patterns/portfolio-dashboard",
   },
 ] as const
 

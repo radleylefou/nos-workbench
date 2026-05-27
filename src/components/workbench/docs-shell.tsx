@@ -149,17 +149,21 @@ export function WorkbenchReferenceCard({
   return (
     <Link
       href={href}
-      className="group/reference flex min-h-56 flex-col justify-between overflow-hidden rounded-[1.25rem] border border-zinc-200 bg-white p-5 text-zinc-950 transition-[border-color,box-shadow,transform] duration-700 ease-out hover:-translate-y-1 hover:border-zinc-950 hover:shadow-[0_28px_80px_rgba(0,0,0,0.08)]"
+      className="group/reference flex min-h-56 flex-col justify-between overflow-hidden rounded-[1.25rem] border border-zinc-200 bg-white p-5 text-zinc-950 transition-[border-color,box-shadow] duration-700 ease-out hover:border-zinc-950 hover:shadow-[0_28px_80px_rgba(0,0,0,0.08)]"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="overflow-hidden rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500">
-          {meta ?? "Reference"}
-        </div>
+      <div className="flex items-center justify-between gap-4">
+        {children}
         <ArrowRight className="size-4 text-zinc-400 transition-transform duration-700 ease-out group-hover/reference:translate-x-1 group-hover/reference:text-zinc-950" />
       </div>
       <div>
-        {children}
-        <h3 className="text-2xl font-semibold tracking-[-0.035em]">{title}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-2xl font-semibold tracking-[-0.035em]">{title}</h3>
+          {meta ? (
+            <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-500">
+              {meta}
+            </span>
+          ) : null}
+        </div>
         <p className="mt-2 text-sm leading-6 text-zinc-600">{description}</p>
       </div>
     </Link>

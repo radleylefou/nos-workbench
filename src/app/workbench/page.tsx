@@ -49,7 +49,7 @@ const sections = [
     key: "patterns",
     label: "Patterns",
     description: "Composed screens and layouts for product teams.",
-    href: "/workbench/patterns/workspace-shell",
+    href: "/workbench/patterns/portfolio-dashboard",
     icon: PanelLeft,
     count: navigation.patterns.length,
   },
@@ -109,7 +109,7 @@ export default function WorkbenchHome() {
                 description={section.description}
                 meta={section.count}
               >
-                <div className="mb-8 flex size-11 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-950 transition-transform duration-700 ease-out group-hover/reference:scale-110">
+                <div className="flex size-10 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-950">
                   <Icon className="size-5" />
                 </div>
               </WorkbenchReferenceCard>
