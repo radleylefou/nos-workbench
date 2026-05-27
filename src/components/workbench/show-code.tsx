@@ -14,13 +14,13 @@ export function ShowCode({ code }: ShowCodeProps) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="mt-4 rounded-lg border border-border bg-muted/25 p-2">
+    <div className="mt-4 border-t border-zinc-200 pt-3">
       <Button
         type="button"
         variant="ghost"
         size="sm"
         onClick={() => setOpen((v) => !v)}
-        className="w-full justify-start gap-1.5 text-muted-foreground hover:text-foreground"
+        className="w-full justify-start gap-1.5 text-zinc-500 hover:text-zinc-950"
       >
         <ChevronDown
           className={

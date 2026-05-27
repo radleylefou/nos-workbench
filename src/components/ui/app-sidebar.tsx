@@ -1,4 +1,5 @@
 import type { ComponentProps, ComponentType } from "react"
+import Image from "next/image"
 import {
   ArrowLeft,
   BarChart3,
@@ -84,16 +85,16 @@ const team: TeamMember[] = [
   { initials: "MC", name: "Jordan Lee", role: "Estimation Lead", tone: "bg-emerald-500" },
 ]
 
-function NymblMark() {
+function NosLogo() {
   return (
-    <div className="relative h-6 w-12 text-primary" aria-label="Nymbl">
-      <span className="absolute left-0 top-0 h-6 w-2 rounded-[1px] bg-current" />
-      <span className="absolute left-2 top-0 h-2 w-5 rounded-[1px] bg-current" />
-      <span className="absolute left-2 top-4 h-2 w-5 rounded-[1px] bg-current" />
-      <span className="absolute left-6 top-0 h-6 w-2 rounded-[1px] bg-current" />
-      <span className="absolute left-8 top-0 h-2 w-8 rounded-[1px] bg-current" />
-      <span className="absolute left-8 top-4 h-2 w-8 rounded-[1px] bg-current" />
-    </div>
+    <Image
+      src="/nos-logo.svg"
+      alt="NOS"
+      width={48}
+      height={24}
+      className="h-6 w-12"
+      priority
+    />
   )
 }
 
@@ -114,7 +115,7 @@ function SidebarShell({ className, children, ...props }: AppSidebarProps) {
 function SidebarTop() {
   return (
     <div className="flex items-center justify-between px-5 pt-7">
-      <NymblMark />
+      <NosLogo />
       <button
         type="button"
         className="relative inline-flex size-8 items-center justify-center rounded-md text-white/70 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"

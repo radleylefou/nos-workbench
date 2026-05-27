@@ -9,18 +9,25 @@ import {
   FileText,
   GitBranch,
   ListChecks,
+  Route,
   Sparkles,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { CopyButton } from "@/components/workbench/copy-button"
+import {
+  WorkbenchDocsShell,
+  WorkbenchHero,
+  WorkbenchPanel,
+  WorkbenchSection,
+} from "@/components/workbench/docs-shell"
 import { MarkdownView } from "@/components/workbench/markdown-view"
 import {
   agentSourceFiles,
+  buildPlanTemplate,
   generatedAppChecklist,
+  prdBuildPlanPrompt,
   starterPrompt,
 } from "@/lib/agent-instructions"
 import { navigation, type InstructionSlug } from "@/lib/workbench-data"
@@ -76,46 +83,48 @@ export default async function InstructionPage({
   const source = await readFile(filePath, "utf8")
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-semibold tracking-tight">{meta.title}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Source: <code className="font-mono">instructions/{meta.file}</code>
-          </p>
-        </div>
+    <WorkbenchDocsShell toc={[{ href: "#source", label: "Source" }]}>
+      <WorkbenchHero
+        eyebrow="Instructions"
+        title={meta.title}
+        description={`Source: instructions/${meta.file}`}
+      >
         <CopyButton value={source} label="Copy all" />
-      </div>
-      <MarkdownView source={source} />
-    </div>
+      </WorkbenchHero>
+      <WorkbenchSection id="source" title="Source">
+        <WorkbenchPanel className="p-6">
+          <MarkdownView source={source} className="max-w-none" />
+        </WorkbenchPanel>
+      </WorkbenchSection>
+    </WorkbenchDocsShell>
   )
 }
 
 function AgentInstructionsPage() {
   return (
-    <div className="flex flex-col gap-8">
-      <header className="flex flex-col gap-3">
-        <Badge variant="secondary" className="w-fit">
-          FOR CODING AGENTS
-        </Badge>
-        <div className="max-w-3xl">
-          <h1 className="text-4xl font-semibold tracking-tight">Instructions</h1>
-          <p className="mt-2 text-base leading-7 text-muted-foreground">
-            Copy the starter prompt into your coding agent before building a new
-            Nymbl app. The agent will use the workbench as visual reference and
-            the repo as implementation truth.
-          </p>
-        </div>
-      </header>
+    <WorkbenchDocsShell
+      toc={[
+        { href: "#starter", label: "Starter prompt" },
+        { href: "#prd-flow", label: "PRD workflow" },
+        { href: "#files", label: "Files" },
+        { href: "#checklist", label: "Checklist" },
+        { href: "#references", label: "References" },
+      ]}
+    >
+      <WorkbenchHero
+        eyebrow="For coding agents"
+        title="Instructions"
+        description="Copy the starter prompt into your coding agent with the app PRD. The agent should convert the PRD into a build plan before writing code, then use the workbench as visual reference and the repo as implementation truth."
+      />
 
-      <section className="overflow-hidden rounded-lg bg-zinc-950 text-zinc-100 shadow-xs ring-1 ring-foreground/10">
+      <section id="starter" data-workbench-reveal className="scroll-mt-28 overflow-hidden rounded-[1.25rem] bg-zinc-950 text-zinc-100 shadow-[0_24px_80px_rgba(0,0,0,0.16)]">
         <div className="flex flex-col gap-3 border-b border-white/10 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-[11px] font-semibold tracking-wider text-zinc-400 uppercase">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
               COPY INTO YOUR AGENT
             </p>
             <div className="mt-1 flex items-center gap-2">
-              <Sparkles className="size-4 text-brand-300" />
+              <Sparkles className="size-4 text-white" />
               <h2 className="text-lg font-semibold tracking-tight text-white">
                 Starter prompt
               </h2>
@@ -135,30 +144,91 @@ function AgentInstructionsPage() {
         </pre>
       </section>
 
-      <section className="flex flex-col gap-4">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">
-            Files agents should inspect
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Give the agent these paths when it needs implementation truth.
-          </p>
+      <WorkbenchSection
+        id="prd-flow"
+        title="Start from a PRD"
+        description="Use this flow when a new app starts from a product brief, PRD, or client scope. It keeps the agent from building everything in one pass."
+      >
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <WorkbenchPanel className="flex flex-col gap-4 p-5">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-zinc-950 text-white">
+              <FileText className="size-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-zinc-950">
+                1. Attach the PRD
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                Paste the starter prompt and include the full app PRD, plus any
+                repo, API, data, auth, or deployment constraints.
+              </p>
+            </div>
+          </WorkbenchPanel>
+          <WorkbenchPanel className="flex flex-col gap-4 p-5">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-zinc-950 text-white">
+              <Route className="size-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-zinc-950">
+                2. Plan before coding
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                Ask the agent to enter plan mode and produce SPEC.md or an
+                equivalent build plan with chunks and acceptance checks.
+              </p>
+            </div>
+          </WorkbenchPanel>
+          <WorkbenchPanel className="flex flex-col gap-4 p-5">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-zinc-950 text-white">
+              <CheckCircle2 className="size-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-zinc-950">
+                3. Build in chunks
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                Approve the plan, then have the agent build one chunk at a time
+                and verify each chunk in the browser before continuing.
+              </p>
+            </div>
+          </WorkbenchPanel>
         </div>
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+
+        <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <PromptCard
+            id="prd-planning-prompt"
+            eyebrow="COPY AFTER THE STARTER PROMPT"
+            title="PRD-to-build-plan prompt"
+            value={prdBuildPlanPrompt}
+          />
+          <PromptCard
+            id="build-plan-template"
+            eyebrow="OPTIONAL SPEC TEMPLATE"
+            title="Build plan template"
+            value={buildPlanTemplate}
+          />
+        </div>
+      </WorkbenchSection>
+
+      <WorkbenchSection
+        id="files"
+        title="Files agents should inspect"
+        description="Give the agent these paths when it needs implementation truth."
+      >
+        <div className="grid grid-flow-dense grid-cols-1 gap-4 lg:grid-cols-3">
           {agentSourceFiles.map((file) => (
-            <Card key={file.path} className="py-0">
-              <CardContent className="flex h-full flex-col gap-4 p-5">
+            <WorkbenchPanel key={file.path} className="flex h-full flex-col gap-4 p-5">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-zinc-950 text-white ring-1 ring-zinc-950">
                     <FileText className="size-4" />
                   </div>
-                  <Badge variant="outline" className="max-w-full truncate font-mono">
+                  <Badge variant="outline" className="max-w-full truncate border-zinc-200 font-mono text-zinc-600">
                     {file.path}
                   </Badge>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold">{file.label}</h3>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  <h3 className="text-sm font-semibold text-zinc-950">{file.label}</h3>
+                  <p className="mt-1 text-sm leading-6 text-zinc-600">
                     {file.description}
                   </p>
                 </div>
@@ -171,19 +241,16 @@ function AgentInstructionsPage() {
                     </a>
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+            </WorkbenchPanel>
           ))}
         </div>
-      </section>
+      </WorkbenchSection>
 
-      <Separator />
-
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <Card className="py-0">
-          <CardContent className="p-5">
+      <section className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <WorkbenchPanel className="p-5">
+          <div id="checklist" className="scroll-mt-28">
             <div className="flex items-center gap-2">
-              <ListChecks className="size-4 text-primary" />
+              <ListChecks className="size-4 text-zinc-950" />
               <h2 className="text-lg font-semibold tracking-tight">
                 Checklist for generated apps
               </h2>
@@ -191,18 +258,18 @@ function AgentInstructionsPage() {
             <ul className="mt-4 flex flex-col gap-3">
               {generatedAppChecklist.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-6">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
-                  <span className="text-muted-foreground">{item}</span>
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-zinc-950" />
+                  <span className="text-zinc-600">{item}</span>
                 </li>
               ))}
             </ul>
-          </CardContent>
-        </Card>
+          </div>
+        </WorkbenchPanel>
 
-        <Card className="py-0">
-          <CardContent className="p-5">
+        <WorkbenchPanel className="p-5">
+          <div id="references" className="scroll-mt-28">
             <div className="flex items-center gap-2">
-              <GitBranch className="size-4 text-primary" />
+              <GitBranch className="size-4 text-zinc-950" />
               <h2 className="text-lg font-semibold tracking-tight">
                 Jump to references
               </h2>
@@ -220,7 +287,7 @@ function AgentInstructionsPage() {
                       <span className="block text-sm font-semibold">
                         {link.label}
                       </span>
-                      <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                      <span className="mt-0.5 block text-xs font-normal text-zinc-500">
                         {link.description}
                       </span>
                     </span>
@@ -229,9 +296,44 @@ function AgentInstructionsPage() {
                 </Button>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </WorkbenchPanel>
       </section>
-    </div>
+    </WorkbenchDocsShell>
+  )
+}
+
+function PromptCard({
+  id,
+  eyebrow,
+  title,
+  value,
+}: {
+  id: string
+  eyebrow: string
+  title: string
+  value: string
+}) {
+  return (
+    <section
+      id={id}
+      data-workbench-reveal
+      className="scroll-mt-28 overflow-hidden rounded-[1.25rem] border border-zinc-200 bg-white"
+    >
+      <div className="flex flex-col gap-3 border-b border-zinc-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            {eyebrow}
+          </p>
+          <h3 className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">
+            {title}
+          </h3>
+        </div>
+        <CopyButton value={value} label="Copy all" />
+      </div>
+      <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap bg-zinc-50 p-5 font-mono text-xs leading-6 text-zinc-700">
+        {value}
+      </pre>
+    </section>
   )
 }

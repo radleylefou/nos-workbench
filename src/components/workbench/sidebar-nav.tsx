@@ -1,15 +1,16 @@
 "use client"
 
 import { useState, type ElementType } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   ChevronDown,
   Component,
   FileText,
+  Home,
   Layers3,
   PanelLeft,
-  Sparkles,
   SwatchBook,
 } from "lucide-react"
 
@@ -38,15 +39,15 @@ function NavItem({ href, label, meta }: NavItemProps) {
     <Link
       href={href}
       className={cn(
-        "group/nav flex h-8 items-center justify-between gap-2 rounded-md px-2 text-sm transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/35",
+        "group/nav flex h-8 items-center justify-between gap-2 border-l border-transparent px-3 text-sm transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15",
         active
-          ? "bg-primary/10 font-medium text-primary ring-1 ring-primary/15"
-          : "text-foreground/75 hover:bg-muted hover:text-foreground",
+          ? "border-zinc-950 bg-zinc-50 font-medium text-zinc-950"
+          : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950",
       )}
     >
       <span className="truncate">{label}</span>
       {meta ? (
-        <span className="rounded bg-background/70 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground ring-1 ring-border group-hover/nav:text-foreground">
+        <span className="rounded bg-white px-1.5 py-0.5 text-[10px] font-medium text-zinc-400 ring-1 ring-zinc-200 group-hover/nav:text-zinc-950">
           {meta}
         </span>
       ) : null}
@@ -70,14 +71,14 @@ function CategoryGroup({ category, open, onOpenChange }: CategoryGroupProps) {
       <button
         onClick={() => onOpenChange(open ? null : category)}
         className={cn(
-          "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[10px] font-semibold tracking-wider uppercase transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/35",
-          hasActive || open ? "text-foreground" : "text-muted-foreground",
+          "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase transition-colors hover:bg-zinc-50 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15",
+          hasActive || open ? "text-zinc-950" : "text-zinc-400",
         )}
         aria-expanded={open}
       >
         <span className="truncate">{category}</span>
         <span className="flex items-center gap-1.5">
-          <span className="text-[10px] font-medium tracking-normal text-muted-foreground/80">
+          <span className="text-[10px] font-medium tracking-normal text-zinc-400">
             {items.length}
           </span>
           <ChevronDown
@@ -120,17 +121,23 @@ function FlatNavGroup({ basePath, items }: FlatNavGroupProps) {
   )
 }
 
-type SectionKey = "tokens" | "components" | "instructions" | "patterns"
+type SectionKey = "home" | "tokens" | "components" | "instructions" | "patterns"
 
 type TopLevelItem = {
   key: SectionKey
   label: string
   href: string
   icon: ElementType
-  count: number
+  count?: number
 }
 
 const topLevelItems: TopLevelItem[] = [
+  {
+    key: "home",
+    label: "Home",
+    href: "/workbench",
+    icon: Home,
+  },
   {
     key: "tokens",
     label: "Tokens",
@@ -162,6 +169,7 @@ const topLevelItems: TopLevelItem[] = [
 ]
 
 function getActiveSection(pathname: string): SectionKey {
+  if (pathname === "/workbench") return "home"
   if (pathname.startsWith("/workbench/tokens")) return "tokens"
   if (pathname.startsWith("/workbench/instructions")) return "instructions"
   if (pathname.startsWith("/workbench/patterns")) return "patterns"
@@ -182,7 +190,8 @@ function SectionRailItem({
       href={item.href}
       className={cn(
         "group/rail flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/35",
-        active && "bg-primary/10 text-primary ring-1 ring-primary/15",
+        "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-950 focus-visible:ring-zinc-950/15",
+        active && "bg-zinc-950 text-white ring-1 ring-zinc-950",
       )}
       aria-label={item.label}
       title={item.label}
@@ -196,10 +205,10 @@ function SecondaryHeader({ item }: { item: TopLevelItem }) {
   const Icon = item.icon
 
   return (
-    <div className="border-b border-sidebar-border p-4">
+    <div className="flex h-[81px] items-center border-b border-zinc-200 px-5">
       <div className="flex items-center gap-3">
         <div
-          className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15"
+          className="flex size-9 items-center justify-center rounded-lg bg-zinc-950 text-white ring-1 ring-zinc-950"
           aria-hidden
         >
           <Icon className="size-4" />
@@ -209,18 +218,22 @@ function SecondaryHeader({ item }: { item: TopLevelItem }) {
             <span className="truncate text-sm font-semibold tracking-tight">
               {item.label}
             </span>
-            <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
-              {item.count}
-            </Badge>
+            {item.count ? (
+              <Badge variant="outline" className="h-5 border-zinc-200 px-1.5 text-[10px] text-zinc-500">
+                {item.count}
+              </Badge>
+            ) : null}
           </div>
-          <p className="truncate text-[11px] text-muted-foreground">
+          <p className="truncate text-[11px] text-zinc-500">
             {item.key === "components"
               ? "Reusable interface building blocks"
               : item.key === "tokens"
                 ? "Canonical visual foundations"
                 : item.key === "instructions"
                   ? "Agent and implementation rules"
-                  : "Composed product patterns"}
+                  : item.key === "patterns"
+                    ? "Composed product patterns"
+                    : "Operating reference overview"}
           </p>
         </div>
       </div>
@@ -245,14 +258,14 @@ export function SidebarNav() {
   )
 
   return (
-    <aside className="fixed top-0 left-0 z-30 hidden h-screen w-80 border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex">
-      <div className="flex w-16 shrink-0 flex-col items-center border-r border-sidebar-border bg-background/70 py-4">
+    <aside className="fixed top-0 left-0 z-30 hidden h-screen w-80 border-r border-zinc-200 bg-white text-zinc-950 lg:flex">
+      <div className="flex w-16 shrink-0 flex-col items-center border-r border-zinc-200 bg-zinc-50/80 py-4">
         <Link
           href="/workbench"
-          className="mb-5 flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/35"
+          className="mb-5 flex h-10 w-12 items-center justify-center rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15"
           aria-label="NOS Workbench home"
         >
-          <Sparkles className="size-4" />
+          <Image src="/nos-logo.svg" alt="" width={48} height={24} className="h-5 w-10" />
         </Link>
         <nav className="flex flex-col gap-2" aria-label="Workbench sections">
           {topLevelItems.map((item) => (
@@ -263,13 +276,19 @@ export function SidebarNav() {
             />
           ))}
         </nav>
-        <div className="mt-auto flex size-8 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground ring-1 ring-border">
+        <div className="mt-auto flex size-8 items-center justify-center rounded-lg bg-white text-zinc-400 ring-1 ring-zinc-200">
           <Layers3 className="size-3.5" />
         </div>
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <SecondaryHeader item={activeTopLevelItem} />
-        <nav className="flex-1 overflow-y-auto py-3" aria-label={`${activeTopLevelItem.label} navigation`}>
+        <nav className="flex-1 overflow-y-auto py-4" aria-label={`${activeTopLevelItem.label} navigation`}>
+          {activeSection === "home" ? (
+            <div className="px-5 text-sm leading-6 text-zinc-500">
+              The operating reference for building Nymbl apps.
+            </div>
+          ) : null}
+
           {activeSection === "tokens" ? (
             <FlatNavGroup basePath="/workbench/tokens" items={navigation.tokens} />
           ) : null}
@@ -295,9 +314,9 @@ export function SidebarNav() {
             <FlatNavGroup basePath="/workbench/patterns" items={navigation.patterns} />
           ) : null}
         </nav>
-        <div className="border-t border-sidebar-border p-4">
-          <div className="rounded-lg bg-background/70 p-3 text-[11px] leading-relaxed text-muted-foreground ring-1 ring-border">
-            <span className="font-medium text-foreground">Source of truth</span>
+        <div className="border-t border-zinc-200 p-4">
+          <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-3 text-[11px] leading-relaxed text-zinc-500">
+            <span className="font-medium text-zinc-950">Source of truth</span>
             <br />
             NOS tokens, components, instructions, and product patterns.
           </div>

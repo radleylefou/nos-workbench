@@ -32,7 +32,7 @@ export function ColorSwatch({ name, value, primary, copyValue }: ColorSwatchProp
       type="button"
       onClick={copy}
       className={cn(
-        "group flex flex-col items-stretch overflow-hidden rounded-md border border-border bg-card text-left ring-1 ring-foreground/5 transition-shadow duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "group flex flex-col items-stretch overflow-hidden rounded-xl border border-zinc-200 bg-white text-left transition-[border-color,box-shadow,transform] duration-700 ease-out hover:-translate-y-0.5 hover:border-zinc-950 hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)] focus:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15",
       )}
       aria-label={`Copy ${name}`}
     >
@@ -46,13 +46,13 @@ export function ColorSwatch({ name, value, primary, copyValue }: ColorSwatchProp
       <div className="flex items-start justify-between gap-2 px-2 py-1.5">
         <div className="min-w-0 flex-1">
           <div className="truncate text-[11px] font-medium">{name}</div>
-          <div className="truncate font-mono text-[10px] text-muted-foreground">
+          <div className="truncate font-mono text-[10px] text-zinc-500">
             {value}
           </div>
         </div>
         <span
           className={cn(
-            "mt-0.5 inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+            "mt-0.5 inline-flex size-4 shrink-0 items-center justify-center text-zinc-500 transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
             copied ? "opacity-100" : "opacity-0 group-hover:opacity-100",
           )}
           aria-hidden

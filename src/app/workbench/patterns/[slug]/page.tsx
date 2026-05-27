@@ -5,6 +5,12 @@ import { DomainModelBoardPattern } from "@/components/workbench/patterns/domain-
 import { EstimationScreenPattern } from "@/components/workbench/patterns/estimation-screen"
 import { ScopeDocumentPattern } from "@/components/workbench/patterns/scope-document"
 import { ReportingAdminPattern } from "@/components/workbench/patterns/reporting-admin"
+import {
+  WorkbenchDocsShell,
+  WorkbenchHero,
+  WorkbenchPanel,
+  WorkbenchSection,
+} from "@/components/workbench/docs-shell"
 
 const patterns: Record<string, { title: string; description: string; component: React.ComponentType }> = {
   "workspace-shell": {
@@ -51,17 +57,27 @@ export default async function PatternPage({ params }: { params: Promise<{ slug: 
   const PatternComponent = pattern.component
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Pattern</span>
-          <span className="text-xs text-muted-foreground">·</span>
-          <span className="text-xs text-muted-foreground capitalize">{slug.replace(/-/g, " ")}</span>
-        </div>
-        <h1 className="text-2xl font-semibold tracking-tight">{pattern.title}</h1>
-        <p className="text-sm text-muted-foreground">{pattern.description}</p>
-      </div>
-      <PatternComponent />
-    </div>
+    <WorkbenchDocsShell
+      toc={[
+        { href: "#preview", label: "Preview" },
+        { href: "#composition", label: "Composition" },
+      ]}
+    >
+      <WorkbenchHero eyebrow="Patterns" title={pattern.title} description={pattern.description} />
+      <WorkbenchSection id="preview" title="Preview">
+        <WorkbenchPanel className="overflow-hidden p-3">
+          <PatternComponent />
+        </WorkbenchPanel>
+      </WorkbenchSection>
+      <WorkbenchSection id="composition" title="Composition">
+        <WorkbenchPanel className="p-5">
+          <p className="text-sm leading-6 text-zinc-600">
+            Use this as a product-level reference for structure, density, and
+            flow. Pull primitive behavior from component pages and token values
+            from the token pages.
+          </p>
+        </WorkbenchPanel>
+      </WorkbenchSection>
+    </WorkbenchDocsShell>
   )
 }

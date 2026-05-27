@@ -22,6 +22,11 @@ Then have the agent use the workbench as the visual reference and this repo as
 the implementation reference. The agent should inspect existing components,
 tokens, and rules before creating new UI.
 
+For new apps, include the app PRD with the starter prompt. The first agent
+response should be a plan, not implementation code. The agent should convert
+the PRD into `SPEC.md` or an equivalent build plan, get the plan approved, and
+then build the app in chunks.
+
 ## Rules
 
 - Never hardcode colors, spacing, or radius values.
@@ -45,10 +50,15 @@ tokens, and rules before creating new UI.
   only between meaningful sections.
 
 ## Before you build any screen
-1. Read `SPEC.md` if it exists in the project — it defines the object model,
+1. If an app PRD exists, read it in full and convert it into `SPEC.md` or an
+   equivalent build plan before coding.
+2. The build plan should define the product summary, users, goals, non-goals,
+   routes, screens, flows, data model, sample states, NOS component mappings,
+   ordered chunks, and acceptance checks.
+3. Read `SPEC.md` if it exists in the project — it defines the object model,
    all screens, sample data, and component mappings for that specific app.
-2. Check the workbench for the component you need before building a new one.
-3. Build Phase 1 screens first, verify in the browser, then proceed.
+4. Check the workbench for the component you need before building a new one.
+5. Build one approved chunk at a time, verify it in the browser, then proceed.
 
 ## Visual reference
 https://nos-workbench.vercel.app
