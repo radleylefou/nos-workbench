@@ -122,7 +122,7 @@ export function WorkbenchSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="hidden min-w-0 items-center rounded-full border border-zinc-200 bg-white px-4 py-2 text-left text-sm text-zinc-500 shadow-[0_12px_40px_rgba(0,0,0,0.04)] transition-colors duration-[var(--duration-fast)] hover:border-zinc-300 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15 md:flex md:w-[28rem]"
+        className="hidden min-w-0 items-center rounded-full border border-zinc-200 bg-white px-4 py-2 text-left text-sm text-zinc-500 shadow-lg transition-colors duration-[var(--duration-fast)] hover:border-zinc-300 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15 md:flex md:w-[28rem]"
         aria-label="Search workbench"
       >
         <Search className="mr-2 size-4 text-zinc-400" />

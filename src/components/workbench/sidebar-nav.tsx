@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, type ElementType } from "react"
+import { useEffect, useRef, type ElementType } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  ChevronDown,
   Component,
   FileText,
   Home,
@@ -44,6 +43,7 @@ function NavItem({ href, label, meta }: NavItemProps) {
           ? "border-zinc-950 bg-zinc-50 font-medium text-zinc-950"
           : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950",
       )}
+      data-active={active ? "true" : undefined}
     >
       <span className="truncate">{label}</span>
       {meta ? (
@@ -57,48 +57,34 @@ function NavItem({ href, label, meta }: NavItemProps) {
 
 type CategoryGroupProps = {
   category: string
-  open: boolean
-  onOpenChange: (category: string | null) => void
 }
 
-function CategoryGroup({ category, open, onOpenChange }: CategoryGroupProps) {
+function CategoryGroup({ category }: CategoryGroupProps) {
   const pathname = usePathname()
   const items = components.filter((c) => c.category === category)
   const hasActive = items.some((c) => pathname === `/workbench/components/${c.slug}`)
 
   return (
-    <div className="px-3">
-      <button
-        onClick={() => onOpenChange(open ? null : category)}
+    <section className="px-3 py-1.5">
+      <div
         className={cn(
-          "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase transition-colors hover:bg-zinc-50 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15",
-          hasActive || open ? "text-zinc-950" : "text-zinc-400",
+          "flex w-full items-center justify-between gap-3 px-2 py-1.5 text-xs font-medium",
+          hasActive ? "text-zinc-950" : "text-zinc-500",
         )}
-        aria-expanded={open}
       >
         <span className="truncate">{category}</span>
-        <span className="flex items-center gap-1.5">
-          <span className="text-[10px] font-medium tracking-normal text-zinc-400">
-            {items.length}
-          </span>
-          <ChevronDown
-            className={cn(
-              "size-3 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
-              open ? "rotate-0" : "-rotate-90",
-            )}
-          />
+        <span className="text-[11px] font-medium text-zinc-400">
+          {items.length}
         </span>
-      </button>
-      {open && (
-        <ul className="flex flex-col gap-0.5 pb-1">
-          {items.map((c) => (
-            <li key={c.slug}>
-              <NavItem href={`/workbench/components/${c.slug}`} label={c.name} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      </div>
+      <ul className="flex flex-col gap-0.5 pb-1">
+        {items.map((c) => (
+          <li key={c.slug}>
+            <NavItem href={`/workbench/components/${c.slug}`} label={c.name} />
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
@@ -244,19 +230,15 @@ function SecondaryHeader({ item }: { item: TopLevelItem }) {
 
 export function SidebarNav() {
   const pathname = usePathname()
+  const navRef = useRef<HTMLElement>(null)
   const activeSection = getActiveSection(pathname)
   const activeTopLevelItem =
     topLevelItems.find((item) => item.key === activeSection) ?? topLevelItems[0]
-  const activeCategory = categories.find((category) =>
-    components.some(
-      (component) =>
-        component.category === category &&
-        pathname === `/workbench/components/${component.slug}`,
-    ),
-  )
-  const [openCategory, setOpenCategory] = useState<string | null>(
-    activeCategory ?? "Forms & Inputs",
-  )
+
+  useEffect(() => {
+    const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]')
+    activeLink?.scrollIntoView({ block: "nearest" })
+  }, [pathname])
 
   return (
     <aside className="fixed top-0 left-0 z-30 hidden h-screen w-80 border-r border-zinc-200 bg-white text-zinc-950 lg:flex">
@@ -283,7 +265,7 @@ export function SidebarNav() {
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <SecondaryHeader item={activeTopLevelItem} />
-        <nav className="flex-1 overflow-y-auto py-4" aria-label={`${activeTopLevelItem.label} navigation`}>
+        <nav ref={navRef} className="flex-1 overflow-y-auto py-4" aria-label={`${activeTopLevelItem.label} navigation`}>
           {activeSection === "home" ? (
             <div className="px-5 text-sm leading-6 text-zinc-500">
               The operating reference for building Nymbl apps.
@@ -300,8 +282,6 @@ export function SidebarNav() {
                 <CategoryGroup
                   key={cat}
                   category={cat}
-                  open={openCategory === cat}
-                  onOpenChange={setOpenCategory}
                 />
               ))}
             </>

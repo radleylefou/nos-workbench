@@ -88,7 +88,7 @@ export const navigation = {
     "radio",
     "textarea",
   ] as const,
-  tokens: ["color", "typography", "spacing", "radius", "motion"] as const,
+  tokens: ["color", "typography", "spacing", "radius", "shadow", "motion"] as const,
   instructions: ["agents", "rules", "compositions"] as const,
   patterns: [
     "portfolio-dashboard",
@@ -142,7 +142,7 @@ export const componentEntries: Record<ComponentSlug, ComponentEntry> = {
   card: {
     slug: "card",
     name: "Card",
-    description: "Surface for grouping related content. Lifts on hover.",
+    description: "Surface for grouping related content.",
     importLine: `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"`,
     exampleCode: `<Card>
   <CardHeader>
@@ -653,11 +653,71 @@ export const neutralScale = [
   { name: "zinc-950", value: "#09090b" },
 ]
 
-export const semanticColors = [
-  { name: "success", value: "oklch(51% 0.15 145)" },
-  { name: "warning", value: "oklch(65% 0.18 55)" },
-  { name: "error", value: "oklch(54% 0.22 25)" },
-  { name: "info", value: "oklch(52% 0.20 245)" },
+export const semanticColorScales = [
+  {
+    label: "Success",
+    colors: [
+      { name: "success-50", value: "oklch(97% 0.04 145)" },
+      { name: "success-100", value: "oklch(92% 0.07 145)" },
+      { name: "success-200", value: "oklch(84% 0.10 145)" },
+      { name: "success-300", value: "oklch(74% 0.13 145)" },
+      { name: "success-400", value: "oklch(63% 0.15 145)" },
+      { name: "success-500", value: "oklch(56% 0.15 145)" },
+      { name: "success-600", value: "oklch(51% 0.15 145)", primary: true },
+      { name: "success-700", value: "oklch(43% 0.13 145)" },
+      { name: "success-800", value: "oklch(35% 0.10 145)" },
+      { name: "success-900", value: "oklch(27% 0.08 145)" },
+      { name: "success-950", value: "oklch(18% 0.06 145)" },
+    ],
+  },
+  {
+    label: "Warning",
+    colors: [
+      { name: "warning-50", value: "oklch(98% 0.04 55)" },
+      { name: "warning-100", value: "oklch(94% 0.08 55)" },
+      { name: "warning-200", value: "oklch(88% 0.12 55)" },
+      { name: "warning-300", value: "oklch(80% 0.16 55)" },
+      { name: "warning-400", value: "oklch(72% 0.18 55)" },
+      { name: "warning-500", value: "oklch(65% 0.18 55)", primary: true },
+      { name: "warning-600", value: "oklch(57% 0.16 55)" },
+      { name: "warning-700", value: "oklch(47% 0.13 55)" },
+      { name: "warning-800", value: "oklch(37% 0.10 55)" },
+      { name: "warning-900", value: "oklch(28% 0.08 55)" },
+      { name: "warning-950", value: "oklch(19% 0.06 55)" },
+    ],
+  },
+  {
+    label: "Error",
+    colors: [
+      { name: "error-50", value: "oklch(97% 0.04 25)" },
+      { name: "error-100", value: "oklch(92% 0.08 25)" },
+      { name: "error-200", value: "oklch(84% 0.13 25)" },
+      { name: "error-300", value: "oklch(75% 0.18 25)" },
+      { name: "error-400", value: "oklch(64% 0.21 25)" },
+      { name: "error-500", value: "oklch(58% 0.22 25)" },
+      { name: "error-600", value: "oklch(54% 0.22 25)", primary: true },
+      { name: "error-700", value: "oklch(45% 0.18 25)" },
+      { name: "error-800", value: "oklch(36% 0.14 25)" },
+      { name: "error-900", value: "oklch(28% 0.10 25)" },
+      { name: "error-950", value: "oklch(19% 0.07 25)" },
+    ],
+  },
+  {
+    label: "Info",
+    colors: [
+      { name: "info-50", value: "oklch(97% 0.04 245)" },
+      { name: "info-100", value: "oklch(92% 0.08 245)" },
+      { name: "info-200", value: "oklch(84% 0.12 245)" },
+      { name: "info-300", value: "oklch(74% 0.16 245)" },
+      { name: "info-400", value: "oklch(63% 0.19 245)" },
+      { name: "info-500", value: "oklch(57% 0.20 245)" },
+      { name: "info-600", value: "oklch(52% 0.20 245)", primary: true },
+      { name: "info-700", value: "oklch(44% 0.17 245)" },
+      { name: "info-800", value: "oklch(36% 0.13 245)" },
+      { name: "info-900", value: "oklch(28% 0.09 245)" },
+      { name: "info-950", value: "oklch(19% 0.07 245)" },
+    ],
+  },
 ]
 
 export const typographySizes = [
@@ -701,6 +761,16 @@ export const radiusScale = [
   { name: "2xl", varName: "--radius-2xl" },
   { name: "3xl", varName: "--radius-3xl" },
   { name: "4xl", varName: "--radius-4xl" },
+]
+
+export const shadowScale = [
+  { name: "2xs", varName: "--shadow-2xs", className: "shadow-2xs" },
+  { name: "xs", varName: "--shadow-xs", className: "shadow-xs" },
+  { name: "sm", varName: "--shadow-sm", className: "shadow-sm" },
+  { name: "md", varName: "--shadow-md", className: "shadow-md" },
+  { name: "lg", varName: "--shadow-lg", className: "shadow-lg" },
+  { name: "xl", varName: "--shadow-xl", className: "shadow-xl" },
+  { name: "2xl", varName: "--shadow-2xl", className: "shadow-2xl" },
 ]
 
 export const durationTokens = [

@@ -27,21 +27,22 @@ Before coding:
 2. Create or update the generated app's root AGENTS.md with the NOS app-building rules.
 3. Copy instructions/rules.md into docs/NOS_RULES.md or an equivalent local docs path.
 4. Browse the workbench Components area and reuse existing NOS components before building new ones.
-5. Browse Tokens before choosing colors, spacing, radius, or motion values.
+5. Browse Tokens before choosing colors, spacing, radius, shadow, or motion values.
 6. Read instructions/AGENTS.md for repo constraints.
 7. Read instructions/rules.md and instructions/compositions.md for design and composition rules.
 
 Rules:
-- Never hardcode colors, spacing, or radius values. Reference CSS variables from globals.css.
+- Never hardcode colors, spacing, radius, or shadow values. Reference CSS variables from globals.css.
 - Use existing NOS components before creating new ones. Copy canonical components from NOS before editing behavior.
 - Check these first: StatCard, StatusBadge, HealthIndicator, Tag, Empty, Rating, DotStepper, Banner, Notification, IdChip, LinkedChip, Timeline.
 - TypeScript and TSX only. No .jsx files.
 - All transitions must use motion tokens (--duration-*, --ease-*).
+- Do not move component surfaces on hover. Cards, stat cards, tables, preview cells, pagination items, and larger components must not use hover:-translate-y-* or hover lift effects.
 - Do not install other component libraries (MUI, Chakra, Radix directly). Shadcn already wraps Radix.
 - Do not use decorative chrome: no colored top borders, side stripes, corner ornaments, or decorative accent marks.
 - Apps are light mode only. Do not install next-themes or add a dark mode toggle.
 - Use NymblAppSidebar from app-sidebar.tsx as the primary navigation. Never build a custom sidebar.
-- Copy NOS token variable names verbatim from src/app/globals.css — do not rename or invent names from memory.
+- Copy NOS token variable names verbatim from src/app/globals.css, including semantic ramps (--success-*, --warning-*, --error-*, --info-*) — do not rename or invent names from memory.
 - Wrap children in TooltipProvider in app/layout.tsx.
 - Do not ship custom rewrites of existing NOS components such as StatCard, StatusBadge, or HealthIndicator.
 - Browser-check desktop and mobile screenshots after each approved chunk.
@@ -172,7 +173,7 @@ export const agentSourceFiles = [
   {
     path: "src/app/globals.css",
     label: "Token source",
-    description: "Canonical CSS variables for colors, typography, radius, spacing, and motion.",
+    description: "Canonical CSS variables for colors, typography, radius, spacing, shadow, and motion.",
     githubUrl:
       "https://github.com/radleylefou/nos-workbench/blob/main/src/app/globals.css",
   },
@@ -187,13 +188,15 @@ export const generatedAppChecklist = [
   "Build one chunk at a time and verify it in the browser before continuing.",
   "Check the workbench for an existing component before building a new one.",
   "Copy canonical NOS components before editing behavior; do not recreate existing components from memory.",
-  "Use NOS token variables for color, spacing, radius, and motion decisions.",
+  "Use NOS token variables for color, spacing, radius, shadow, and motion decisions.",
+  "Use semantic ramp tokens (--success-*, --warning-*, --error-*, --info-*) instead of raw status color choices.",
   "Keep new primitives Shadcn-compatible and place them in src/components/ui/.",
   "Use TSX only and avoid bringing in another component library.",
   "Use NymblAppSidebar from NOS for all left navigation. Do not build a custom sidebar.",
   "Wrap children in TooltipProvider in app/layout.tsx.",
-  "Copy token variable names verbatim from NOS src/app/globals.css — do not rename.",
+  "Copy token variable names verbatim from NOS src/app/globals.css, including semantic ramps — do not rename.",
   "Apps are light mode only — do not add dark mode or next-themes.",
   "Confirm no custom StatCard, StatusBadge, HealthIndicator, app shell, or sidebar exists when NOS already provides one.",
+  "Do not add hover-lift motion to component surfaces; preserve only non-positional hover feedback.",
   "Use the visual parity checklist before completion: sidebar match, restrained brand purple, no decorative card accents, and desktop/mobile screenshots.",
 ] as const

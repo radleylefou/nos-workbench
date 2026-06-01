@@ -124,7 +124,7 @@ export default async function ComponentPage({
         </div>
       </WorkbenchHero>
 
-      <WorkbenchSection id="preview" title="Preview" description="Stable enterprise examples for visual QA and implementation reference.">
+      <WorkbenchSection id="preview" title="Preview">
         <Tabs defaultValue="variants" className="flex flex-col gap-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <TabsList>

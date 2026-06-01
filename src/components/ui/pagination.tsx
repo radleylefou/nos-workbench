@@ -50,7 +50,7 @@ function PaginationLink({
       variant={isActive ? "outline" : "ghost"}
       size={size}
       className={cn(
-        "transition-[background-color,color,border-color,box-shadow,transform] duration-[var(--page-slide-dur)] ease-[var(--page-slide-ease)] hover:-translate-y-0.5 active:translate-y-0",
+        "transition-[background-color,color,border-color,box-shadow] duration-[var(--page-slide-dur)] ease-[var(--page-slide-ease)]",
         className
       )}
     >

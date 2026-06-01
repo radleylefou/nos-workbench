@@ -118,7 +118,7 @@ function AgentInstructionsPage() {
         description="Copy the starter prompt into your coding agent with the app PRD. The agent should convert the PRD into a build plan before writing code, then use the workbench as visual reference and the repo as implementation truth."
       />
 
-      <section id="starter" data-workbench-reveal className="scroll-mt-28 overflow-hidden rounded-[1.25rem] bg-zinc-950 text-zinc-100 shadow-[0_24px_80px_rgba(0,0,0,0.16)]">
+      <section id="starter" data-workbench-reveal className="scroll-mt-28 overflow-hidden rounded-[1.25rem] bg-zinc-950 text-zinc-100 shadow-2xl">
         <div className="flex flex-col gap-3 border-b border-white/10 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">

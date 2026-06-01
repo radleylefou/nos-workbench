@@ -3,7 +3,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * NOS Card — surface for grouping related content. Lifts on hover via NOS motion tokens.
+ * NOS Card — surface for grouping related content.
  * Compose with `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent`, `CardFooter`.
  *
  * @param size - `default` (relaxed) or `sm` (denser). Controls padding and gap.

@@ -35,7 +35,7 @@ path. The build plan must include a "NOS compliance setup" acceptance check.
 
 ## Rules
 
-- Never hardcode colors, spacing, or radius values.
+- Never hardcode colors, spacing, radius, or shadow values.
   Use Tailwind classes that reference the CSS variables in `globals.css`.
 - Use existing NOS components before creating new ones.
 - Copy canonical NOS components from this repo before editing behavior. Do not
@@ -49,6 +49,11 @@ path. The build plan must include a "NOS compliance setup" acceptance check.
   Do not hardcode transition values.
 - Do not animate layout properties (width, height, padding, margin).
   Use `transform` and `opacity` instead.
+- Do not move component surfaces on hover. Cards, stat cards, tables, preview
+  cells, pagination items, and larger product components must not use
+  `hover:-translate-y-*` or any hover lift effect. Non-positional hover feedback
+  such as border, background, text color, row highlight, shadow, and icon motion
+  is allowed.
 - Do not use decorative accent chrome on cards or large components:
   no colored top borders, side stripes, corner dots, or ornamental accent marks.
   Accent color is reserved for primary actions, active/selected states, and
@@ -62,8 +67,10 @@ path. The build plan must include a "NOS compliance setup" acceptance check.
 - When copying NOS tokens into a new app's globals.css, copy the token blocks
   verbatim from `src/app/globals.css` in the NOS repo. Do not rename variables
   or invent token names from memory. Required blocks to copy: the :root color
-  tokens, brand scale (--brand-50 through --brand-950), semantic tokens
-  (--success, --warning, --error, --info and their foreground pairs), motion
+  tokens, brand scale (--brand-50 through --brand-950), semantic tokens and
+  ramps (--success-*, --warning-*, --error-*, --info-* plus their aliases and
+  foreground pairs), shadow
+  tokens (--shadow-2xs/xs/sm/md/lg/xl/2xl), motion
   tokens (--duration-instant/fast/normal/slow/slower and --ease-standard/enter/
   exit/sharp), and the sidebar token block (--sidebar-*).
 - Wrap `children` in `<TooltipProvider>` in app/layout.tsx. Shadcn Tooltip

@@ -124,7 +124,7 @@ export function WorkbenchPanel({
     <div
       data-workbench-reveal
       className={cn(
-        "rounded-[1.25rem] border border-zinc-200 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.04)]",
+        "rounded-[1.25rem] border border-zinc-200 bg-white shadow-lg",
         className,
       )}
     >
@@ -149,7 +149,7 @@ export function WorkbenchReferenceCard({
   return (
     <Link
       href={href}
-      className="group/reference flex min-h-56 flex-col justify-between overflow-hidden rounded-[1.25rem] border border-zinc-200 bg-white p-5 text-zinc-950 transition-[border-color,box-shadow] duration-700 ease-out hover:border-zinc-950 hover:shadow-[0_28px_80px_rgba(0,0,0,0.08)]"
+      className="group/reference flex min-h-56 flex-col justify-between overflow-hidden rounded-[1.25rem] border border-zinc-200 bg-white p-5 text-zinc-950 transition-[border-color,box-shadow] duration-700 ease-out hover:border-zinc-950 hover:shadow-xl"
     >
       <div className="flex items-center justify-between gap-4">
         {children}

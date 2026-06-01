@@ -32,7 +32,7 @@ export function ColorSwatch({ name, value, primary, copyValue }: ColorSwatchProp
       type="button"
       onClick={copy}
       className={cn(
-        "group flex flex-col items-stretch overflow-hidden rounded-xl border border-zinc-200 bg-white text-left transition-[border-color,box-shadow,transform] duration-700 ease-out hover:-translate-y-0.5 hover:border-zinc-950 hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)] focus:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15",
+        "group flex flex-col items-stretch overflow-hidden rounded-xl border border-zinc-200 bg-white text-left transition-[border-color,box-shadow] duration-700 ease-out hover:border-zinc-950 hover:shadow-lg focus:outline-none focus-visible:ring-3 focus-visible:ring-zinc-950/15",
       )}
       aria-label={`Copy ${name}`}
     >

@@ -18,7 +18,8 @@ import {
   navigation,
   neutralScale,
   radiusScale,
-  semanticColors,
+  semanticColorScales,
+  shadowScale,
   spacingScale,
   typographySizes,
   typographyWeights,
@@ -46,6 +47,10 @@ const titles: Record<TokenSlug, { title: string; description: string }> = {
   radius: {
     title: "Radius",
     description: "Small radius across the system — restrained, enterprise-appropriate.",
+  },
+  shadow: {
+    title: "Shadow",
+    description: "A restrained elevation scale based on shadcn defaults.",
   },
   motion: {
     title: "Motion",
@@ -97,14 +102,24 @@ function ColorPage() {
         </div>
       </TokenSection>
       <TokenSection title="Semantic">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {semanticColors.map((c) => (
-            <ColorSwatch
-              key={c.name}
-              name={c.name}
-              value={c.value}
-              copyValue={`var(--${c.name})`}
-            />
+        <div className="flex flex-col gap-8">
+          {semanticColorScales.map((scale) => (
+            <div key={scale.label} className="flex flex-col gap-3">
+              <h3 className="text-sm font-medium text-zinc-700">
+                {scale.label}
+              </h3>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-11">
+                {scale.colors.map((c) => (
+                  <ColorSwatch
+                    key={c.name}
+                    name={c.name}
+                    value={c.value}
+                    primary={c.primary}
+                    copyValue={`var(--${c.name})`}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </TokenSection>
@@ -211,6 +226,24 @@ function RadiusPage() {
   )
 }
 
+function ShadowPage() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {shadowScale.map((shadow) => (
+        <WorkbenchPanel key={shadow.name} className="flex min-h-32 flex-col justify-between p-5">
+          <div className={`h-14 rounded-lg border border-zinc-200 bg-white ${shadow.className}`} />
+          <div className="mt-4">
+            <div className="font-mono text-xs">{shadow.name}</div>
+            <div className="font-mono text-[10px] text-zinc-500">
+              {shadow.varName}
+            </div>
+          </div>
+        </WorkbenchPanel>
+      ))}
+    </div>
+  )
+}
+
 function MotionPage() {
   return (
     <div className="flex flex-col gap-12">
@@ -256,6 +289,7 @@ export default async function TokenPage({
         {slug === "typography" && <TypographyPage />}
         {slug === "spacing" && <SpacingPage />}
         {slug === "radius" && <RadiusPage />}
+        {slug === "shadow" && <ShadowPage />}
         {slug === "motion" && <MotionPage />}
       </WorkbenchSection>
       <WorkbenchSection id="source" title="Source">

@@ -36,6 +36,13 @@ Not: Notion, Salesforce, consumer apps.
 - No bounce or spring on enterprise UI
 - Scale press feedback stays between 0.97–0.99
 - No decorative animation — every motion serves a purpose
+- Component surfaces do not move on hover. Cards, stat cards, tables, preview
+  cells, pagination items, and larger product components must not use
+  `hover:-translate-y-*`, hover lift, or hover float effects.
+- Keep non-positional hover feedback: border, background, text color, row
+  highlight, shadow, focus ring, and icon motion are allowed when useful.
+- Functional transforms remain allowed for switches, chevrons, dialogs, drawers,
+  menus, progress/chart elements, and active button press feedback.
 
 ## Density
 Balanced — clear hierarchy with moderate whitespace.
@@ -121,6 +128,9 @@ Before a generated app is considered complete:
 - No decorative card accents, top borders, side stripes, or corner ornaments.
 - No custom shell or custom sidebar.
 - Token names match NOS exactly; no `--motion-duration-*` aliases.
+- Semantic states use NOS `--success-*`, `--warning-*`, `--error-*`, and
+  `--info-*` ramp tokens instead of raw status color choices.
+- Shadow uses NOS `--shadow-*` tokens through `shadow-*` utilities.
 - No `next-themes`, dark mode toggle, or app-wide dark mode setup.
 - Every data surface has empty, loading, and error states.
 - Desktop and mobile screenshots have been reviewed after each build chunk.
