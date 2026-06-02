@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { AlertTriangle, Check, ChevronRight, Eye } from "lucide-react"
@@ -37,7 +38,9 @@ export function Stats06() {
           <Card key={item.name} className="p-6 relative shadow-2xs">
             <CardContent className="p-0">
               <dt className="text-sm font-medium text-muted-foreground">{item.name}</dt>
-              <dd className="tabular-nums text-3xl font-semibold text-foreground">{item.stat}</dd>
+              <dd className="tabular-nums text-3xl font-semibold text-foreground">
+                <AnimatedNumber value={item.stat} />
+              </dd>
               <div className="group relative mt-6 flex items-center space-x-4 rounded-md bg-muted/60 p-2 hover:bg-muted">
                 <div className="flex w-full items-center justify-between truncate">
                   <div className="flex items-center space-x-3">

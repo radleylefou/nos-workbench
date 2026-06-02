@@ -1,6 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface UsageItem {
@@ -38,7 +39,9 @@ export function Stats14() {
           </div>
 
           <p className="text-pretty mt-2 flex items-baseline gap-2">
-            <span className="text-xl text-foreground">$860</span>
+            <span className="text-xl text-foreground">
+              <AnimatedNumber value="$860" />
+            </span>
             <span className="text-sm text-muted-foreground">this month</span>
           </p>
 

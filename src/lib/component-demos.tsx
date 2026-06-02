@@ -326,8 +326,16 @@ import { Rating } from "@/components/ui/rating"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Notification } from "@/components/ui/notification"
 import { AvatarGroupCompact, AvatarGroupCompactOverflow } from "@/components/ui/avatar"
-import { TagDismissibleDemo, TagWithIconDemo, RatingInteractiveDemo, StepperControlledDemo, StepperSegmentedDemo, ButtonGroupSegmentedDemo } from "@/components/workbench/demos/extended-ui-demos"
+import { TagDismissibleDemo, TagWithIconDemo, RatingInteractiveDemo, StepperControlledDemo, StepperSegmentedDemo, ButtonGroupSegmentedDemo, ComboboxBasicDemo, ComboboxWithClearDemo, ComboboxGroupedDemo, ComboboxGroupedSeparatorDemo, ComboboxMultiSelectDemo } from "@/components/workbench/demos/extended-ui-demos"
 import { AlertCircle, BookOpen, FileText, Home, Info as InfoIcon, Search as SearchIcon } from "lucide-react"
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "@/components/ui/number-field"
+import { ChevronUp as ChevronUpIcon, ChevronDown as ChevronDownIcon } from "lucide-react"
 
 export type DemoGroup = { label: string; node: ReactNode }
 
@@ -1413,33 +1421,77 @@ export const demos: Record<string, ComponentDemo> = {
   },
 
   "combobox": {
-    importLine: `import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem } from "@/components/ui/combobox"`,
+    importLine: `import { Combobox, ComboboxInput, ComboboxContent, ComboboxList, ComboboxItem } from "@/components/ui/combobox"`,
     exampleCode: `<Combobox>
-  <ComboboxInput placeholder="Search…" />
+  <ComboboxInput placeholder="Search frameworks…" />
   <ComboboxContent>
-    <ComboboxItem value="react">React</ComboboxItem>
-    <ComboboxItem value="vue">Vue</ComboboxItem>
+    <ComboboxList>
+      <ComboboxItem value="react">React</ComboboxItem>
+      <ComboboxItem value="vue">Vue</ComboboxItem>
+      <ComboboxItem value="svelte">Svelte</ComboboxItem>
+    </ComboboxList>
   </ComboboxContent>
 </Combobox>`,
+    variantSpan: "full",
+    variants: [
+      { label: "basic", node: <ComboboxBasicDemo /> },
+      { label: "with clear", node: <ComboboxWithClearDemo /> },
+      { label: "grouped", node: <ComboboxGroupedDemo /> },
+      { label: "grouped + separator", node: <ComboboxGroupedSeparatorDemo /> },
+      { label: "multi-select", node: <ComboboxMultiSelectDemo /> },
+    ],
+  },
+
+  "number-field": {
+    importLine: `import { NumberField, NumberFieldGroup, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from "@/components/ui/number-field"`,
+    exampleCode: `<NumberField defaultValue={10} min={0} max={100}>
+  <NumberFieldGroup>
+    <NumberFieldDecrement />
+    <NumberFieldInput />
+    <NumberFieldIncrement />
+  </NumberFieldGroup>
+</NumberField>`,
     variants: [
       {
-        label: "note",
+        label: "basic",
         node: (
-          <div className="flex w-full flex-col gap-2 rounded-md border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
-            <p>
-              Combobox uses{" "}
-              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">@base-ui/react</code>{" "}
-              and requires a client component with state.
-            </p>
-            <a
-              href="https://ui.shadcn.com/docs/components/combobox"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-primary underline underline-offset-4"
-            >
-              View full documentation →
-            </a>
-          </div>
+          <NumberField defaultValue={10} min={0} max={100}>
+            <NumberFieldGroup>
+              <NumberFieldDecrement />
+              <NumberFieldInput />
+              <NumberFieldIncrement />
+            </NumberFieldGroup>
+          </NumberField>
+        ),
+      },
+      {
+        label: "buttons right",
+        node: (
+          <NumberField defaultValue={5} min={0} max={99}>
+            <NumberFieldGroup>
+              <NumberFieldInput />
+              <NumberFieldDecrement />
+              <NumberFieldIncrement />
+            </NumberFieldGroup>
+          </NumberField>
+        ),
+      },
+      {
+        label: "spinner buttons",
+        node: (
+          <NumberField defaultValue={0}>
+            <NumberFieldGroup>
+              <NumberFieldInput />
+              <div className="flex flex-col border-l border-input">
+                <NumberFieldIncrement className="h-1/2 rounded-none border-b border-input">
+                  <ChevronUpIcon className="size-3" />
+                </NumberFieldIncrement>
+                <NumberFieldDecrement className="h-1/2 rounded-none border-0">
+                  <ChevronDownIcon className="size-3" />
+                </NumberFieldDecrement>
+              </div>
+            </NumberFieldGroup>
+          </NumberField>
         ),
       },
     ],
@@ -2155,6 +2207,65 @@ export const demos: Record<string, ComponentDemo> = {
             <TooltipContent>
               Open <KbdGroup><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
             </TooltipContent>
+          </Tooltip>
+        ),
+      },
+      {
+        label: "sides",
+        node: (
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {(["top", "right", "bottom", "left"] as const).map((side) => (
+              <Tooltip key={side}>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="sm">{side}</Button>
+                </TooltipTrigger>
+                <TooltipContent side={side}>Tooltip on {side}</TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        ),
+      },
+      {
+        label: "icon trigger",
+        node: (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <InfoIcon className="size-4" />
+                <span className="sr-only">Info</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>More information</TooltipContent>
+          </Tooltip>
+        ),
+      },
+      {
+        label: "icon + description",
+        node: (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="sm">
+                <InfoIcon className="size-4" />
+                Help
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <p className="font-semibold">Keyboard shortcuts</p>
+              <p className="text-muted-foreground text-xs mt-0.5">Use shortcuts to navigate faster. Press <span className="font-mono">?</span> to see all available shortcuts.</p>
+            </TooltipContent>
+          </Tooltip>
+        ),
+      },
+      {
+        label: "disabled button",
+        node: (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0} className="inline-flex">
+                <Button disabled>Disabled action</Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>You don&apos;t have permission to do this</TooltipContent>
           </Tooltip>
         ),
       },

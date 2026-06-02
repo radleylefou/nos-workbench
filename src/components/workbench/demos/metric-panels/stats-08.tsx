@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart"
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts"
@@ -81,12 +82,14 @@ export function Stats08() {
                     </RadialBarChart>
                   </ChartContainer>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-base font-medium text-foreground">{item.progress}%</span>
+                    <span className="text-base font-medium text-foreground">
+                      <AnimatedNumber value={`${item.progress}%`} />
+                    </span>
                   </div>
                 </div>
                 <div>
                   <dd className="text-base font-medium text-foreground">
-                    {item.current} / {item.budget}
+                    <AnimatedNumber value={item.current} /> / <AnimatedNumber value={item.budget} />
                   </dd>
                   <dt className="text-sm text-muted-foreground">Budget {item.name}</dt>
                 </div>

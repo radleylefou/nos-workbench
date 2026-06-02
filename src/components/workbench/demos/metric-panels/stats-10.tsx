@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 import { ChartContainer } from "@/components/ui/chart"
 import { cn } from "@/lib/utils"
@@ -160,7 +161,7 @@ export function Stats10() {
                         "text-lg font-semibold",
                       )}
                     >
-                      {item.value}
+                      <AnimatedNumber value={item.value} />
                     </dd>
                     <dd className="flex items-center space-x-1 text-sm">
                       <span className="font-medium text-foreground">{item.change}</span>

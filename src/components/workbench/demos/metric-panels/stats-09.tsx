@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
@@ -38,7 +39,9 @@ export function Stats09() {
           <Card key={item.name} className="py-4 shadow-2xs">
             <CardContent className="">
               <dt className="text-sm text-muted-foreground">{item.name}</dt>
-              <dd className="tabular-nums text-2xl font-semibold text-foreground">{item.stat}</dd>
+              <dd className="tabular-nums text-2xl font-semibold text-foreground">
+                <AnimatedNumber value={item.stat} />
+              </dd>
               <Progress value={item.percentage} className="mt-6 h-2" />
               <dd className="mt-2 flex items-center justify-between text-sm">
                 <span className="text-primary">{item.percentage}&#37;</span>

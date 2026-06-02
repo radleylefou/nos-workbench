@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -48,7 +49,7 @@ export function Stats05() {
                 </span>
               </dd>
               <dd className="tabular-nums mt-1 text-3xl font-semibold text-foreground">
-                {item.value}
+                <AnimatedNumber value={item.value} />
               </dd>
             </CardContent>
             <CardFooter className="flex justify-end border-t border-border p-0!">

@@ -1,6 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { TrendingDown, TrendingUp } from "lucide-react"
@@ -57,7 +58,7 @@ export function Stats04() {
                 </Badge>
               </div>
               <dd className="tabular-nums text-3xl font-semibold text-foreground mt-2">
-                {item.stat}
+                <AnimatedNumber value={item.stat} />
               </dd>
             </CardContent>
           </Card>

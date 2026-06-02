@@ -17,6 +17,21 @@ import {
   StepperPanel,
   StepperContent,
 } from "@/components/ui/stepper"
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxSeparator,
+  ComboboxEmpty,
+  ComboboxChips,
+  ComboboxChip,
+  ComboboxChipsInput,
+  useComboboxAnchor,
+} from "@/components/ui/combobox"
 
 const SEGMENTS = [
   { id: "market", label: "Market", icon: TrendingUp },
@@ -198,5 +213,125 @@ export function StepperSegmentedDemo() {
         </div>
       </Stepper>
     </div>
+  )
+}
+
+// ─── Combobox Demos ────────────────────────────────────────────────────────────
+
+const FRAMEWORKS = [
+  { value: "react", label: "React" },
+  { value: "vue", label: "Vue" },
+  { value: "angular", label: "Angular" },
+  { value: "svelte", label: "Svelte" },
+  { value: "solid", label: "Solid" },
+  { value: "qwik", label: "Qwik" },
+]
+
+const GROUPED_ITEMS = {
+  Frontend: ["React", "Vue", "Angular", "Svelte"],
+  Backend: ["Node.js", "Django", "Rails", "Laravel"],
+  Mobile: ["React Native", "Flutter", "Swift"],
+}
+
+export function ComboboxBasicDemo() {
+  const [value, setValue] = useState<string | null>(null)
+  return (
+    <Combobox value={value} onValueChange={setValue}>
+      <ComboboxInput placeholder="Search frameworks…" className="w-56" />
+      <ComboboxContent>
+        <ComboboxList>
+          {FRAMEWORKS.map((f) => (
+            <ComboboxItem key={f.value} value={f.value}>{f.label}</ComboboxItem>
+          ))}
+          <ComboboxEmpty>No results.</ComboboxEmpty>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  )
+}
+
+export function ComboboxWithClearDemo() {
+  const [value, setValue] = useState<string | null>(null)
+  return (
+    <Combobox value={value} onValueChange={setValue}>
+      <ComboboxInput placeholder="Search frameworks…" showClear className="w-56" />
+      <ComboboxContent>
+        <ComboboxList>
+          {FRAMEWORKS.map((f) => (
+            <ComboboxItem key={f.value} value={f.value}>{f.label}</ComboboxItem>
+          ))}
+          <ComboboxEmpty>No results.</ComboboxEmpty>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  )
+}
+
+export function ComboboxGroupedDemo() {
+  const [value, setValue] = useState<string | null>(null)
+  return (
+    <Combobox value={value} onValueChange={setValue}>
+      <ComboboxInput placeholder="Search technologies…" className="w-64" />
+      <ComboboxContent>
+        <ComboboxList>
+          {Object.entries(GROUPED_ITEMS).map(([group, items]) => (
+            <ComboboxGroup key={group}>
+              <ComboboxLabel>{group}</ComboboxLabel>
+              {items.map((item) => (
+                <ComboboxItem key={item} value={item.toLowerCase().replace(/\s+/g, "-")}>{item}</ComboboxItem>
+              ))}
+            </ComboboxGroup>
+          ))}
+          <ComboboxEmpty>No results.</ComboboxEmpty>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  )
+}
+
+export function ComboboxGroupedSeparatorDemo() {
+  const [value, setValue] = useState<string | null>(null)
+  return (
+    <Combobox value={value} onValueChange={setValue}>
+      <ComboboxInput placeholder="Search technologies…" className="w-64" />
+      <ComboboxContent>
+        <ComboboxList>
+          {Object.entries(GROUPED_ITEMS).map(([group, items], i) => (
+            <ComboboxGroup key={group}>
+              {i > 0 && <ComboboxSeparator />}
+              <ComboboxLabel>{group}</ComboboxLabel>
+              {items.map((item) => (
+                <ComboboxItem key={item} value={item.toLowerCase().replace(/\s+/g, "-")}>{item}</ComboboxItem>
+              ))}
+            </ComboboxGroup>
+          ))}
+          <ComboboxEmpty>No results.</ComboboxEmpty>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  )
+}
+
+export function ComboboxMultiSelectDemo() {
+  const [value, setValue] = useState<string[]>([])
+  const anchorRef = useComboboxAnchor()
+  return (
+    <Combobox multiple value={value} onValueChange={setValue}>
+      <ComboboxChips ref={anchorRef} className="w-72">
+        {value.map((v) => {
+          const label = FRAMEWORKS.find((f) => f.value === v)?.label ?? v
+          return <ComboboxChip key={v}>{label}</ComboboxChip>
+        })}
+        <ComboboxChipsInput placeholder={value.length === 0 ? "Select frameworks…" : "Add more…"} />
+      </ComboboxChips>
+      <ComboboxContent anchor={anchorRef}>
+        <ComboboxList>
+          {FRAMEWORKS.map((f) => (
+            <ComboboxItem key={f.value} value={f.value}>{f.label}</ComboboxItem>
+          ))}
+          <ComboboxEmpty>No results.</ComboboxEmpty>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
   )
 }

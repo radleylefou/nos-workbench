@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart"
 import { ExternalLink } from "lucide-react"
@@ -91,7 +92,9 @@ export function Stats07() {
                     </RadialBarChart>
                   </ChartContainer>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-base font-medium text-foreground">{item.capacity}%</span>
+                    <span className="text-base font-medium text-foreground">
+                      <AnimatedNumber value={`${item.capacity}%`} />
+                    </span>
                   </div>
                 </div>
                 <div>

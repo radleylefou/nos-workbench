@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -42,10 +43,12 @@ export function Stats13({
         <p className="text-pretty mb-4 text-base text-muted-foreground">
           {title}{" "}
           <span className="font-semibold tabular-nums text-foreground">
-            {used.toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}{" "}
+            <AnimatedNumber
+              value={used.toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              })}
+            />{" "}
             {usedLabel}
           </span>{" "}
           of {total} {totalLabel}

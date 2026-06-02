@@ -1,6 +1,7 @@
 import { Minus, TrendingDown, TrendingUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface StatCardTrend {
@@ -39,7 +40,9 @@ export function StatCard({ label, value, subLabel, trend, icon, className, ...pr
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col gap-1 min-w-0">
             <p className="text-sm text-muted-foreground truncate">{label}</p>
-            <p className="text-3xl font-semibold leading-none tracking-tight">{value}</p>
+            <p className="text-3xl font-semibold leading-none tracking-tight">
+              <AnimatedNumber value={value} />
+            </p>
             {subLabel && (
               <p className="text-xs text-muted-foreground mt-0.5">{subLabel}</p>
             )}

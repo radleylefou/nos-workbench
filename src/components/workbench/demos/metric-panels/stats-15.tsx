@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { cn } from "@/lib/utils"
 
 const data = [
@@ -32,7 +33,7 @@ export function Stats15() {
             <span className="text-muted-foreground">{item.label}</span>
             <span className="flex items-center gap-3 tabular-nums">
               <span className="text-right font-medium text-foreground">
-                {item.value}
+                <AnimatedNumber value={item.value} />
               </span>
               <span className="h-5 w-px bg-border" aria-hidden="true" />
               <span

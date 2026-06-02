@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -89,7 +90,7 @@ function MetricCard({
 
         <div className="mt-2 flex items-baseline gap-1">
           <div className="text-[1.2rem] font-medium leading-none text-foreground tabular-nums">
-            {value}
+            <AnimatedNumber value={value} />
           </div>
           <div className="text-xs leading-none text-muted-foreground">/ {limit}</div>
         </div>
@@ -108,7 +109,9 @@ function MetricCard({
                     <div className={`mr-[6px] h-2 w-2 rounded-full ${detail.color}`} />
                     <div className="mr-1">{detail.label}</div>
                     <div className="h-[9px] flex-1 border-b-2 border-dotted border-border" />
-                    <div className="ml-1 tabular-nums">{detail.value}</div>
+                    <div className="ml-1 tabular-nums">
+                      <AnimatedNumber value={detail.value} />
+                    </div>
                   </div>
                 ))}
               </div>
