@@ -1,173 +1,455 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client"
+
+import {
+  Children,
+  createContext,
+  HTMLAttributes,
+  isValidElement,
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import { Check } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-interface StepperStep {
-  id: string
-  label: string
-  description?: string
-  icon?: React.ReactNode
+// Types
+type StepperOrientation = "horizontal" | "vertical"
+type StepState = "active" | "completed" | "inactive" | "loading"
+type StepIndicators = {
+  active?: React.ReactNode
+  completed?: React.ReactNode
+  inactive?: React.ReactNode
+  loading?: React.ReactNode
 }
 
-interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
-  steps: StepperStep[]
-  currentStep: number
-  orientation?: "horizontal" | "vertical"
-  variant?: "dots" | "numbered" | "icons"
-  completedSteps?: number[]
-  onStepClick?: (index: number) => void
+interface StepperContextValue {
+  activeStep: number
+  setActiveStep: (step: number) => void
+  stepsCount: number
+  orientation: StepperOrientation
+  registerTrigger: (node: HTMLButtonElement | null) => void
+  triggerNodes: HTMLButtonElement[]
+  focusNext: (currentIdx: number) => void
+  focusPrev: (currentIdx: number) => void
+  focusFirst: () => void
+  focusLast: () => void
+  indicators: StepIndicators
 }
 
-export function Stepper({
-  steps,
-  currentStep,
+interface StepItemContextValue {
+  step: number
+  state: StepState
+  isDisabled: boolean
+  isLoading: boolean
+}
+
+const StepperContext = createContext<StepperContextValue | undefined>(undefined)
+const StepItemContext = createContext<StepItemContextValue | undefined>(undefined)
+
+function useStepper() {
+  const ctx = useContext(StepperContext)
+  if (!ctx) throw new Error("useStepper must be used within a Stepper")
+  return ctx
+}
+
+function useStepItem() {
+  const ctx = useContext(StepItemContext)
+  if (!ctx) throw new Error("useStepItem must be used within a StepperItem")
+  return ctx
+}
+
+interface StepperProps extends HTMLAttributes<HTMLDivElement> {
+  defaultValue?: number
+  value?: number
+  onValueChange?: (value: number) => void
+  orientation?: StepperOrientation
+  indicators?: StepIndicators
+}
+
+function Stepper({
+  defaultValue = 1,
+  value,
+  onValueChange,
   orientation = "horizontal",
-  variant = "numbered",
-  completedSteps,
-  onStepClick,
   className,
+  children,
+  indicators = {},
   ...props
 }: StepperProps) {
-  const isCompleted = (i: number) =>
-    completedSteps ? completedSteps.includes(i) : i < currentStep
-  const isActive = (i: number) => i === currentStep
+  const [activeStep, setActiveStep] = useState(defaultValue)
+  const [triggerNodes, setTriggerNodes] = useState<HTMLButtonElement[]>([])
 
-  if (orientation === "vertical") {
-    return (
-      <div className={cn("flex flex-col gap-0", className)} {...props}>
-        {steps.map((step, i) => {
-          const completed = isCompleted(i)
-          const active = isActive(i)
-          const isLast = i === steps.length - 1
+  const registerTrigger = useCallback((node: HTMLButtonElement | null) => {
+    setTriggerNodes((prev) => {
+      if (node && !prev.includes(node)) return [...prev, node]
+      if (!node && prev.includes(node!)) return prev.filter((n) => n !== node)
+      return prev
+    })
+  }, [])
 
-          return (
-            <div key={step.id} className="flex gap-3">
-              <div className="flex flex-col items-center">
-                <StepDot
-                  index={i}
-                  variant={variant}
-                  completed={completed}
-                  active={active}
-                  icon={step.icon}
-                  onClick={onStepClick ? () => onStepClick(i) : undefined}
-                />
-                {!isLast && (
-                  <div
-                    className={cn(
-                      "w-px flex-1 my-1 min-h-6",
-                      completed ? "bg-[var(--primary)]" : "bg-border"
-                    )}
-                  />
-                )}
-              </div>
-              <div className="pb-6 pt-0.5">
-                <p
-                  className={cn(
-                    "text-sm",
-                    active ? "font-medium text-foreground" : "text-muted-foreground"
-                  )}
-                >
-                  {step.label}
-                </p>
-                {step.description && (
-                  <p className="mt-0.5 text-xs text-muted-foreground">{step.description}</p>
-                )}
-              </div>
-            </div>
-          )
-        })}
+  const handleSetActiveStep = useCallback(
+    (step: number) => {
+      if (value === undefined) setActiveStep(step)
+      onValueChange?.(step)
+    },
+    [value, onValueChange]
+  )
+
+  const currentStep = value ?? activeStep
+
+  const focusTrigger = (idx: number) => {
+    if (triggerNodes[idx]) triggerNodes[idx].focus()
+  }
+  const focusNext = (currentIdx: number) =>
+    focusTrigger((currentIdx + 1) % triggerNodes.length)
+  const focusPrev = (currentIdx: number) =>
+    focusTrigger((currentIdx - 1 + triggerNodes.length) % triggerNodes.length)
+  const focusFirst = () => focusTrigger(0)
+  const focusLast = () => focusTrigger(triggerNodes.length - 1)
+
+  const contextValue = useMemo<StepperContextValue>(
+    () => ({
+      activeStep: currentStep,
+      setActiveStep: handleSetActiveStep,
+      stepsCount: Children.toArray(children).filter(
+        (child): child is ReactElement =>
+          isValidElement(child) &&
+          (child.type as { displayName?: string }).displayName === "StepperItem"
+      ).length,
+      orientation,
+      registerTrigger,
+      focusNext,
+      focusPrev,
+      focusFirst,
+      focusLast,
+      triggerNodes,
+      indicators,
+    }),
+    [currentStep, handleSetActiveStep, children, orientation, registerTrigger, triggerNodes, indicators]
+  )
+
+  return (
+    <StepperContext.Provider value={contextValue}>
+      <div
+        role="tablist"
+        aria-orientation={orientation}
+        data-slot="stepper"
+        data-orientation={orientation}
+        className={cn("w-full", className)}
+        {...props}
+      >
+        {children}
       </div>
+    </StepperContext.Provider>
+  )
+}
+
+interface StepperItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  step: number
+  completed?: boolean
+  disabled?: boolean
+  loading?: boolean
+}
+
+function StepperItem({
+  step,
+  completed = false,
+  disabled = false,
+  loading = false,
+  className,
+  children,
+  ...props
+}: StepperItemProps) {
+  const { activeStep } = useStepper()
+
+  const state: StepState =
+    completed || step < activeStep
+      ? "completed"
+      : activeStep === step
+        ? "active"
+        : "inactive"
+
+  const isLoading = loading && step === activeStep
+
+  return (
+    <StepItemContext.Provider value={{ step, state, isDisabled: disabled, isLoading }}>
+      <div
+        data-slot="stepper-item"
+        className={cn(
+          "group/step flex items-center justify-center not-last:flex-1",
+          "group-data-[orientation=horizontal]/stepper-nav:flex-row",
+          "group-data-[orientation=vertical]/stepper-nav:flex-col",
+          className
+        )}
+        data-state={state}
+        {...(isLoading ? { "data-loading": true } : {})}
+        {...props}
+      >
+        {children}
+      </div>
+    </StepItemContext.Provider>
+  )
+}
+StepperItem.displayName = "StepperItem"
+
+interface StepperTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean
+}
+
+function StepperTrigger({
+  asChild = false,
+  className,
+  children,
+  tabIndex,
+  ...props
+}: StepperTriggerProps) {
+  const { state, isLoading } = useStepItem()
+  const {
+    setActiveStep,
+    activeStep,
+    registerTrigger,
+    triggerNodes,
+    focusNext,
+    focusPrev,
+    focusFirst,
+    focusLast,
+  } = useStepper()
+  const { step, isDisabled } = useStepItem()
+  const isSelected = activeStep === step
+  const id = `stepper-tab-${step}`
+  const panelId = `stepper-panel-${step}`
+
+  const btnRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (btnRef.current) registerTrigger(btnRef.current)
+  }, [registerTrigger])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    const myIdx = triggerNodes.findIndex((n) => n === e.currentTarget)
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        e.preventDefault()
+        if (myIdx !== -1) focusNext(myIdx)
+        break
+      case "ArrowLeft":
+      case "ArrowUp":
+        e.preventDefault()
+        if (myIdx !== -1) focusPrev(myIdx)
+        break
+      case "Home":
+        e.preventDefault()
+        focusFirst()
+        break
+      case "End":
+        e.preventDefault()
+        focusLast()
+        break
+      case "Enter":
+      case " ":
+        e.preventDefault()
+        setActiveStep(step)
+        break
+    }
+  }
+
+  if (asChild) {
+    return (
+      <span data-slot="stepper-trigger" data-state={state} className={className}>
+        {children}
+      </span>
     )
   }
 
   return (
-    <div className={cn("flex items-center w-full", className)} {...props}>
-      {steps.map((step, i) => {
-        const completed = isCompleted(i)
-        const active = isActive(i)
-        const isLast = i === steps.length - 1
+    <button
+      ref={btnRef}
+      role="tab"
+      id={id}
+      aria-selected={isSelected}
+      aria-controls={panelId}
+      tabIndex={typeof tabIndex === "number" ? tabIndex : isSelected ? 0 : -1}
+      data-slot="stepper-trigger"
+      data-state={state}
+      data-loading={isLoading}
+      className={cn(
+        "inline-flex cursor-pointer items-center outline-none",
+        "focus-visible:ring-ring/50 focus-visible:z-10 focus-visible:ring-3",
+        "disabled:pointer-events-none disabled:opacity-60",
+        "gap-2.5 rounded-full",
+        className
+      )}
+      onClick={() => setActiveStep(step)}
+      onKeyDown={handleKeyDown}
+      disabled={isDisabled}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
 
-        return (
-          <div key={step.id} className="flex items-center flex-1 last:flex-none">
-            <div className="flex flex-col items-center gap-1">
-              <StepDot
-                index={i}
-                variant={variant}
-                completed={completed}
-                active={active}
-                icon={step.icon}
-                onClick={onStepClick ? () => onStepClick(i) : undefined}
-              />
-              <span
-                className={cn(
-                  "text-xs whitespace-nowrap",
-                  active ? "font-medium text-foreground" : "text-muted-foreground"
-                )}
-              >
-                {step.label}
-              </span>
-            </div>
-            {!isLast && (
-              <div
-                className={cn(
-                  "h-px flex-1 mx-2 mb-5",
-                  completed ? "bg-[var(--primary)]" : "bg-border"
-                )}
-              />
-            )}
-          </div>
-        )
-      })}
+function StepperIndicator({ children, className }: React.ComponentProps<"div">) {
+  const { state, isLoading, step } = useStepItem()
+  const { indicators } = useStepper()
+
+  // Resolve custom indicator override
+  const customIndicator = isLoading
+    ? indicators.loading
+    : state === "completed"
+      ? indicators.completed
+      : state === "active"
+        ? indicators.active
+        : indicators.inactive
+
+  // Default content: checkmark for completed, step number otherwise
+  const defaultContent =
+    state === "completed" ? (
+      <Check className="size-3.5" />
+    ) : (
+      <span className="text-xs font-medium tabular-nums">{step}</span>
+    )
+
+  return (
+    <div
+      data-slot="stepper-indicator"
+      data-state={state}
+      className={cn(
+        "relative flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full",
+        "bg-accent text-accent-foreground",
+        "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
+        "data-[state=completed]:bg-primary data-[state=completed]:text-primary-foreground",
+        "transition-colors duration-[var(--duration-normal)]",
+        className
+      )}
+    >
+      <div className="absolute">{customIndicator ?? children ?? defaultContent}</div>
     </div>
   )
 }
 
-function StepDot({
-  index,
-  variant,
-  completed,
-  active,
-  icon,
-  onClick,
-}: {
-  index: number
-  variant: "dots" | "numbered" | "icons"
-  completed: boolean
-  active: boolean
-  icon?: React.ReactNode
-  onClick?: () => void
-}) {
-  const baseClass = "flex size-8 shrink-0 items-center justify-center rounded-full transition-all"
-
-  const stateClass = completed
-    ? "bg-[var(--primary)] text-primary-foreground"
-    : active
-    ? "bg-[var(--primary)] text-primary-foreground ring-4 ring-[var(--primary)]/20"
-    : "bg-muted border-2 border-border text-muted-foreground"
-
-  const content = completed ? (
-    <Check className="size-4" />
-  ) : variant === "dots" ? null : variant === "icons" && icon ? (
-    icon
-  ) : (
-    <span className="text-xs font-medium tabular-nums">{index + 1}</span>
-  )
-
-  if (onClick) {
-    return (
-      <button
-        type="button"
-        className={cn(baseClass, stateClass, "cursor-pointer hover:opacity-80")}
-        onClick={onClick}
-      >
-        {content}
-      </button>
-    )
-  }
+function StepperSeparator({ className }: React.ComponentProps<"div">) {
+  const { state } = useStepItem()
 
   return (
-    <div className={cn(baseClass, stateClass, variant === "dots" ? "size-3" : "")}>
-      {content}
+    <div
+      data-slot="stepper-separator"
+      data-state={state}
+      className={cn(
+        "rounded-sm bg-muted",
+        "data-[state=completed]:bg-primary",
+        "transition-colors duration-[var(--duration-normal)]",
+        "group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1",
+        "group-data-[orientation=vertical]/stepper-nav:h-12 group-data-[orientation=vertical]/stepper-nav:w-0.5",
+        "m-0.5",
+        className
+      )}
+    />
+  )
+}
+
+function StepperTitle({ children, className }: React.ComponentProps<"h3">) {
+  const { state } = useStepItem()
+
+  return (
+    <h3
+      data-slot="stepper-title"
+      data-state={state}
+      className={cn("text-sm leading-none font-medium", className)}
+    >
+      {children}
+    </h3>
+  )
+}
+
+function StepperDescription({ children, className }: React.ComponentProps<"div">) {
+  const { state } = useStepItem()
+
+  return (
+    <div
+      data-slot="stepper-description"
+      data-state={state}
+      className={cn("text-muted-foreground text-sm", className)}
+    >
+      {children}
     </div>
   )
+}
+
+function StepperNav({ children, className }: React.ComponentProps<"nav">) {
+  const { activeStep, orientation } = useStepper()
+
+  return (
+    <nav
+      data-slot="stepper-nav"
+      data-state={activeStep}
+      data-orientation={orientation}
+      className={cn(
+        "group/stepper-nav inline-flex",
+        "data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-row",
+        "data-[orientation=vertical]:flex-col",
+        className
+      )}
+    >
+      {children}
+    </nav>
+  )
+}
+
+function StepperPanel({ children, className }: React.ComponentProps<"div">) {
+  const { activeStep } = useStepper()
+
+  return (
+    <div data-slot="stepper-panel" data-state={activeStep} className={cn("w-full", className)}>
+      {children}
+    </div>
+  )
+}
+
+interface StepperContentProps extends React.ComponentProps<"div"> {
+  value: number
+  forceMount?: boolean
+}
+
+function StepperContent({ value, forceMount, children, className }: StepperContentProps) {
+  const { activeStep } = useStepper()
+  const isActive = value === activeStep
+
+  if (!forceMount && !isActive) return null
+
+  return (
+    <div
+      data-slot="stepper-content"
+      data-state={activeStep}
+      className={cn("w-full", className, !isActive && forceMount && "hidden")}
+      hidden={!isActive && forceMount}
+    >
+      {children}
+    </div>
+  )
+}
+
+export {
+  useStepper,
+  useStepItem,
+  Stepper,
+  StepperItem,
+  StepperTrigger,
+  StepperIndicator,
+  StepperSeparator,
+  StepperTitle,
+  StepperDescription,
+  StepperPanel,
+  StepperContent,
+  StepperNav,
+  type StepperProps,
+  type StepperItemProps,
+  type StepperTriggerProps,
+  type StepperContentProps,
 }

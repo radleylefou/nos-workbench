@@ -31,8 +31,8 @@ export function PhaseColumnHeader({
     variance === undefined || variance === 0
       ? "text-muted-foreground"
       : variance > 0
-      ? "text-[var(--error)]"
-      : "text-[var(--success)]"
+      ? "text-error-600"
+      : "text-success-600"
 
   const VarianceIcon = variance && variance > 0 ? TrendingUp : TrendingDown
 

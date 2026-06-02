@@ -24,15 +24,15 @@ export function generateStaticParams() {
   return components.map((c) => ({ slug: c.slug }))
 }
 
-type DemoGroup = { label: string; node: ReactNode }
+type DemoGroup = { label: string; node: ReactNode; span?: "full" }
 
-function DemoGrid({ items }: { items: DemoGroup[] }) {
+function DemoGrid({ items, variantSpan }: { items: DemoGroup[]; variantSpan?: "full" }) {
   return (
     <div className="grid grid-flow-dense grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-4">
       {items.map((item) => (
         <div
           key={item.label}
-          className="flex min-h-40 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-zinc-950"
+          className={`flex min-h-40 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-zinc-950${(item.span === "full" || variantSpan === "full") ? " col-span-full" : ""}`}
         >
           <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-3 py-2">
             <div className="min-w-0 truncate text-xs font-medium capitalize text-zinc-700">
@@ -51,11 +51,24 @@ function DemoGrid({ items }: { items: DemoGroup[] }) {
   )
 }
 
-function DocOnlyPage({ name, description, slug }: { name: string; description: string; slug: string }) {
+function WhenToUseCallout({ text }: { text: string }) {
+  return (
+    <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+      <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+        When to use
+      </div>
+      <p className="text-sm leading-6 text-zinc-600">{text}</p>
+    </div>
+  )
+}
+
+function DocOnlyPage({ name, description, slug, whenToUse }: { name: string; description: string; slug: string; whenToUse?: string }) {
   const docsUrl = `https://ui.shadcn.com/docs/components/${slug}`
   return (
     <WorkbenchDocsShell toc={[{ href: "#setup", label: "Setup" }]}>
-      <WorkbenchHero eyebrow="Component" title={name} description={description} />
+      <WorkbenchHero eyebrow="Component" title={name} description={description}>
+        {whenToUse ? <WhenToUseCallout text={whenToUse} /> : null}
+      </WorkbenchHero>
       <WorkbenchSection id="setup" title="External setup">
         <WorkbenchPanel className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
@@ -89,7 +102,7 @@ export default async function ComponentPage({
   if (!meta) notFound()
 
   if (docOnlySlugs.has(slug)) {
-    return <DocOnlyPage name={meta.name} description={meta.description} slug={slug} />
+    return <DocOnlyPage name={meta.name} description={meta.description} slug={slug} whenToUse={meta.whenToUse} />
   }
 
   const entry = demos[slug]
@@ -111,6 +124,7 @@ export default async function ComponentPage({
         title={meta.name}
         description={meta.description}
       >
+        {meta.whenToUse ? <WhenToUseCallout text={meta.whenToUse} /> : null}
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline" className="gap-1.5 border-zinc-200 text-zinc-600">
             <Component className="size-3" />
@@ -147,7 +161,7 @@ export default async function ComponentPage({
         <TabsContent value="variants" className="m-0">
           {entry.variants ? (
             <>
-              <DemoGrid items={entry.variants} />
+              <DemoGrid items={entry.variants} variantSpan={entry.variantSpan} />
               <ShowCode code={codeSnippet} />
             </>
           ) : (
@@ -159,7 +173,7 @@ export default async function ComponentPage({
 
         {entry.sizes ? (
           <TabsContent value="sizes" className="m-0">
-            <DemoGrid items={entry.sizes} />
+            <DemoGrid items={entry.sizes} variantSpan={entry.variantSpan} />
             <ShowCode code={codeSnippet} />
           </TabsContent>
         ) : null}

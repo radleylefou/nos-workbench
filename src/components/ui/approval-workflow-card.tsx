@@ -22,8 +22,8 @@ export function ApprovalWorkflowCard({
   ...props
 }: ApprovalWorkflowCardProps) {
   return (
-    <Card className={cn("w-full", className)} {...props}>
-      <CardHeader className="pb-3">
+    <Card className={cn("w-full gap-0 py-0", className)} {...props}>
+      <CardHeader className="p-5 pb-0">
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-sm font-semibold">Approval Workflow</CardTitle>
           {requiredFor && (
@@ -34,12 +34,12 @@ export function ApprovalWorkflowCard({
         </div>
       </CardHeader>
 
-      <CardContent className="pb-3">
+      <CardContent className="p-5">
         <Timeline steps={steps} variant="compact" />
       </CardContent>
 
       {(onApprove || onRequestChanges) && (
-        <CardFooter className="gap-2 pt-0">
+        <CardFooter className="gap-2 border-t border-border/60 p-5">
           {onApprove && (
             <Button
               size="sm"

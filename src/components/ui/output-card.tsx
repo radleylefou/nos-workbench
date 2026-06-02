@@ -60,7 +60,7 @@ export function OutputCard({
     <Card
       className={cn(
         "w-full gap-0 py-0",
-        isBlocked && "border-[var(--error)]/50",
+        isBlocked && "border-error-200",
         status === "never-generated" && "opacity-75",
         className
       )}
@@ -88,7 +88,7 @@ export function OutputCard({
         )}
 
         {isBlocked && blockReason && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-[var(--error)]">
+          <div className="mt-3 flex items-center gap-2 text-xs text-error-600">
             <AlertCircle className="size-3.5 shrink-0" />
             {blockReason}
           </div>

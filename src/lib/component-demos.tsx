@@ -215,7 +215,17 @@ import { ActivityFeed } from "@/components/ui/activity-feed"
 import { MetricPanelsGallery } from "@/components/workbench/demos/metric-panels"
 import { FormLayoutsGallery } from "@/components/workbench/demos/form-layouts"
 // Phase 4 — Planning
-import { Stepper } from "@/components/ui/stepper"
+import {
+  Stepper,
+  StepperNav,
+  StepperItem,
+  StepperTrigger,
+  StepperIndicator,
+  StepperSeparator,
+  StepperTitle,
+  StepperDescription,
+} from "@/components/ui/stepper"
+import { CircleDot, CircleCheck, Circle } from "lucide-react"
 import { DataTableDemo } from "@/components/workbench/demos/data-table-demo"
 // Phase 5 — Kanban + Gantt
 import { KanbanBoardDemo } from "@/components/workbench/demos/kanban-board-demo"
@@ -253,14 +263,11 @@ import { Hint } from "@/components/ui/hint"
 import { SegmentedControl, SegmentedControlList, SegmentedControlTrigger } from "@/components/ui/segmented-control"
 import { TabMenuHorizontal, TabMenuHorizontalList, TabMenuHorizontalTrigger } from "@/components/ui/tab-menu-horizontal"
 import { TabMenuVertical, TabMenuVerticalList, TabMenuVerticalTrigger } from "@/components/ui/tab-menu-vertical"
-import { DotStepper } from "@/components/ui/dot-stepper"
-import { HorizontalStepper } from "@/components/ui/horizontal-stepper"
-import { VerticalStepper } from "@/components/ui/vertical-stepper"
 import { Rating } from "@/components/ui/rating"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Notification } from "@/components/ui/notification"
 import { AvatarGroupCompact, AvatarGroupCompactOverflow } from "@/components/ui/avatar"
-import { TagDismissibleDemo, TagWithIconDemo, DotStepperInteractiveDemo, RatingInteractiveDemo } from "@/components/workbench/demos/extended-ui-demos"
+import { TagDismissibleDemo, TagWithIconDemo, RatingInteractiveDemo, StepperControlledDemo } from "@/components/workbench/demos/extended-ui-demos"
 import { AlertCircle, BookOpen, FileText, Home, Info as InfoIcon, LayoutGrid, Search as SearchIcon } from "lucide-react"
 
 export type DemoGroup = { label: string; node: ReactNode }
@@ -270,6 +277,7 @@ export type ComponentDemo = {
   exampleCode: string
   variants?: DemoGroup[]
   sizes?: DemoGroup[]
+  variantSpan?: "full"
 }
 
 /** Components that require complex setup — link to docs instead of live demo */
@@ -2182,7 +2190,7 @@ toast.error("Something went wrong.")`,
   // ─── Metrics & Feeds ─────────────────────────────────────────────────────
 
   "avatar-group": {
-    importLine: `import { Avatar, AvatarFallback, AvatarImage, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar"`,
+    importLine: `import { Avatar, AvatarFallback, AvatarImage, AvatarGroup, AvatarGroupCount, AvatarGroupCompact, AvatarGroupCompactOverflow } from "@/components/ui/avatar"`,
     exampleCode: `<AvatarGroup>
   <Avatar><AvatarFallback>JD</AvatarFallback></Avatar>
   <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
@@ -2218,6 +2226,27 @@ toast.error("Something went wrong.")`,
             <Avatar data-size="sm"><AvatarFallback>SC</AvatarFallback></Avatar>
             <AvatarGroupCount data-size="sm">+2</AvatarGroupCount>
           </AvatarGroup>
+        ),
+      },
+      {
+        label: "compact · with overflow",
+        node: (
+          <AvatarGroupCompact>
+            <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>AJ</AvatarFallback></Avatar>
+            <AvatarGroupCompactOverflow>+4</AvatarGroupCompactOverflow>
+          </AvatarGroupCompact>
+        ),
+      },
+      {
+        label: "compact · lg · stroke",
+        node: (
+          <AvatarGroupCompact size="lg" variant="stroke">
+            <Avatar size="lg"><AvatarFallback>SC</AvatarFallback></Avatar>
+            <Avatar size="lg"><AvatarFallback>MT</AvatarFallback></Avatar>
+            <Avatar size="lg"><AvatarFallback>AJ</AvatarFallback></Avatar>
+          </AvatarGroupCompact>
         ),
       },
     ],
@@ -2356,44 +2385,244 @@ toast.error("Something went wrong.")`,
   // ─── Planning ─────────────────────────────────────────────────────────────
 
   "stepper": {
-    importLine: `import { Stepper } from "@/components/ui/stepper"`,
-    exampleCode: `<Stepper
-  steps={[{ id: "1", label: "Intake" }, { id: "2", label: "Discovery" }, { id: "3", label: "Scope" }]}
-  currentStep={1}
-/>`,
+    variantSpan: "full",
+    importLine: `import { Stepper, StepperNav, StepperItem, StepperTrigger, StepperIndicator, StepperSeparator } from "@/components/ui/stepper"`,
+    exampleCode: `<Stepper defaultValue={3}>
+  <StepperNav>
+    {[1,2,3,4].map((step, i, arr) => (
+      <StepperItem key={step} step={step}>
+        <StepperTrigger><StepperIndicator /></StepperTrigger>
+        {i < arr.length - 1 && <StepperSeparator />}
+      </StepperItem>
+    ))}
+  </StepperNav>
+</Stepper>`,
     variants: [
       {
-        label: "horizontal (numbered)",
+        label: "states",
         node: (
           <div className="w-full">
-            <Stepper
-              steps={[
-                { id: "1", label: "Intake" },
-                { id: "2", label: "Discovery" },
-                { id: "3", label: "Scope" },
-                { id: "4", label: "Estimate" },
-                { id: "5", label: "Review" },
-              ]}
-              currentStep={2}
-              orientation="horizontal"
-              variant="numbered"
-            />
+            <Stepper defaultValue={3}>
+              <StepperNav>
+                {[1, 2, 3, 4].map((step, i) => (
+                  <StepperItem key={step} step={step}>
+                    <StepperTrigger><StepperIndicator /></StepperTrigger>
+                    {i < 3 && <StepperSeparator />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
           </div>
         ),
       },
       {
-        label: "vertical (numbered)",
+        label: "indicators",
         node: (
-          <Stepper
-            steps={[
-              { id: "1", label: "Client Intake", description: "Initial discovery call" },
-              { id: "2", label: "Solution Design", description: "Domain model & epics" },
-              { id: "3", label: "Estimation", description: "Bottom-up story points" },
-            ]}
-            currentStep={1}
-            orientation="vertical"
-            variant="numbered"
-          />
+          <div className="w-full">
+            <Stepper
+              defaultValue={3}
+              indicators={{
+                active: <CircleDot className="size-3.5" />,
+                completed: <CircleCheck className="size-3.5" />,
+                inactive: <Circle className="size-3" />,
+              }}
+            >
+              <StepperNav>
+                {[1, 2, 3, 4].map((step, i) => (
+                  <StepperItem key={step} step={step}>
+                    <StepperTrigger><StepperIndicator /></StepperTrigger>
+                    {i < 3 && <StepperSeparator />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "controlled",
+        node: <StepperControlledDemo />,
+      },
+      {
+        label: "title",
+        node: (
+          <div className="w-full">
+            <Stepper defaultValue={2}>
+              <StepperNav>
+                {(["Intake", "Discovery", "Scope", "Review"] as const).map((label, i) => (
+                  <StepperItem key={i + 1} step={i + 1} className="items-start">
+                    <div className="flex shrink-0 flex-col items-center gap-1.5">
+                      <StepperTrigger><StepperIndicator /></StepperTrigger>
+                      <StepperTitle className="text-xs whitespace-nowrap">{label}</StepperTitle>
+                    </div>
+                    {i < 3 && <StepperSeparator className="mt-3" />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "title & status",
+        node: (
+          <div className="w-full">
+            <Stepper defaultValue={2}>
+              <StepperNav>
+                {([
+                  { label: "Intake", status: "Complete" },
+                  { label: "Discovery", status: "In Progress" },
+                  { label: "Scope", status: "Pending" },
+                  { label: "Review", status: "Pending" },
+                ] as const).map(({ label, status }, i) => (
+                  <StepperItem key={i + 1} step={i + 1} className="items-start">
+                    <div className="flex shrink-0 flex-col items-center gap-1">
+                      <StepperTrigger><StepperIndicator /></StepperTrigger>
+                      <StepperTitle className="text-xs whitespace-nowrap">{label}</StepperTitle>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">{status}</span>
+                    </div>
+                    {i < 3 && <StepperSeparator className="mt-3" />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "title & description",
+        node: (
+          <div className="w-full">
+            <Stepper defaultValue={2}>
+              <StepperNav>
+                {([
+                  { label: "Intake", desc: "Discovery call" },
+                  { label: "Design", desc: "Domain model" },
+                  { label: "Estimate", desc: "Story points" },
+                ] as const).map(({ label, desc }, i) => (
+                  <StepperItem key={i + 1} step={i + 1} className="items-start">
+                    <div className="flex shrink-0 flex-col items-center gap-1">
+                      <StepperTrigger><StepperIndicator /></StepperTrigger>
+                      <StepperTitle className="text-xs whitespace-nowrap">{label}</StepperTitle>
+                      <StepperDescription className="text-[10px] whitespace-nowrap">{desc}</StepperDescription>
+                    </div>
+                    {i < 2 && <StepperSeparator className="mt-3" />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "inline title",
+        node: (
+          <div className="w-full">
+            <Stepper defaultValue={2}>
+              <StepperNav>
+                {(["Intake", "Discovery", "Scope"] as const).map((label, i) => (
+                  <StepperItem key={i + 1} step={i + 1}>
+                    <StepperTrigger>
+                      <StepperIndicator />
+                      <span className="text-sm font-medium whitespace-nowrap">{label}</span>
+                    </StepperTrigger>
+                    {i < 2 && <StepperSeparator />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "inline title & description",
+        node: (
+          <div className="w-full">
+            <Stepper defaultValue={2}>
+              <StepperNav>
+                {([
+                  { label: "Intake", desc: "Discovery call" },
+                  { label: "Design", desc: "Domain model" },
+                  { label: "Estimate", desc: "Story points" },
+                ] as const).map(({ label, desc }, i) => (
+                  <StepperItem key={i + 1} step={i + 1}>
+                    <StepperTrigger>
+                      <StepperIndicator />
+                      <div className="flex flex-col items-start gap-0.5">
+                        <span className="text-sm font-medium leading-none whitespace-nowrap">{label}</span>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{desc}</span>
+                      </div>
+                    </StepperTrigger>
+                    {i < 2 && <StepperSeparator />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "vertical",
+        node: (
+          <div className="w-full">
+            <Stepper orientation="vertical" defaultValue={2}>
+              <StepperNav className="w-full">
+                {[1, 2, 3, 4].map((step, i) => (
+                  <StepperItem key={step} step={step} className="items-start">
+                    <StepperTrigger><StepperIndicator /></StepperTrigger>
+                    {i < 3 && <StepperSeparator className="ms-[11px]" />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "vertical title",
+        node: (
+          <div className="w-full">
+            <Stepper orientation="vertical" defaultValue={2}>
+              <StepperNav className="w-full">
+                {(["Client Intake", "Solution Design", "Estimation"] as const).map((label, i) => (
+                  <StepperItem key={i + 1} step={i + 1} className="items-start">
+                    <div className="flex flex-row items-center gap-3">
+                      <StepperTrigger><StepperIndicator /></StepperTrigger>
+                      <StepperTitle className="whitespace-nowrap">{label}</StepperTitle>
+                    </div>
+                    {i < 2 && <StepperSeparator className="ms-[11px]" />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "vertical title & description",
+        node: (
+          <div className="w-full">
+            <Stepper orientation="vertical" defaultValue={2}>
+              <StepperNav className="w-full">
+                {([
+                  { label: "Client Intake", desc: "Initial discovery call" },
+                  { label: "Solution Design", desc: "Domain model & epics" },
+                  { label: "Estimation", desc: "Bottom-up story points" },
+                ] as const).map(({ label, desc }, i) => (
+                  <StepperItem key={i + 1} step={i + 1} className="items-start">
+                    <div className="flex flex-row items-center gap-3">
+                      <StepperTrigger><StepperIndicator /></StepperTrigger>
+                      <div className="flex flex-col gap-0.5">
+                        <StepperTitle className="whitespace-nowrap">{label}</StepperTitle>
+                        <StepperDescription className="whitespace-nowrap">{desc}</StepperDescription>
+                      </div>
+                    </div>
+                    {i < 2 && <StepperSeparator className="ms-[11px]" />}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
         ),
       },
     ],
@@ -2499,6 +2728,7 @@ toast.error("Something went wrong.")`,
         node: (
           <L1ComponentCard
             name="Clinical Intake"
+            description="Patient onboarding and eligibility capture flow."
             type="Experience"
             epicCount={8}
             estimate={42}
@@ -2512,6 +2742,7 @@ toast.error("Something went wrong.")`,
         node: (
           <L1ComponentCard
             name="Case Management"
+            description="Care-team task routing and case lifecycle."
             type="Workflow"
             epicCount={6}
             estimate={28}
@@ -2525,6 +2756,7 @@ toast.error("Something went wrong.")`,
         node: (
           <L1ComponentCard
             name="EHR Integration"
+            description="Bi-directional sync with the hospital EHR system."
             type="Integration"
             epicCount={4}
             estimate={18}
@@ -2538,6 +2770,7 @@ toast.error("Something went wrong.")`,
         node: (
           <L1ComponentCard
             name="Auth & Permissions"
+            description="Role-based access control and session management."
             type="Foundation"
             epicCount={3}
             estimate={12}
@@ -3183,61 +3416,6 @@ toast.error("Something went wrong.")`,
     ],
   },
 
-  "dot-stepper": {
-    importLine: `import { DotStepper } from "@/components/ui/dot-stepper"`,
-    exampleCode: `<DotStepper steps={5} currentStep={1} />`,
-    variants: [
-      { label: "sm — step 2 of 5", node: <DotStepper steps={5} currentStep={1} size="sm" /> },
-      { label: "sm — step 4 of 5", node: <DotStepper steps={5} currentStep={3} size="sm" /> },
-      { label: "xs — step 1 of 4", node: <DotStepper steps={4} currentStep={0} size="xs" /> },
-      { label: "interactive", node: <DotStepperInteractiveDemo /> },
-    ],
-  },
-
-  "horizontal-stepper": {
-    importLine: `import { HorizontalStepper } from "@/components/ui/horizontal-stepper"`,
-    exampleCode: `<HorizontalStepper steps={[
-  { label: "Intake", state: "completed" },
-  { label: "Estimation", state: "active" },
-  { label: "Review", state: "default" },
-]} />`,
-    variants: [
-      {
-        label: "4-step mixed states",
-        node: (
-          <HorizontalStepper steps={[
-            { label: "Intake", state: "completed" },
-            { label: "Estimation", state: "completed" },
-            { label: "Review", state: "active" },
-            { label: "Sign-off", state: "default" },
-          ]} />
-        ),
-      },
-    ],
-  },
-
-  "vertical-stepper": {
-    importLine: `import { VerticalStepper } from "@/components/ui/vertical-stepper"`,
-    exampleCode: `<VerticalStepper steps={[
-  { label: "Discovery", description: "Gather requirements", state: "completed" },
-  { label: "Estimation", state: "active" },
-  { label: "Review", state: "default" },
-]} />`,
-    variants: [
-      {
-        label: "4-step with descriptions",
-        node: (
-          <VerticalStepper steps={[
-            { label: "Discovery", description: "Requirements captured", state: "completed" },
-            { label: "Solution Design", description: "Domain model completed", state: "completed" },
-            { label: "Estimation", description: "In progress", state: "active" },
-            { label: "Client Review", state: "default" },
-          ]} />
-        ),
-      },
-    ],
-  },
-
   "rating": {
     importLine: `import { Rating } from "@/components/ui/rating"`,
     exampleCode: `<Rating value={4} onChange={(v) => console.log(v)} />`,
@@ -3274,57 +3452,6 @@ toast.error("Something went wrong.")`,
     ],
   },
 
-  "avatar-group-compact": {
-    importLine: `import { AvatarGroupCompact, AvatarGroupCompactOverflow, Avatar, AvatarFallback } from "@/components/ui/avatar"`,
-    exampleCode: `<AvatarGroupCompact>
-  <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
-  <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
-  <AvatarGroupCompactOverflow>+3</AvatarGroupCompactOverflow>
-</AvatarGroupCompact>`,
-    variants: [
-      {
-        label: "3 avatars",
-        node: (
-          <AvatarGroupCompact>
-            <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
-            <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
-            <Avatar><AvatarFallback>AJ</AvatarFallback></Avatar>
-          </AvatarGroupCompact>
-        ),
-      },
-      {
-        label: "with overflow",
-        node: (
-          <AvatarGroupCompact>
-            <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
-            <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
-            <Avatar><AvatarFallback>AJ</AvatarFallback></Avatar>
-            <AvatarGroupCompactOverflow>+4</AvatarGroupCompactOverflow>
-          </AvatarGroupCompact>
-        ),
-      },
-      {
-        label: "sm size",
-        node: (
-          <AvatarGroupCompact size="sm">
-            <Avatar size="sm"><AvatarFallback>SC</AvatarFallback></Avatar>
-            <Avatar size="sm"><AvatarFallback>MT</AvatarFallback></Avatar>
-            <AvatarGroupCompactOverflow>+2</AvatarGroupCompactOverflow>
-          </AvatarGroupCompact>
-        ),
-      },
-      {
-        label: "lg size · stroke",
-        node: (
-          <AvatarGroupCompact size="lg" variant="stroke">
-            <Avatar size="lg"><AvatarFallback>SC</AvatarFallback></Avatar>
-            <Avatar size="lg"><AvatarFallback>MT</AvatarFallback></Avatar>
-            <Avatar size="lg"><AvatarFallback>AJ</AvatarFallback></Avatar>
-          </AvatarGroupCompact>
-        ),
-      },
-    ],
-  },
 }
 
 // Suppress unused-import lint warning for icons used inside JSX only

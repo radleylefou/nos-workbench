@@ -3,9 +3,10 @@ import { Clock, Link } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { L1Type } from "@/components/ui/l1-distribution-bar"
 import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { HealthIndicator } from "@/components/ui/health-indicator"
 import { IdChip } from "@/components/ui/id-chip"
+import { l1TypeBadgeClass } from "@/lib/l1-type-badge"
 
 interface EpicCardProps extends React.HTMLAttributes<HTMLDivElement> {
   epicId: string
@@ -29,13 +30,6 @@ const statusVariant: Record<
   estimated: "outline",
 }
 
-const l1TypeBadgeClass: Record<L1Type, string> = {
-  Experience: "bg-[var(--brand-600)]/10 text-[var(--brand-600)] border-[var(--brand-600)]/20",
-  Workflow: "bg-[var(--info)]/10 text-[var(--info)] border-[var(--info)]/20",
-  Integration: "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/20",
-  Foundation: "bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/20",
-}
-
 export function EpicCard({
   epicId,
   title,
@@ -54,12 +48,12 @@ export function EpicCard({
     <Card
       className={cn(
         "w-full gap-0 py-0",
-        hasConflict && "border-[var(--error)]/50 ring-1 ring-[var(--error)]/30",
+        hasConflict && "border-error-200 ring-1 ring-error-100",
         className
       )}
       {...props}
     >
-      <div className="flex min-h-44 flex-col p-5">
+      <CardContent className="flex min-h-44 flex-col p-5">
         <div className="flex flex-wrap items-center gap-2">
           <IdChip id={epicId} />
           <Badge variant={statusVariant[status]} className="text-xs">
@@ -93,10 +87,10 @@ export function EpicCard({
         {hasConflict && conflictMessage && (
           <div className="mt-4 border-t border-border/60 pt-3">
             <HealthIndicator status="error" message={conflictMessage} showLabel={false} />
-            <p className="mt-1 text-xs leading-5 text-[var(--error)]">{conflictMessage}</p>
+            <p className="mt-1 text-xs leading-5 text-error-600">{conflictMessage}</p>
           </div>
         )}
-      </div>
+      </CardContent>
     </Card>
   )
 }

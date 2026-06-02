@@ -29,7 +29,7 @@ interface ReconciliationPanelProps extends React.HTMLAttributes<HTMLDivElement> 
 
 function varianceClass(v: number) {
   if (v === 0) return "text-muted-foreground"
-  return v > 0 ? "text-[var(--error)]" : "text-[var(--success)]"
+  return v > 0 ? "text-error-600" : "text-success-600"
 }
 
 export function ReconciliationPanel({
@@ -48,7 +48,7 @@ export function ReconciliationPanel({
       {/* Phase comparison */}
       <div className="flex flex-col gap-4">
         {phases.map((phase) => (
-          <div key={phase.phase} className="rounded-md border border-border p-4">
+          <div key={phase.phase} className="rounded-lg border border-border p-4">
             <h3 className="text-sm font-semibold mb-3">{phase.phase}</h3>
             <div className="grid grid-cols-2 gap-3 mb-3">
               <StatCard

@@ -1,7 +1,6 @@
 import type { ComponentType } from "react"
 
 import { Badge } from "@/components/ui/badge"
-import { Stats02 } from "@/components/workbench/demos/metric-panels/stats-02"
 import { Stats04 } from "@/components/workbench/demos/metric-panels/stats-04"
 import { Stats05 } from "@/components/workbench/demos/metric-panels/stats-05"
 import { Stats06 } from "@/components/workbench/demos/metric-panels/stats-06"
@@ -23,7 +22,6 @@ type GalleryBlock = {
 }
 
 const metricPanelBlocks: GalleryBlock[] = [
-  { id: "metric-panel-01", title: "Bordered KPI Row", description: "Bordered KPI cells with trend badges and compact value hierarchy.", component: Stats02 },
   { id: "metric-panel-02", title: "Metric Cards with Badges", description: "Metric cards with status badges and directional trend indicators.", component: Stats04 },
   { id: "metric-panel-03", title: "Linked Metric Cards", description: "Metric cards for drill-down navigation and compact health checks.", component: Stats05 },
   { id: "metric-panel-04", title: "Operational Status Cards", description: "Operational values paired with status icons and progressive disclosure links.", component: Stats06 },

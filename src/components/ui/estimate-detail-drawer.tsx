@@ -79,7 +79,7 @@ export function EstimateDetailDrawer({
         </SheetHeader>
 
         {/* Calculation breakdown */}
-        <div className="rounded-md border border-border bg-muted/30 p-3 mb-4">
+        <div className="mb-4 rounded-lg border border-border bg-muted/30 p-3">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
             Calculation
           </h3>
@@ -148,7 +148,7 @@ export function EstimateDetailDrawer({
             <p className="text-xs font-medium mb-1.5">Related Assumptions</p>
             <div className="flex flex-wrap gap-1">
               {relatedAssumptions.map((a, i) => (
-                <Badge key={i} variant="secondary" className="text-[10px]">{a}</Badge>
+                <Badge key={i} variant="secondary" className="text-xs">{a}</Badge>
               ))}
             </div>
           </div>
@@ -159,7 +159,7 @@ export function EstimateDetailDrawer({
             <p className="text-xs font-medium mb-1.5">Related Questions</p>
             <div className="flex flex-wrap gap-1">
               {relatedQuestions.map((q, i) => (
-                <Badge key={i} variant="outline" className="text-[10px]">{q}</Badge>
+                <Badge key={i} variant="outline" className="text-xs">{q}</Badge>
               ))}
             </div>
           </div>

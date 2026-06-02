@@ -28,9 +28,9 @@ function cellScore(likelihood: LikelihoodLevel, impact: ImpactLevel) {
 }
 
 function cellClass(score: number) {
-  if (score >= 6) return "bg-[var(--error)]/20 text-[var(--error)] border-[var(--error)]/20"
-  if (score >= 3) return "bg-[var(--warning)]/20 text-[var(--warning)] border-[var(--warning)]/20"
-  return "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/20"
+  if (score >= 6) return "bg-error-100 text-error-700 border-error-200"
+  if (score >= 3) return "bg-warning-100 text-warning-700 border-warning-200"
+  return "bg-success-50 text-success-700 border-success-200"
 }
 
 export function RiskHeatmap({ risks, onCellClick, className, ...props }: RiskHeatmapProps) {
@@ -68,7 +68,7 @@ export function RiskHeatmap({ risks, onCellClick, className, ...props }: RiskHea
                       type={onCellClick ? "button" : undefined}
                       onClick={onCellClick ? () => onCellClick(likelihood, impact) : undefined}
                       className={cn(
-                        "size-12 flex items-center justify-center rounded border text-sm font-semibold",
+                        "size-12 flex items-center justify-center rounded-md border text-sm font-semibold",
                         cellClass(score),
                         onCellClick && "cursor-pointer hover:opacity-80 transition-opacity"
                       )}

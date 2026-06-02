@@ -35,7 +35,7 @@ interface EstimationRollUpTreeProps extends React.HTMLAttributes<HTMLDivElement>
 
 function varianceClass(v: number | undefined) {
   if (v === undefined || v === 0) return "text-muted-foreground"
-  return v > 0 ? "text-[var(--error)]" : "text-[var(--success)]"
+  return v > 0 ? "text-error-600" : "text-success-600"
 }
 
 function NodeRow({
@@ -82,7 +82,7 @@ function NodeRow({
             )}
             <span className={cn("text-sm", typeStyles[node.type])}>{node.name}</span>
             {node.status && (
-              <Badge variant="secondary" className="text-[10px] ml-1 hidden sm:flex">
+              <Badge variant="secondary" className="ml-1 hidden text-xs sm:flex">
                 {node.status}
               </Badge>
             )}

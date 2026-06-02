@@ -76,7 +76,7 @@ export function WorkbenchHero({
           {description}
         </p>
       </div>
-      {children ? <div className="mt-7">{children}</div> : null}
+      {children ? <div className="mt-7 flex flex-col gap-4">{children}</div> : null}
     </section>
   )
 }

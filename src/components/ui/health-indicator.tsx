@@ -17,17 +17,17 @@ const statusConfig = {
   healthy: {
     Icon: CheckCircle,
     label: "Healthy",
-    className: "text-[var(--success)]",
+    className: "text-success-600",
   },
   warning: {
     Icon: AlertTriangle,
     label: "Warning",
-    className: "text-[var(--warning)]",
+    className: "text-warning-600",
   },
   error: {
     Icon: XCircle,
     label: "Error",
-    className: "text-[var(--error)]",
+    className: "text-error-600",
   },
 }
 

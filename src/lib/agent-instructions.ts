@@ -34,7 +34,7 @@ Before coding:
 Rules:
 - Never hardcode colors, spacing, radius, or shadow values. Reference CSS variables from globals.css.
 - Use existing NOS components before creating new ones. Copy canonical components from NOS before editing behavior.
-- Check these first: StatCard, StatusBadge, HealthIndicator, Tag, Empty, Rating, DotStepper, Banner, Notification, IdChip, LinkedChip, Timeline.
+- Check these first: StatCard, StatusBadge, HealthIndicator, Tag, Empty, Rating, Stepper, Banner, Notification, IdChip, LinkedChip, Timeline.
 - TypeScript and TSX only. No .jsx files.
 - All transitions must use motion tokens (--duration-*, --ease-*).
 - Do not move component surfaces on hover. Cards, stat cards, tables, preview cells, pagination items, and larger components must not use hover:-translate-y-* or hover lift effects.
