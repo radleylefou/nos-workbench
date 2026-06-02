@@ -125,7 +125,10 @@ import { Input } from "@/components/ui/input"
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
 } from "@/components/ui/input-group"
 import {
   InputOTP,
@@ -155,6 +158,9 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Progress } from "@/components/ui/progress"
@@ -270,6 +276,16 @@ import {
 } from "@/components/ui/stepper"
 import { Loader2 } from "lucide-react"
 import { DataTableDemo } from "@/components/workbench/demos/data-table-demo"
+import {
+  DataGridDemo,
+  DataGridDenseDemo,
+  DataGridEmptyDemo,
+  DataGridExpandableDemo,
+  DataGridFinancialDemo,
+  DataGridLoadingDemo,
+  DataGridPeopleDemo,
+  DataGridRiskDemo,
+} from "@/components/workbench/demos/data-grid-demo"
 // Phase 5 — Kanban + Gantt
 import { KanbanBoardDemo } from "@/components/workbench/demos/kanban-board-demo"
 import { Gantt } from "@/components/ui/gantt"
@@ -996,7 +1012,7 @@ export const demos: Record<string, ComponentDemo> = {
   },
 
   "input-group": {
-    importLine: `import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"`,
+    importLine: `import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"`,
     exampleCode: `<InputGroup>
   <InputGroupAddon>https://</InputGroupAddon>
   <InputGroupInput placeholder="nymbl.com" />
@@ -1012,6 +1028,17 @@ export const demos: Record<string, ComponentDemo> = {
         ),
       },
       {
+        label: "suffix",
+        node: (
+          <InputGroup className="w-72">
+            <InputGroupInput placeholder="Estimate" />
+            <InputGroupAddon align="inline-end">
+              <InputGroupText>hrs</InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
+        ),
+      },
+      {
         label: "icon prefix",
         node: (
           <InputGroup className="w-64">
@@ -1019,6 +1046,75 @@ export const demos: Record<string, ComponentDemo> = {
               <User className="size-4" />
             </InputGroupAddon>
             <InputGroupInput placeholder="Username" />
+          </InputGroup>
+        ),
+      },
+      {
+        label: "search action",
+        node: (
+          <InputGroup className="w-72">
+            <InputGroupAddon>
+              <Search className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput placeholder="Search accounts..." />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton aria-label="Clear search" size="icon-xs">
+                <X className="size-3.5" />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        ),
+      },
+      {
+        label: "inline buttons",
+        node: (
+          <InputGroup className="w-72">
+            <InputGroupInput placeholder="Add collaborator" />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton>
+                <Plus className="size-3.5" />
+                Add
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        ),
+      },
+      {
+        label: "block start",
+        node: (
+          <InputGroup className="w-80">
+            <InputGroupAddon align="block-start" className="border-b border-border">
+              <InputGroupText>
+                <CalendarIcon className="size-4" />
+                Planning window
+              </InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput placeholder="Q3 delivery plan" />
+          </InputGroup>
+        ),
+      },
+      {
+        label: "textarea",
+        node: (
+          <InputGroup className="w-80">
+            <InputGroupTextarea rows={3} placeholder="Capture project context..." />
+            <InputGroupAddon align="block-end" className="border-t border-border">
+              <InputGroupText>Use short operational notes.</InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
+        ),
+      },
+      {
+        label: "invalid",
+        node: (
+          <InputGroup className="w-72">
+            <InputGroupAddon>
+              <Table2 className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput aria-invalid placeholder="Budget variance" />
+            <InputGroupAddon align="inline-end">
+              <InputGroupText className="text-error">Required</InputGroupText>
+            </InputGroupAddon>
           </InputGroup>
         ),
       },
@@ -1763,10 +1859,15 @@ export const demos: Record<string, ComponentDemo> = {
   },
 
   "popover": {
-    importLine: `import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"`,
+    importLine: `import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"`,
     exampleCode: `<Popover>
   <PopoverTrigger asChild><Button variant="outline">Open</Button></PopoverTrigger>
-  <PopoverContent>Place content here.</PopoverContent>
+  <PopoverContent>
+    <PopoverHeader>
+      <PopoverTitle>Context</PopoverTitle>
+      <PopoverDescription>Place contextual content here.</PopoverDescription>
+    </PopoverHeader>
+  </PopoverContent>
 </Popover>`,
     variants: [
       {
@@ -1779,8 +1880,158 @@ export const demos: Record<string, ComponentDemo> = {
                 Pick date
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 text-sm text-muted-foreground">
-              A popover can contain any content, like a date picker or form fields.
+            <PopoverContent className="w-72">
+              <PopoverHeader>
+                <PopoverTitle>Schedule review</PopoverTitle>
+                <PopoverDescription>
+                  Pick a date, add filters, or expose compact contextual actions.
+                </PopoverDescription>
+              </PopoverHeader>
+            </PopoverContent>
+          </Popover>
+        ),
+      },
+      {
+        label: "form",
+        node: (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Plus className="size-4" />
+                Add note
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <PopoverHeader>
+                <PopoverTitle>Pipeline note</PopoverTitle>
+                <PopoverDescription>
+                  Add a short update without leaving the current view.
+                </PopoverDescription>
+              </PopoverHeader>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="popover-note-title">Title</Label>
+                  <Input id="popover-note-title" placeholder="Client review complete" />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button size="sm" variant="outline">Cancel</Button>
+                  <Button size="sm">Save</Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ),
+      },
+      {
+        label: "confirmation",
+        node: (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Trash2 className="size-4" />
+                Archive
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72" align="end">
+              <PopoverHeader>
+                <PopoverTitle>Archive engagement?</PopoverTitle>
+                <PopoverDescription>
+                  This removes it from active pipeline views.
+                </PopoverDescription>
+              </PopoverHeader>
+              <div className="flex justify-end gap-2">
+                <Button size="sm" variant="outline">Cancel</Button>
+                <Button size="sm" variant="destructive">Archive</Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ),
+      },
+      {
+        label: "filters",
+        node: (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <ListFilter className="size-4" />
+                Filters
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72" align="start">
+              <PopoverHeader>
+                <PopoverTitle>Pipeline filters</PopoverTitle>
+                <PopoverDescription>
+                  Narrow the visible records by stage and status.
+                </PopoverDescription>
+              </PopoverHeader>
+              <div className="flex flex-col gap-2">
+                {["In estimation", "Needs review", "High confidence"].map((item) => (
+                  <label key={item} className="flex items-center gap-2 text-sm">
+                    <Checkbox />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        ),
+      },
+      {
+        label: "profile",
+        node: (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <User className="size-4" />
+                Owner
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <div className="flex items-start gap-3">
+                <Avatar className="size-10">
+                  <AvatarFallback>AR</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <PopoverTitle>Alice Rivera</PopoverTitle>
+                  <PopoverDescription>
+                    Delivery lead for healthcare engagements.
+                  </PopoverDescription>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    <Badge variant="secondary">Scope</Badge>
+                    <Badge variant="secondary">Estimate</Badge>
+                    <Badge variant="secondary">Manage</Badge>
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ),
+      },
+      {
+        label: "quick actions",
+        node: (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Settings className="size-4" />
+                Actions
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-2" align="end">
+              {[
+                ["Refresh data", RefreshCw],
+                ["Export view", Download],
+                ["Open settings", Settings],
+              ].map(([label, Icon]) => (
+                <button
+                  key={label as string}
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Icon className="size-4" />
+                  {label as string}
+                </button>
+              ))}
             </PopoverContent>
           </Popover>
         ),
@@ -3038,6 +3289,28 @@ toast.error("Something went wrong.")`,
 />`,
     variants: [
       { label: "full featured", node: <DataTableDemo /> },
+    ],
+  },
+
+  "data-grid": {
+    importLine: `import { DataGrid } from "@/components/ui/data-grid"`,
+    exampleCode: `<DataGrid
+  columns={columns}
+  data={data}
+  searchKey="client"
+  rowSelection
+  columnVisibility
+/>`,
+    variantSpan: "full",
+    variants: [
+      { label: "comfortable CRM", node: <DataGridDemo /> },
+      { label: "dense operations", node: <DataGridDenseDemo /> },
+      { label: "financial review", node: <DataGridFinancialDemo /> },
+      { label: "people allocation", node: <DataGridPeopleDemo /> },
+      { label: "risk register", node: <DataGridRiskDemo /> },
+      { label: "expandable rows", node: <DataGridExpandableDemo /> },
+      { label: "loading", node: <DataGridLoadingDemo /> },
+      { label: "empty", node: <DataGridEmptyDemo /> },
     ],
   },
 
