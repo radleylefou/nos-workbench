@@ -282,10 +282,64 @@ import {
   DataGridEmptyDemo,
   DataGridExpandableDemo,
   DataGridFinancialDemo,
+  DataGridGroupedRowsDemo,
   DataGridLoadingDemo,
   DataGridPeopleDemo,
+  DataGridPinnedRowsDemo,
+  DataGridResizableColumnsDemo,
   DataGridRiskDemo,
+  DataGridSavedViewsDemo,
 } from "@/components/workbench/demos/data-grid-demo"
+import {
+  DateSelectorBillingDemo,
+  DateSelectorPlanningDemo,
+  DateSelectorStaffingDemo,
+  DateSelectorStatusDemo,
+  FilteredFrameDemo,
+  FiltersBudgetDemo,
+  FiltersHealthDemo,
+  FiltersPipelineDemo,
+  FiltersStaffingDemo,
+  FrameBorderlessDemo,
+  FrameDefaultDemo,
+  FrameDenseDemo,
+  FrameSeparatedDemo,
+  FrameStackedDemo,
+  SortableDocumentDemo,
+  SortableNestedChecklistDemo,
+  SortablePriorityDemo,
+  TreeDeliveryDemo,
+  TreeScopeDemo,
+  TreeSkillsDemo,
+} from "@/components/workbench/demos/enterprise-workflow-demos"
+import {
+  EntityPickerAccountsDemo,
+  EntityPickerContactsDemo,
+  EntityPickerPeopleDemo,
+  EntityPickerProjectsDemo,
+  EntityPickerRolesDemo,
+  EntityPickerSkillsDemo,
+  FileUploadCaseStudyDemo,
+  FileUploadProposalAssetsDemo,
+  FileUploadQAEvidenceDemo,
+  FileUploadReceiptsDemo,
+  FileUploadScopeEvidenceDemo,
+  KanbanOwnerGroupedDemo,
+  KanbanReleaseValidationDemo,
+  KanbanSwimlanesDemo,
+  KanbanWipLimitsDemo,
+  PhoneInputDisabledDemo,
+  PhoneInputEngageDemo,
+  PhoneInputProspectDemo,
+  ScrollspyAdminDemo,
+  ScrollspyPatternDemo,
+  ScrollspyProposalDemo,
+  ScrollspyScopeDemo,
+  TimelineAccountActivityDemo,
+  TimelineAuditTrailDemo,
+  TimelineProjectHistoryDemo,
+  TimelineStatusUpdatesDemo,
+} from "@/components/workbench/demos/second-wave-demos"
 // Phase 5 — Kanban + Gantt
 import { KanbanBoardDemo } from "@/components/workbench/demos/kanban-board-demo"
 import { Gantt } from "@/components/ui/gantt"
@@ -421,6 +475,31 @@ export const demos: Record<string, ComponentDemo> = {
           </ResizablePanelGroup>
         ),
       },
+    ],
+  },
+
+  "frame": {
+    importLine: `import { Frame, FramePanel, FrameHeader, FrameTitle, FrameDescription, FrameContent, FrameFooter } from "@/components/ui/frame"`,
+    exampleCode: `<Frame>
+  <FramePanel>
+    <FrameHeader>
+      <div>
+        <FrameTitle>Pipeline review</FrameTitle>
+        <FrameDescription>Weekly commercial operating frame.</FrameDescription>
+      </div>
+    </FrameHeader>
+    <FrameContent>{/* panel content */}</FrameContent>
+    <FrameFooter>{/* supporting actions */}</FrameFooter>
+  </FramePanel>
+</Frame>`,
+    variantSpan: "full",
+    variants: [
+      { label: "default", node: <FrameDefaultDemo /> },
+      { label: "dense", node: <FrameDenseDemo /> },
+      { label: "separated", node: <FrameSeparatedDemo /> },
+      { label: "stacked", node: <FrameStackedDemo /> },
+      { label: "borderless", node: <FrameBorderlessDemo /> },
+      { label: "search frame", node: <FilteredFrameDemo /> },
     ],
   },
 
@@ -1442,6 +1521,27 @@ export const demos: Record<string, ComponentDemo> = {
     ],
   },
 
+  "entity-picker": {
+    importLine: `import { EntityPicker, type EntityPickerOption } from "@/components/ui/entity-picker"`,
+    exampleCode: `const [value, setValue] = useState(["acme"])
+
+<EntityPicker
+  options={entities}
+  value={value}
+  onChange={setValue}
+  placeholder="Select account"
+/>`,
+    variantSpan: "full",
+    variants: [
+      { label: "accounts", node: <EntityPickerAccountsDemo /> },
+      { label: "contacts", node: <EntityPickerContactsDemo /> },
+      { label: "projects", node: <EntityPickerProjectsDemo /> },
+      { label: "people", node: <EntityPickerPeopleDemo /> },
+      { label: "skills", node: <EntityPickerSkillsDemo /> },
+      { label: "roles", node: <EntityPickerRolesDemo /> },
+    ],
+  },
+
   "number-field": {
     importLine: `import { NumberField, NumberFieldGroup, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from "@/components/ui/number-field"`,
     exampleCode: `<NumberField defaultValue={10} min={0} max={100}>
@@ -1525,6 +1625,18 @@ export const demos: Record<string, ComponentDemo> = {
           </Field>
         ),
       },
+    ],
+  },
+
+  "phone-input": {
+    importLine: `import { PhoneInput } from "@/components/ui/phone-input"`,
+    exampleCode: `<PhoneInput
+  defaultValue={{ country: "US", number: "(415) 555-0138" }}
+/>`,
+    variants: [
+      { label: "prospect contact", node: <PhoneInputProspectDemo /> },
+      { label: "engage contact", node: <PhoneInputEngageDemo /> },
+      { label: "read-only CRM", node: <PhoneInputDisabledDemo /> },
     ],
   },
 
@@ -1692,6 +1804,23 @@ export const demos: Record<string, ComponentDemo> = {
           </Tabs>
         ),
       },
+    ],
+  },
+
+  "scrollspy": {
+    importLine: `import { Scrollspy, type ScrollspySection } from "@/components/ui/scrollspy"`,
+    exampleCode: `const sections: ScrollspySection[] = [
+  { id: "context", title: "Context" },
+  { id: "requirements", title: "Requirements" },
+]
+
+<Scrollspy sections={sections} />`,
+    variantSpan: "full",
+    variants: [
+      { label: "scope docs", node: <ScrollspyScopeDemo /> },
+      { label: "proposal builder", node: <ScrollspyProposalDemo /> },
+      { label: "admin page", node: <ScrollspyAdminDemo /> },
+      { label: "pattern docs", node: <ScrollspyPatternDemo /> },
     ],
   },
 
@@ -2648,6 +2777,29 @@ toast.error("Something went wrong.")`,
     ],
   },
 
+  "date-selector": {
+    importLine: `import { DateSelector, type DateSelectorValue } from "@/components/ui/date-selector"`,
+    exampleCode: `const [value, setValue] = useState<DateSelectorValue>({
+  period: "quarter",
+  operator: "is",
+  year: 2026,
+  quarter: 2,
+})
+
+<DateSelector
+  label="Capacity window"
+  value={value}
+  onChange={setValue}
+  periodTypes={["quarter", "half-year", "year"]}
+/>`,
+    variants: [
+      { label: "status date", node: <DateSelectorStatusDemo /> },
+      { label: "billing period", node: <DateSelectorBillingDemo /> },
+      { label: "capacity window", node: <DateSelectorStaffingDemo /> },
+      { label: "planning horizon", node: <DateSelectorPlanningDemo /> },
+    ],
+  },
+
   "direction": {
     importLine: `import { DirectionProvider, useDirection } from "@/components/ui/direction"`,
     exampleCode: `<DirectionProvider dir="rtl">
@@ -2721,6 +2873,33 @@ toast.error("Something went wrong.")`,
           </Collapsible>
         ),
       },
+    ],
+  },
+
+  "tree": {
+    importLine: `import { Tree, type TreeNode } from "@/components/ui/tree"`,
+    exampleCode: `const nodes: TreeNode[] = [
+  {
+    id: "scope",
+    label: "Clinical portal scope",
+    children: [
+      { id: "intake", label: "Patient intake" },
+      { id: "routing", label: "Care team routing" },
+    ],
+  },
+]
+
+<Tree
+  data={nodes}
+  defaultExpandedIds={["scope"]}
+  selectedId="intake"
+  showLines
+/>`,
+    variantSpan: "full",
+    variants: [
+      { label: "scope hierarchy", node: <TreeScopeDemo /> },
+      { label: "delivery release", node: <TreeDeliveryDemo /> },
+      { label: "skills matrix", node: <TreeSkillsDemo /> },
     ],
   },
 
@@ -3083,6 +3262,10 @@ toast.error("Something went wrong.")`,
           </div>
         ),
       },
+      { label: "account activity", node: <div className="w-full"><TimelineAccountActivityDemo /></div> },
+      { label: "project history", node: <div className="w-full"><TimelineProjectHistoryDemo /></div> },
+      { label: "audit trail", node: <div className="w-full"><TimelineAuditTrailDemo /></div> },
+      { label: "status updates", node: <div className="w-full"><TimelineStatusUpdatesDemo /></div> },
       {
         label: "with rejection",
         node: (
@@ -3403,6 +3586,25 @@ toast.error("Something went wrong.")`,
     ],
   },
 
+  "filters": {
+    importLine: `import { Filters, type Filter, type FilterFieldConfig } from "@/components/ui/filters"`,
+    exampleCode: `const [filters, setFilters] = useState<Filter[]>([])
+
+<Filters
+  filters={filters}
+  fields={fields}
+  onChange={setFilters}
+  addLabel="Filter pipeline"
+/>`,
+    variantSpan: "full",
+    variants: [
+      { label: "pipeline filters", node: <FiltersPipelineDemo /> },
+      { label: "staffing filters", node: <FiltersStaffingDemo /> },
+      { label: "budget filters", node: <FiltersBudgetDemo /> },
+      { label: "health filters", node: <FiltersHealthDemo /> },
+    ],
+  },
+
   "data-grid": {
     importLine: `import { DataGrid } from "@/components/ui/data-grid"`,
     exampleCode: `<DataGrid
@@ -3419,17 +3621,53 @@ toast.error("Something went wrong.")`,
       { label: "financial review", node: <DataGridFinancialDemo /> },
       { label: "people allocation", node: <DataGridPeopleDemo /> },
       { label: "risk register", node: <DataGridRiskDemo /> },
+      { label: "pinned priorities", node: <DataGridPinnedRowsDemo /> },
+      { label: "grouped operations", node: <DataGridGroupedRowsDemo /> },
+      { label: "wide columns", node: <DataGridResizableColumnsDemo /> },
+      { label: "saved views", node: <DataGridSavedViewsDemo /> },
       { label: "expandable rows", node: <DataGridExpandableDemo /> },
       { label: "loading", node: <DataGridLoadingDemo /> },
       { label: "empty", node: <DataGridEmptyDemo /> },
     ],
   },
 
+  "sortable": {
+    importLine: `import { Sortable, SortableItemControls, SortableItemHandle } from "@/components/ui/sortable"`,
+    exampleCode: `<Sortable
+  value={items}
+  onValueChange={setItems}
+  getItemValue={(item) => item.id}
+  renderItem={(item, state) => (
+    <div className="flex items-center gap-3 p-3">
+      <SortableItemHandle />
+      <div className="flex-1">{item.title}</div>
+      <SortableItemControls
+        onMoveUp={state.moveUp}
+        onMoveDown={state.moveDown}
+        disableMoveUp={state.isFirst}
+        disableMoveDown={state.isLast}
+      />
+    </div>
+  )}
+/>`,
+    variantSpan: "full",
+    variants: [
+      { label: "priority order", node: <SortablePriorityDemo /> },
+      { label: "document sections", node: <SortableDocumentDemo /> },
+      { label: "nested checklist", node: <SortableNestedChecklistDemo /> },
+    ],
+  },
+
   "kanban-board": {
     importLine: `import { KanbanBoard } from "@/components/ui/kanban-board"`,
     exampleCode: `<KanbanBoard columns={columns} onItemMove={handleMove} />`,
+    variantSpan: "full",
     variants: [
       { label: "4-column board", node: <KanbanBoardDemo /> },
+      { label: "swimlanes", node: <KanbanSwimlanesDemo /> },
+      { label: "WIP limits", node: <KanbanWipLimitsDemo /> },
+      { label: "release validation", node: <KanbanReleaseValidationDemo /> },
+      { label: "grouped by owner", node: <KanbanOwnerGroupedDemo /> },
     ],
   },
 
@@ -4215,9 +4453,15 @@ toast.error("Something went wrong.")`,
   "file-upload": {
     importLine: `import { FileUpload } from "@/components/ui/file-upload"`,
     exampleCode: `<FileUpload accept="image/*" onFiles={(files) => console.log(files)} />`,
+    variantSpan: "full",
     variants: [
       { label: "default", node: <div className="w-full"><FileUpload description="PNG, JPG, PDF up to 10MB" /></div> },
       { label: "with accept", node: <div className="w-full"><FileUpload accept=".pdf,.docx" description=".pdf or .docx only" /></div> },
+      { label: "scope evidence", node: <FileUploadScopeEvidenceDemo /> },
+      { label: "proposal assets", node: <FileUploadProposalAssetsDemo /> },
+      { label: "case study", node: <FileUploadCaseStudyDemo /> },
+      { label: "receipts", node: <FileUploadReceiptsDemo /> },
+      { label: "QA evidence", node: <FileUploadQAEvidenceDemo /> },
       { label: "disabled", node: <div className="w-full"><FileUpload disabled description="Upload is disabled" /></div> },
     ],
   },

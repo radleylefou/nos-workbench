@@ -10,6 +10,8 @@ export interface TimelineStep {
   status: TimelineStepStatus
   timestamp?: string
   note?: string
+  label?: string
+  meta?: string
 }
 
 interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -60,8 +62,11 @@ export function Timeline({ steps, variant = "default", className, ...props }: Ti
                 )}
                 <span className={cn("inline-flex items-center gap-1 text-xs", iconClass)}>
                   <Icon className="size-3" />
-                  {statusConfig[step.status].label}
+                  {step.label ?? statusConfig[step.status].label}
                 </span>
+                {step.meta ? (
+                  <span className="text-xs text-muted-foreground">{step.meta}</span>
+                ) : null}
               </div>
               {step.timestamp && (
                 <p className="mt-0.5 text-xs text-muted-foreground">{step.timestamp}</p>

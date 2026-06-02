@@ -53,6 +53,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Label } from "@/components/ui/label"
+import { productPatternSlugs } from "@/lib/nos-product-patterns"
 
 export type DemoGroup = {
   label: string
@@ -90,13 +91,7 @@ export const navigation = {
   ] as const,
   tokens: ["color", "typography", "spacing", "radius", "shadow", "motion"] as const,
   instructions: ["agents", "rules", "compositions"] as const,
-  patterns: [
-    "portfolio-dashboard",
-    "domain-model-board",
-    "estimation-screen",
-    "scope-document",
-    "reporting-admin",
-  ] as const,
+  patterns: productPatternSlugs,
 }
 
 export type ComponentSlug = (typeof navigation.components)[number]

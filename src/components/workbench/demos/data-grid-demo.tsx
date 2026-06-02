@@ -5,8 +5,14 @@ import {
   CalendarClock,
   CheckCircle2,
   CircleDollarSign,
+  Columns3,
+  GripVertical,
+  Layers3,
   MoreHorizontal,
+  Pin,
+  Save,
   SlidersHorizontal,
+  Star,
   UserRound,
 } from "lucide-react"
 
@@ -73,6 +79,12 @@ type Risk = {
   note: string
 }
 
+type PrioritizedEngagement = Engagement & {
+  priority: "Pinned" | "Standard"
+  group: "Pipeline" | "Delivery" | "Staffing"
+  confidence: "High" | "Medium" | "Low"
+}
+
 const engagements: Engagement[] = [
   { id: "ENG-1042", client: "Acme Health", module: "Scope", stage: "Estimation", health: "healthy", owner: "Alice Rivera", ownerRole: "Account lead", budget: 180000, probability: 75, lastUpdated: "2h ago", nextStep: "Confirm final scope" },
   { id: "ENG-1043", client: "Northstar HealthTech", module: "Estimate", stage: "Client Review", health: "watch", owner: "Marcus James", ownerRole: "Delivery lead", budget: 240000, probability: 90, lastUpdated: "4h ago", nextStep: "Send revised budget" },
@@ -105,6 +117,23 @@ const risks: Risk[] = [
   { id: "RSK-84", risk: "Weekly status drift", severity: "low", owner: "Marcus James", due: "Jun 12", progress: 90, status: "closed", note: "Cadence restored with account team." },
   { id: "RSK-85", risk: "Capacity conflict in sprint two", severity: "high", owner: "Sam Lee", due: "Jun 07", progress: 41, status: "open", note: "Two senior contributors are double-booked." },
 ]
+
+const prioritizedEngagements: PrioritizedEngagement[] = engagements.map((engagement, index) => ({
+  ...engagement,
+  priority: index < 2 ? "Pinned" : "Standard",
+  group:
+    engagement.module === "Staff"
+      ? "Staffing"
+      : engagement.module === "Manage"
+        ? "Delivery"
+        : "Pipeline",
+  confidence:
+    engagement.probability >= 80
+      ? "High"
+      : engagement.probability >= 60
+        ? "Medium"
+        : "Low",
+}))
 
 const healthTone: Record<Engagement["health"], string> = {
   healthy: "bg-success-50 text-success-700 ring-success-200",
@@ -216,6 +245,15 @@ function RowActions() {
         <DropdownMenuItem>Copy row ID</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+function ResizeHeader({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span>{label}</span>
+      <GripVertical className="size-3 text-muted-foreground/70" />
+    </span>
   )
 }
 
@@ -478,6 +516,137 @@ const riskColumns: ColumnDef<Risk>[] = [
   { id: "actions", header: "", enableSorting: false, enableHiding: false, cell: () => <RowActions /> },
 ]
 
+const pinnedColumns: ColumnDef<PrioritizedEngagement>[] = [
+  {
+    accessorKey: "priority",
+    header: "Priority",
+    cell: ({ row }) => (
+      <Badge
+        variant={row.original.priority === "Pinned" ? "default" : "secondary"}
+        className="gap-1.5 rounded-md"
+      >
+        {row.original.priority === "Pinned" ? <Pin className="size-3" /> : null}
+        {row.original.priority}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "client",
+    header: "Client",
+    cell: ({ row }) => (
+      <div>
+        <div className="font-medium text-foreground">{row.original.client}</div>
+        <div className="text-xs text-muted-foreground">{row.original.nextStep}</div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "health",
+    header: "Health",
+    cell: ({ row }) => (
+      <StatusPill className={healthTone[row.original.health]}>
+        {row.original.health}
+      </StatusPill>
+    ),
+  },
+  { accessorKey: "owner", header: "Owner", cell: ({ row }) => <PersonCell name={row.original.owner} detail={row.original.ownerRole} /> },
+  { accessorKey: "budget", header: "Budget", cell: ({ row }) => <MoneyCell value={row.original.budget} /> },
+  { accessorKey: "probability", header: "Probability", cell: ({ row }) => <ProgressCell value={row.original.probability} /> },
+  { id: "actions", header: "", enableSorting: false, enableHiding: false, cell: () => <RowActions /> },
+]
+
+const groupedColumns: ColumnDef<PrioritizedEngagement>[] = [
+  {
+    accessorKey: "group",
+    header: "Group",
+    meta: {
+      headerClassName: "sticky left-0 z-20 min-w-36 bg-muted/40",
+      cellClassName: "sticky left-0 z-10 min-w-36 bg-inherit shadow-[1px_0_0_0_var(--border)]",
+    },
+    cell: ({ row }) => (
+      <Badge variant="outline" className="gap-1.5 rounded-md">
+        <Layers3 className="size-3" />
+        {row.original.group}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "client",
+    header: "Engagement",
+    cell: ({ row }) => (
+      <div>
+        <div className="font-medium text-foreground">{row.original.client}</div>
+        <div className="text-xs text-muted-foreground">{row.original.module} / {row.original.stage}</div>
+      </div>
+    ),
+  },
+  { accessorKey: "owner", header: "Owner", cell: ({ row }) => <PersonCell name={row.original.owner} detail={row.original.ownerRole} /> },
+  {
+    accessorKey: "confidence",
+    header: "Confidence",
+    cell: ({ row }) => (
+      <Badge variant="secondary" className="rounded-md">
+        {row.original.confidence}
+      </Badge>
+    ),
+  },
+  { accessorKey: "probability", header: "Probability", cell: ({ row }) => <ProgressCell value={row.original.probability} /> },
+  { accessorKey: "lastUpdated", header: "Updated", cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.lastUpdated}</span> },
+]
+
+const resizableLookingColumns: ColumnDef<PrioritizedEngagement>[] = [
+  {
+    accessorKey: "client",
+    header: () => <ResizeHeader label="Client" />,
+    meta: {
+      headerClassName: "min-w-64",
+      cellClassName: "min-w-64",
+    },
+    cell: ({ row }) => (
+      <div>
+        <div className="font-medium text-foreground">{row.original.client}</div>
+        <div className="text-xs text-muted-foreground">{row.original.id}</div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "stage",
+    header: () => <ResizeHeader label="Stage" />,
+    meta: {
+      headerClassName: "min-w-44",
+      cellClassName: "min-w-44",
+    },
+    cell: ({ row }) => <Badge variant="secondary" className="rounded-md">{row.original.stage}</Badge>,
+  },
+  {
+    accessorKey: "owner",
+    header: () => <ResizeHeader label="Owner" />,
+    meta: {
+      headerClassName: "min-w-56",
+      cellClassName: "min-w-56",
+    },
+    cell: ({ row }) => <PersonCell name={row.original.owner} detail={row.original.ownerRole} />,
+  },
+  {
+    accessorKey: "budget",
+    header: () => <ResizeHeader label="Budget" />,
+    meta: {
+      headerClassName: "min-w-40",
+      cellClassName: "min-w-40",
+    },
+    cell: ({ row }) => <MoneyCell value={row.original.budget} />,
+  },
+  {
+    accessorKey: "probability",
+    header: () => <ResizeHeader label="Probability" />,
+    meta: {
+      headerClassName: "min-w-52",
+      cellClassName: "min-w-52",
+    },
+    cell: ({ row }) => <ProgressCell value={row.original.probability} />,
+  },
+]
+
 function GridToolbar() {
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -624,5 +793,108 @@ export function DataGridEmptyDemo() {
       emptyDescription="Clear filters or create a new engagement to populate the grid."
       pageSize={5}
     />
+  )
+}
+
+export function DataGridPinnedRowsDemo() {
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/20 px-3 py-2">
+        <div>
+          <div className="text-sm font-medium text-foreground">Pinned priorities</div>
+          <div className="text-xs text-muted-foreground">Keep the highest-attention engagements at the top of the review.</div>
+        </div>
+        <Badge variant="secondary" className="gap-1.5 rounded-md">
+          <Star className="size-3.5" />
+          2 pinned
+        </Badge>
+      </div>
+      <DataGrid
+        data={prioritizedEngagements}
+        columns={pinnedColumns}
+        searchKey="client"
+        searchPlaceholder="Search pinned view..."
+        rowSelection
+        pageSize={6}
+      />
+    </div>
+  )
+}
+
+export function DataGridGroupedRowsDemo() {
+  return (
+    <DataGrid
+      data={[...prioritizedEngagements].sort((a, b) => a.group.localeCompare(b.group))}
+      columns={groupedColumns}
+      searchKey="client"
+      searchPlaceholder="Search grouped engagements..."
+      stickyHeader
+      pageSize={6}
+      renderExpandedRow={(row) => (
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+          <div>
+            <div className="font-medium text-foreground">{row.original.group} operating note</div>
+            <p className="mt-1 text-muted-foreground">
+              {row.original.nextStep}. Use grouped views when users compare related rows inside a single operating lane.
+            </p>
+          </div>
+          <Button variant="outline" size="sm">Open group</Button>
+        </div>
+      )}
+    />
+  )
+}
+
+export function DataGridResizableColumnsDemo() {
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="outline" size="sm" className="gap-1.5">
+          <Columns3 className="size-3.5" />
+          Fit columns
+        </Button>
+        <Button variant="outline" size="sm" className="gap-1.5">
+          <GripVertical className="size-3.5" />
+          Column sizing
+        </Button>
+      </div>
+      <DataGrid
+        data={prioritizedEngagements}
+        columns={resizableLookingColumns}
+        searchKey="client"
+        searchPlaceholder="Search wide grid..."
+        cellBorders
+        pageSize={5}
+      />
+    </div>
+  )
+}
+
+export function DataGridSavedViewsDemo() {
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {["Leadership", "Delivery", "Budget", "Risks"].map((view, index) => (
+            <Button key={view} variant={index === 0 ? "default" : "outline"} size="sm">
+              {view}
+            </Button>
+          ))}
+        </div>
+        <Button variant="outline" size="sm" className="gap-1.5">
+          <Save className="size-3.5" />
+          Save view
+        </Button>
+      </div>
+      <DataGrid
+        data={engagements}
+        columns={engagementColumns}
+        searchKey="client"
+        searchPlaceholder="Search saved view..."
+        rowSelection
+        columnVisibility
+        pageSize={5}
+      />
+    </div>
   )
 }
