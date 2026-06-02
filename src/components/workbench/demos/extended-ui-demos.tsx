@@ -3,8 +3,10 @@
 import { useState } from "react"
 import { Tag } from "@/components/ui/tag"
 import { Rating } from "@/components/ui/rating"
-import { FileText } from "lucide-react"
+import { Activity, ArrowLeft, FileText, Shield, Target, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
+import { cn } from "@/lib/utils"
 import {
   Stepper,
   StepperNav,
@@ -15,6 +17,33 @@ import {
   StepperPanel,
   StepperContent,
 } from "@/components/ui/stepper"
+
+const SEGMENTS = [
+  { id: "market", label: "Market", icon: TrendingUp },
+  { id: "limit", label: "Limit", icon: Target },
+  { id: "stop", label: "Stop", icon: Shield },
+  { id: "stop-limit", label: "Stop-Limit", icon: Activity },
+]
+
+export function ButtonGroupSegmentedDemo() {
+  const [active, setActive] = useState<string>("market")
+
+  return (
+    <ButtonGroup>
+      {SEGMENTS.map(({ id, label, icon: Icon }) => (
+        <Button
+          key={id}
+          variant="outline"
+          className={cn(active === id && "bg-muted")}
+          onClick={() => setActive(id)}
+        >
+          <Icon className="size-4" />
+          {label}
+        </Button>
+      ))}
+    </ButtonGroup>
+  )
+}
 
 export function TagDismissibleDemo() {
   const [visible, setVisible] = useState(true)
@@ -50,57 +79,124 @@ export function TagWithIconDemo() {
   )
 }
 
-const CONTROLLED_STEPS = [
-  { step: 1, label: "Intake", content: "Complete the client intake form and initial discovery call." },
-  { step: 2, label: "Design", content: "Define the domain model, epics, and solution architecture." },
-  { step: 3, label: "Estimate", content: "Run bottom-up story point estimation across all epics." },
-  { step: 4, label: "Review", content: "Final review, sign-off, and handoff to the delivery team." },
-]
+const STEPPER_STEPS = [1, 2, 3, 4]
 
 export function StepperControlledDemo() {
-  const [active, setActive] = useState(1)
+  const [currentStep, setCurrentStep] = useState(2)
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <Stepper value={active} onValueChange={setActive}>
-        <StepperNav>
-          {CONTROLLED_STEPS.map(({ step }) => (
-            <StepperItem key={step} step={step}>
-              <StepperTrigger>
-                <StepperIndicator />
-              </StepperTrigger>
-              {step < CONTROLLED_STEPS.length && <StepperSeparator />}
-            </StepperItem>
-          ))}
-        </StepperNav>
-        <StepperPanel className="mt-4">
-          {CONTROLLED_STEPS.map(({ step, label, content }) => (
-            <StepperContent key={step} value={step}>
-              <div className="rounded-lg border border-border bg-muted/30 p-4">
-                <p className="text-sm font-medium">{label}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{content}</p>
-              </div>
-            </StepperContent>
-          ))}
-        </StepperPanel>
-      </Stepper>
-      <div className="flex justify-between">
+    <Stepper
+      value={currentStep}
+      onValueChange={setCurrentStep}
+      className="w-full max-w-md space-y-8"
+    >
+      <StepperNav>
+        {STEPPER_STEPS.map((step) => (
+          <StepperItem key={step} step={step}>
+            <StepperTrigger asChild>
+              <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white">
+                {step}
+              </StepperIndicator>
+            </StepperTrigger>
+            {STEPPER_STEPS.length > step && (
+              <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+            )}
+          </StepperItem>
+        ))}
+      </StepperNav>
+
+      <StepperPanel className="text-sm">
+        {STEPPER_STEPS.map((step) => (
+          <StepperContent
+            key={step}
+            value={step}
+            className="flex w-full items-center justify-center"
+          >
+            Step {step} content
+          </StepperContent>
+        ))}
+      </StepperPanel>
+
+      <div className="flex items-center justify-between gap-2.5">
         <Button
           variant="outline"
-          size="sm"
-          onClick={() => setActive((s) => Math.max(1, s - 1))}
-          disabled={active === 1}
+          onClick={() => setCurrentStep((prev) => prev - 1)}
+          disabled={currentStep === 1}
         >
           Previous
         </Button>
         <Button
-          size="sm"
-          onClick={() => setActive((s) => Math.min(CONTROLLED_STEPS.length, s + 1))}
-          disabled={active === CONTROLLED_STEPS.length}
+          variant="outline"
+          onClick={() => setCurrentStep((prev) => prev + 1)}
+          disabled={currentStep === STEPPER_STEPS.length}
         >
           Next
         </Button>
       </div>
+    </Stepper>
+  )
+}
+
+export function StepperSegmentedDemo() {
+  const [currentStep, setCurrentStep] = useState(1)
+
+  return (
+    <div className="w-full max-w-md">
+      <Stepper value={currentStep} onValueChange={setCurrentStep}>
+        <StepperNav>
+          {STEPPER_STEPS.map((step) => (
+            <StepperItem
+              key={step}
+              step={step}
+              className="flex-1 overflow-hidden transition-all duration-[var(--duration-normal)] first:rounded-s-none last:rounded-e-none"
+            >
+              <StepperTrigger className="w-full flex-col items-start gap-2" asChild>
+                <StepperIndicator className="h-2 w-full rounded-none! bg-border">
+                  <span className="sr-only">{step}</span>
+                </StepperIndicator>
+              </StepperTrigger>
+            </StepperItem>
+          ))}
+        </StepperNav>
+
+        <div className="flex items-center justify-between gap-2.5 py-1">
+          <Button
+            variant="link"
+            onClick={() => setCurrentStep((prev) => prev - 1)}
+            className={cn("px-0", currentStep === 1 && "pointer-events-none opacity-0")}
+          >
+            <ArrowLeft className="size-4" />
+            Back
+          </Button>
+
+          <div className="text-sm font-medium">
+            <span className="text-foreground">{currentStep}</span>{" "}
+            <span className="text-muted-foreground/60">/ {STEPPER_STEPS.length}</span>
+          </div>
+        </div>
+
+        <StepperPanel className="py-6 text-sm">
+          {STEPPER_STEPS.map((step) => (
+            <StepperContent
+              key={step}
+              value={step}
+              className="flex w-full items-center justify-center"
+            >
+              Step {step} content
+            </StepperContent>
+          ))}
+        </StepperPanel>
+
+        <div className="flex items-center justify-end gap-2.5">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentStep((prev) => prev + 1)}
+            disabled={currentStep === STEPPER_STEPS.length}
+          >
+            Next
+          </Button>
+        </div>
+      </Stepper>
     </div>
   )
 }

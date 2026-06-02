@@ -1,17 +1,36 @@
 import type { ReactNode } from "react"
 import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  ArrowLeft,
+  ArrowRight,
   Bold,
   CalendarIcon,
   Check,
+  ChevronDown,
   ChevronRight,
   Download,
+  ExternalLink,
+  GitMerge,
   Italic,
   LayoutDashboard,
+  LayoutGrid,
+  List,
+  ListFilter,
+  Minus,
+  Pencil,
+  Plus,
+  RefreshCw,
   Search,
   Settings,
+  Table2,
   Trash2,
   Underline,
+  Upload,
   User,
+  X,
 } from "lucide-react"
 
 import {
@@ -44,7 +63,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
+import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from "@/components/ui/button-group"
 import { Calendar } from "@/components/ui/calendar"
 import {
   Card,
@@ -195,7 +214,31 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { ChartBarDemo, ChartLineDemo } from "@/components/workbench/demos/chart-demo"
+import {
+  ChartAreaDefaultDemo,
+  ChartAreaGradientDemo,
+  ChartAreaLinearDemo,
+  ChartAreaStackedDemo,
+  ChartAreaStepDemo,
+  ChartBarDemo,
+  ChartBarHorizontalDemo,
+  ChartBarLabelDemo,
+  ChartBarMultipleDemo,
+  ChartBarNegativeDemo,
+  ChartBarStackedDemo,
+  ChartLineDemo,
+  ChartLineDotsDemo,
+  ChartLineLabelDemo,
+  ChartLineMultipleDemo,
+  ChartLineStepDemo,
+  ChartLineThresholdDemo,
+  ChartPieDonutDemo,
+  ChartPieDonutTextDemo,
+  ChartPieLabelDemo,
+  ChartPieLegendDemo,
+  ChartPieSimpleDemo,
+  ChartPieStackedDemo,
+} from "@/components/workbench/demos/chart-demo"
 import { DatePickerDemo, DateRangeDemo } from "@/components/workbench/demos/date-picker-demo"
 import { DirectionDemo } from "@/components/workbench/demos/direction-demo"
 import { ToastDemo } from "@/components/workbench/demos/toast-demo"
@@ -225,7 +268,7 @@ import {
   StepperTitle,
   StepperDescription,
 } from "@/components/ui/stepper"
-import { CircleDot, CircleCheck, Circle } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { DataTableDemo } from "@/components/workbench/demos/data-table-demo"
 // Phase 5 — Kanban + Gantt
 import { KanbanBoardDemo } from "@/components/workbench/demos/kanban-board-demo"
@@ -267,8 +310,8 @@ import { Rating } from "@/components/ui/rating"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Notification } from "@/components/ui/notification"
 import { AvatarGroupCompact, AvatarGroupCompactOverflow } from "@/components/ui/avatar"
-import { TagDismissibleDemo, TagWithIconDemo, RatingInteractiveDemo, StepperControlledDemo } from "@/components/workbench/demos/extended-ui-demos"
-import { AlertCircle, BookOpen, FileText, Home, Info as InfoIcon, LayoutGrid, Search as SearchIcon } from "lucide-react"
+import { TagDismissibleDemo, TagWithIconDemo, RatingInteractiveDemo, StepperControlledDemo, StepperSegmentedDemo, ButtonGroupSegmentedDemo } from "@/components/workbench/demos/extended-ui-demos"
+import { AlertCircle, BookOpen, FileText, Home, Info as InfoIcon, Search as SearchIcon } from "lucide-react"
 
 export type DemoGroup = { label: string; node: ReactNode }
 
@@ -572,11 +615,12 @@ export const demos: Record<string, ComponentDemo> = {
   },
 
   "button-group": {
-    importLine: `import { ButtonGroup } from "@/components/ui/button-group"`,
+    importLine: `import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"`,
     exampleCode: `<ButtonGroup>
   <Button variant="outline">Back</Button>
   <Button>Continue</Button>
 </ButtonGroup>`,
+    variantSpan: "full",
     variants: [
       {
         label: "horizontal",
@@ -595,6 +639,321 @@ export const demos: Record<string, ComponentDemo> = {
             <Button variant="outline">Top</Button>
             <Button variant="outline">Middle</Button>
             <Button variant="outline">Bottom</Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "with-input",
+        node: (
+          <ButtonGroup>
+            <Button variant="outline">Search</Button>
+            <Input placeholder="Filter records..." />
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "split-button",
+        node: (
+          <ButtonGroup>
+            <Button>Deploy</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" aria-label="More deploy options">
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem>Production</DropdownMenuItem>
+                <DropdownMenuItem>Staging</DropdownMenuItem>
+                <DropdownMenuItem>Development</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "icon-toolbar",
+        node: (
+          <ButtonGroup>
+            <Button variant="outline" size="icon" aria-label="Grid view">
+              <LayoutGrid className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="List view">
+              <List className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Table view">
+              <Table2 className="size-4" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "text-alignment",
+        node: (
+          <ButtonGroup>
+            <Button variant="outline" size="icon-sm" aria-label="Align left">
+              <AlignLeft className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon-sm" aria-label="Align center">
+              <AlignCenter className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon-sm" aria-label="Align right">
+              <AlignRight className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon-sm" aria-label="Align justify">
+              <AlignJustify className="size-3.5" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "pagination",
+        node: (
+          <ButtonGroup>
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="size-3.5" />
+              Previous
+            </Button>
+            <Button variant="outline" size="sm">1</Button>
+            <Button variant="outline" size="sm">2</Button>
+            <Button variant="outline" size="sm">3</Button>
+            <Button variant="outline" size="sm">
+              Next
+              <ArrowRight className="size-3.5" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "with-separator",
+        node: (
+          <ButtonGroup className="**:data-[slot=button]:border-0">
+            <Button>Files</Button>
+            <ButtonGroupSeparator className="bg-primary/25" />
+            <Button>Folder</Button>
+            <ButtonGroupSeparator className="bg-primary/25" />
+            <Button>Media</Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "filter-search",
+        node: (
+          <ButtonGroup className="max-w-xs">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <ListFilter className="size-4" />
+                  Filter
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem>All Records</DropdownMenuItem>
+                <DropdownMenuItem>Recent</DropdownMenuItem>
+                <DropdownMenuItem>Archived</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Input placeholder="Search records..." />
+            <Button variant="outline" size="icon" aria-label="Clear search">
+              <X className="size-4" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "disabled",
+        node: (
+          <ButtonGroup>
+            <Button variant="outline">Save</Button>
+            <Button variant="outline" disabled>Publish</Button>
+            <Button variant="outline">Delete</Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "vertical-icons",
+        node: (
+          <ButtonGroup orientation="vertical">
+            <Button variant="outline" size="icon" aria-label="Add">
+              <Plus className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Subtract">
+              <Minus className="size-4" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "branch-status",
+        node: (
+          <ButtonGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <GitMerge className="size-4" />
+                  main
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem>main</DropdownMenuItem>
+                <DropdownMenuItem>develop</DropdownMenuItem>
+                <DropdownMenuItem>feature/auth</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <ButtonGroupText className="bg-transparent">
+              <span className="size-1.5 animate-pulse rounded-full bg-green-600" />
+              Production
+            </ButtonGroupText>
+            <Button variant="outline" size="icon" aria-label="Refresh">
+              <RefreshCw className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Open">
+              <ExternalLink className="size-4" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "badge-actions",
+        node: (
+          <ButtonGroup>
+            <Button variant="outline">
+              <FileText className="size-4" />
+              <Badge variant="secondary">Draft</Badge>
+            </Button>
+            <Button variant="outline">
+              <Pencil className="size-4" />
+              Edit
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Upload">
+              <Upload className="size-4" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "status-search",
+        node: (
+          <ButtonGroup className="max-w-xs">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-36 justify-start gap-2">
+                  <span className="size-1.5 rounded-full bg-green-500" />
+                  Completed
+                  <ChevronDown className="ml-auto size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem>In Progress</DropdownMenuItem>
+                <DropdownMenuItem>Completed</DropdownMenuItem>
+                <DropdownMenuItem>Pending</DropdownMenuItem>
+                <DropdownMenuItem>Cancelled</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Input placeholder="Search tasks..." />
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "paired-selects",
+        node: (
+          <ButtonGroup>
+            <Select defaultValue="development">
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="production">Production</SelectItem>
+                <SelectItem value="staging">Staging</SelectItem>
+                <SelectItem value="development">Development</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select defaultValue="12h">
+              <SelectTrigger className="w-44">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1h">Last hour</SelectItem>
+                <SelectItem value="6h">Last 6 hours</SelectItem>
+                <SelectItem value="12h">Last 12 hours</SelectItem>
+                <SelectItem value="24h">Last 24 hours</SelectItem>
+              </SelectContent>
+            </Select>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "segmented-actions",
+        node: <ButtonGroupSegmentedDemo />,
+      },
+      {
+        label: "toolbar-filter",
+        node: (
+          <ButtonGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <ListFilter className="size-4" />
+                  Sort
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuItem>Newest</DropdownMenuItem>
+                <DropdownMenuItem>Oldest</DropdownMenuItem>
+                <DropdownMenuItem>Recently Updated</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button variant="outline">
+              <Download className="size-4" />
+              Export
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Grid view">
+              <LayoutGrid className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="List view">
+              <List className="size-4" />
+            </Button>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "publish-controls",
+        node: (
+          <ButtonGroup className="**:data-[slot=button]:border-r-0">
+            <Button>Publish</Button>
+            <ButtonGroupSeparator className="bg-primary/25" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="icon"
+                  className="rounded-l-none border-l border-primary-foreground/20"
+                >
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem>Save as draft</DropdownMenuItem>
+                <DropdownMenuItem>Schedule</DropdownMenuItem>
+                <DropdownMenuItem>Preview</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        ),
+      },
+      {
+        label: "attachment-download",
+        node: (
+          <ButtonGroup>
+            <ButtonGroupText>
+              <FileText className="size-4" />
+              project-brief.pdf
+            </ButtonGroupText>
+            <Button variant="outline" size="icon" aria-label="Download">
+              <Download className="size-4" />
+            </Button>
           </ButtonGroup>
         ),
       },
@@ -1828,6 +2187,27 @@ toast.error("Something went wrong.")`,
     variants: [
       { label: "bar chart", node: <ChartBarDemo /> },
       { label: "line chart", node: <ChartLineDemo /> },
+      { label: "area-default", node: <ChartAreaDefaultDemo /> },
+      { label: "area-linear", node: <ChartAreaLinearDemo /> },
+      { label: "area-stacked", node: <ChartAreaStackedDemo /> },
+      { label: "area-gradient", node: <ChartAreaGradientDemo /> },
+      { label: "area-step", node: <ChartAreaStepDemo /> },
+      { label: "bar-horizontal", node: <ChartBarHorizontalDemo /> },
+      { label: "bar-multiple", node: <ChartBarMultipleDemo /> },
+      { label: "bar-stacked", node: <ChartBarStackedDemo /> },
+      { label: "bar-label", node: <ChartBarLabelDemo /> },
+      { label: "bar-negative", node: <ChartBarNegativeDemo /> },
+      { label: "line-dots", node: <ChartLineDotsDemo /> },
+      { label: "line-multiple", node: <ChartLineMultipleDemo /> },
+      { label: "line-step", node: <ChartLineStepDemo /> },
+      { label: "line-label", node: <ChartLineLabelDemo /> },
+      { label: "line-threshold", node: <ChartLineThresholdDemo /> },
+      { label: "pie-simple", node: <ChartPieSimpleDemo /> },
+      { label: "pie-donut", node: <ChartPieDonutDemo /> },
+      { label: "pie-donut-text", node: <ChartPieDonutTextDemo /> },
+      { label: "pie-label", node: <ChartPieLabelDemo /> },
+      { label: "pie-legend", node: <ChartPieLegendDemo /> },
+      { label: "pie-stacked", node: <ChartPieStackedDemo /> },
     ],
   },
 
@@ -2386,57 +2766,82 @@ toast.error("Something went wrong.")`,
 
   "stepper": {
     variantSpan: "full",
-    importLine: `import { Stepper, StepperNav, StepperItem, StepperTrigger, StepperIndicator, StepperSeparator } from "@/components/ui/stepper"`,
-    exampleCode: `<Stepper defaultValue={3}>
+    importLine: `import { Stepper, StepperNav, StepperItem, StepperTrigger, StepperIndicator, StepperSeparator, StepperTitle, StepperDescription } from "@/components/ui/stepper"`,
+    exampleCode: `<Stepper defaultValue={2} className="w-full max-w-md">
   <StepperNav>
-    {[1,2,3,4].map((step, i, arr) => (
+    {[1, 2, 3, 4].map((step) => (
       <StepperItem key={step} step={step}>
         <StepperTrigger><StepperIndicator /></StepperTrigger>
-        {i < arr.length - 1 && <StepperSeparator />}
+        {step < 4 && (
+          <StepperSeparator className="group-data-[state=completed]/step:bg-primary" />
+        )}
       </StepperItem>
     ))}
   </StepperNav>
 </Stepper>`,
     variants: [
       {
-        label: "states",
+        label: "basic",
         node: (
-          <div className="w-full">
-            <Stepper defaultValue={3}>
-              <StepperNav>
-                {[1, 2, 3, 4].map((step, i) => (
-                  <StepperItem key={step} step={step}>
-                    <StepperTrigger><StepperIndicator /></StepperTrigger>
-                    {i < 3 && <StepperSeparator />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
+          <Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {[1, 2, 3, 4].map((step) => (
+                <StepperItem key={step} step={step}>
+                  <StepperTrigger><StepperIndicator /></StepperTrigger>
+                  {step < 4 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
         ),
       },
       {
-        label: "indicators",
+        label: "completed-state",
         node: (
-          <div className="w-full">
-            <Stepper
-              defaultValue={3}
-              indicators={{
-                active: <CircleDot className="size-3.5" />,
-                completed: <CircleCheck className="size-3.5" />,
-                inactive: <Circle className="size-3" />,
-              }}
-            >
-              <StepperNav>
-                {[1, 2, 3, 4].map((step, i) => (
-                  <StepperItem key={step} step={step}>
-                    <StepperTrigger><StepperIndicator /></StepperTrigger>
-                    {i < 3 && <StepperSeparator />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
+          <Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {[1, 2, 3, 4].map((step) => (
+                <StepperItem key={step} step={step}>
+                  <StepperTrigger>
+                    <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                  </StepperTrigger>
+                  {step < 4 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
+        ),
+      },
+      {
+        label: "loading-state",
+        node: (
+          <Stepper
+            defaultValue={2}
+            className="w-full max-w-md"
+            indicators={{
+              completed: <Check className="size-3.5" />,
+              loading: <Loader2 className="size-3.5 animate-spin" />,
+            }}
+          >
+            <StepperNav>
+              {[1, 2, 3].map((step) => (
+                <StepperItem key={step} step={step} loading={step === 2}>
+                  <StepperTrigger>
+                    <StepperIndicator className="size-5 border-2 border-muted data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:border-success data-[state=completed]:bg-success data-[state=completed]:text-white">
+                      <span className="hidden size-1.5 rounded-full bg-primary-foreground group-data-[state=active]/step:block" />
+                    </StepperIndicator>
+                  </StepperTrigger>
+                  {step < 3 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
         ),
       },
       {
@@ -2446,131 +2851,120 @@ toast.error("Something went wrong.")`,
       {
         label: "title",
         node: (
-          <div className="w-full">
-            <Stepper defaultValue={2}>
-              <StepperNav>
-                {(["Intake", "Discovery", "Scope", "Review"] as const).map((label, i) => (
-                  <StepperItem key={i + 1} step={i + 1} className="items-start">
-                    <div className="flex shrink-0 flex-col items-center gap-1.5">
-                      <StepperTrigger><StepperIndicator /></StepperTrigger>
-                      <StepperTitle className="text-xs whitespace-nowrap">{label}</StepperTitle>
+          <Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {(["Account", "Profile", "Review"] as const).map((title, index) => (
+                <StepperItem key={index} step={index + 1} className="relative flex-1 items-start">
+                  <StepperTrigger className="flex flex-col gap-2.5">
+                    <StepperIndicator />
+                    <StepperTitle>{title}</StepperTitle>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="absolute inset-x-0 top-3 left-[calc(50%+0.875rem)] m-0 group-data-[state=completed]/step:bg-primary group-data-[orientation=horizontal]/stepper-nav:w-[calc(100%-2rem+0.225rem)] group-data-[orientation=horizontal]/stepper-nav:flex-none" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
+        ),
+      },
+      {
+        label: "descriptions",
+        node: (
+          <Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {([
+                { title: "Account", desc: "Create your account" },
+                { title: "Profile", desc: "Set up your profile" },
+                { title: "Complete", desc: "Review and finish" },
+              ] as const).map(({ title, desc }, index) => (
+                <StepperItem key={index} step={index + 1} className="relative flex-1 items-start">
+                  <StepperTrigger className="flex flex-col gap-2.5">
+                    <StepperIndicator />
+                    <StepperTitle>{title}</StepperTitle>
+                    <StepperDescription>{desc}</StepperDescription>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="absolute inset-x-0 top-2.5 left-[calc(50%+0.875rem)] m-0 group-data-[state=completed]/step:bg-primary group-data-[orientation=horizontal]/stepper-nav:w-[calc(100%-2rem+0.225rem)] group-data-[orientation=horizontal]/stepper-nav:flex-none" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
+        ),
+      },
+      {
+        label: "inline-title",
+        node: (
+          <Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {(["Account", "Profile", "Review"] as const).map((title, index) => (
+                <StepperItem key={index} step={index + 1} className="relative">
+                  <StepperTrigger className="flex justify-start gap-1.5">
+                    <StepperIndicator />
+                    <StepperTitle>{title}</StepperTitle>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary md:mx-2.5" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
+        ),
+      },
+      {
+        label: "inline-title-description",
+        node: (
+          <Stepper defaultValue={2} className="w-full max-w-lg">
+            <StepperNav>
+              {([
+                { title: "Step 1", desc: "Description" },
+                { title: "Step 2", desc: "Description" },
+                { title: "Step 3", desc: "Description" },
+              ] as const).map(({ title, desc }, index) => (
+                <StepperItem key={index} step={index + 1} className="relative">
+                  <StepperTrigger className="flex justify-start gap-1.5">
+                    <StepperIndicator />
+                    <div className="flex flex-col items-start gap-0.5">
+                      <StepperTitle>{title}</StepperTitle>
+                      <StepperDescription>{desc}</StepperDescription>
                     </div>
-                    {i < 3 && <StepperSeparator className="mt-3" />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary md:mx-2.5" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>
         ),
       },
       {
-        label: "title & status",
-        node: (
-          <div className="w-full">
-            <Stepper defaultValue={2}>
-              <StepperNav>
-                {([
-                  { label: "Intake", status: "Complete" },
-                  { label: "Discovery", status: "In Progress" },
-                  { label: "Scope", status: "Pending" },
-                  { label: "Review", status: "Pending" },
-                ] as const).map(({ label, status }, i) => (
-                  <StepperItem key={i + 1} step={i + 1} className="items-start">
-                    <div className="flex shrink-0 flex-col items-center gap-1">
-                      <StepperTrigger><StepperIndicator /></StepperTrigger>
-                      <StepperTitle className="text-xs whitespace-nowrap">{label}</StepperTitle>
-                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">{status}</span>
-                    </div>
-                    {i < 3 && <StepperSeparator className="mt-3" />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
-        ),
-      },
-      {
-        label: "title & description",
-        node: (
-          <div className="w-full">
-            <Stepper defaultValue={2}>
-              <StepperNav>
-                {([
-                  { label: "Intake", desc: "Discovery call" },
-                  { label: "Design", desc: "Domain model" },
-                  { label: "Estimate", desc: "Story points" },
-                ] as const).map(({ label, desc }, i) => (
-                  <StepperItem key={i + 1} step={i + 1} className="items-start">
-                    <div className="flex shrink-0 flex-col items-center gap-1">
-                      <StepperTrigger><StepperIndicator /></StepperTrigger>
-                      <StepperTitle className="text-xs whitespace-nowrap">{label}</StepperTitle>
-                      <StepperDescription className="text-[10px] whitespace-nowrap">{desc}</StepperDescription>
-                    </div>
-                    {i < 2 && <StepperSeparator className="mt-3" />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
-        ),
-      },
-      {
-        label: "inline title",
-        node: (
-          <div className="w-full">
-            <Stepper defaultValue={2}>
-              <StepperNav>
-                {(["Intake", "Discovery", "Scope"] as const).map((label, i) => (
-                  <StepperItem key={i + 1} step={i + 1}>
-                    <StepperTrigger>
-                      <StepperIndicator />
-                      <span className="text-sm font-medium whitespace-nowrap">{label}</span>
-                    </StepperTrigger>
-                    {i < 2 && <StepperSeparator />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
-        ),
-      },
-      {
-        label: "inline title & description",
-        node: (
-          <div className="w-full">
-            <Stepper defaultValue={2}>
-              <StepperNav>
-                {([
-                  { label: "Intake", desc: "Discovery call" },
-                  { label: "Design", desc: "Domain model" },
-                  { label: "Estimate", desc: "Story points" },
-                ] as const).map(({ label, desc }, i) => (
-                  <StepperItem key={i + 1} step={i + 1}>
-                    <StepperTrigger>
-                      <StepperIndicator />
-                      <div className="flex flex-col items-start gap-0.5">
-                        <span className="text-sm font-medium leading-none whitespace-nowrap">{label}</span>
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">{desc}</span>
-                      </div>
-                    </StepperTrigger>
-                    {i < 2 && <StepperSeparator />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
-        ),
+        label: "segmented",
+        node: <StepperSegmentedDemo />,
       },
       {
         label: "vertical",
         node: (
-          <div className="w-full">
-            <Stepper orientation="vertical" defaultValue={2}>
-              <StepperNav className="w-full">
-                {[1, 2, 3, 4].map((step, i) => (
-                  <StepperItem key={step} step={step} className="items-start">
-                    <StepperTrigger><StepperIndicator /></StepperTrigger>
-                    {i < 3 && <StepperSeparator className="ms-[11px]" />}
+          <div className="flex w-full items-center justify-center">
+            <Stepper
+              orientation="vertical"
+              defaultValue={2}
+              indicators={{
+                completed: <Check className="size-3.5" />,
+                loading: <Loader2 className="size-3.5 animate-spin" />,
+              }}
+            >
+              <StepperNav>
+                {[1, 2, 3].map((step) => (
+                  <StepperItem key={step} step={step} loading={step === 2}>
+                    <StepperTrigger>
+                      <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                    </StepperTrigger>
+                    {step < 3 && (
+                      <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+                    )}
                   </StepperItem>
                 ))}
               </StepperNav>
@@ -2579,45 +2973,51 @@ toast.error("Something went wrong.")`,
         ),
       },
       {
-        label: "vertical title",
+        label: "vertical-title",
         node: (
-          <div className="w-full">
+          <div className="flex w-full items-center justify-center">
             <Stepper orientation="vertical" defaultValue={2}>
-              <StepperNav className="w-full">
-                {(["Client Intake", "Solution Design", "Estimation"] as const).map((label, i) => (
-                  <StepperItem key={i + 1} step={i + 1} className="items-start">
-                    <div className="flex flex-row items-center gap-3">
-                      <StepperTrigger><StepperIndicator /></StepperTrigger>
-                      <StepperTitle className="whitespace-nowrap">{label}</StepperTitle>
-                    </div>
-                    {i < 2 && <StepperSeparator className="ms-[11px]" />}
-                  </StepperItem>
-                ))}
-              </StepperNav>
-            </Stepper>
-          </div>
-        ),
-      },
-      {
-        label: "vertical title & description",
-        node: (
-          <div className="w-full">
-            <Stepper orientation="vertical" defaultValue={2}>
-              <StepperNav className="w-full">
-                {([
-                  { label: "Client Intake", desc: "Initial discovery call" },
-                  { label: "Solution Design", desc: "Domain model & epics" },
-                  { label: "Estimation", desc: "Bottom-up story points" },
-                ] as const).map(({ label, desc }, i) => (
-                  <StepperItem key={i + 1} step={i + 1} className="items-start">
-                    <div className="flex flex-row items-center gap-3">
-                      <StepperTrigger><StepperIndicator /></StepperTrigger>
-                      <div className="flex flex-col gap-0.5">
-                        <StepperTitle className="whitespace-nowrap">{label}</StepperTitle>
-                        <StepperDescription className="whitespace-nowrap">{desc}</StepperDescription>
+              <StepperNav>
+                {(["Account", "Profile", "Review"] as const).map((title, index) => (
+                  <StepperItem key={index} step={index + 1} className="relative items-start not-last:flex-1">
+                    <StepperTrigger className="items-start gap-2.5 pb-12 last:pb-0">
+                      <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                      <div className="mt-0.5 text-left">
+                        <StepperTitle>{title}</StepperTitle>
                       </div>
-                    </div>
-                    {i < 2 && <StepperSeparator className="ms-[11px]" />}
+                    </StepperTrigger>
+                    {index < 2 && (
+                      <StepperSeparator className="absolute inset-y-0 top-7 left-3 -order-1 m-0 -translate-x-1/2 group-data-[state=completed]/step:bg-success group-data-[orientation=vertical]/stepper-nav:h-[calc(100%-2rem)]" />
+                    )}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>
+        ),
+      },
+      {
+        label: "vertical-description",
+        node: (
+          <div className="flex w-full items-center justify-center">
+            <Stepper orientation="vertical" defaultValue={2}>
+              <StepperNav>
+                {([
+                  { title: "Account", desc: "Create your account" },
+                  { title: "Profile", desc: "Set up your profile" },
+                  { title: "Review", desc: "Confirm your details" },
+                ] as const).map(({ title, desc }, index) => (
+                  <StepperItem key={index} step={index + 1} className="relative items-start not-last:flex-1">
+                    <StepperTrigger className="items-start gap-2.5 pb-12 last:pb-0">
+                      <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                      <div className="mt-0.5 text-left">
+                        <StepperTitle>{title}</StepperTitle>
+                        <StepperDescription>{desc}</StepperDescription>
+                      </div>
+                    </StepperTrigger>
+                    {index < 2 && (
+                      <StepperSeparator className="absolute inset-y-0 top-7 left-3 -order-1 m-0 -translate-x-1/2 group-data-[state=completed]/step:bg-success group-data-[orientation=vertical]/stepper-nav:h-[calc(100%-2rem)]" />
+                    )}
                   </StepperItem>
                 ))}
               </StepperNav>
