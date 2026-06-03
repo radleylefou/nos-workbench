@@ -4,24 +4,32 @@ import {
   baseMarkdown,
   designPrinciplesMarkdown,
 } from "./base"
+import { MANIFEST_URL, WORKBENCH_URL } from "./constants"
 import { llmClaudeCodeFragment } from "./llm-claude-code"
 import { llmCursorFragment } from "./llm-cursor"
 import { llmOtherFragment } from "./llm-other"
 import { llmReplitFragment } from "./llm-replit"
+import { auditPromptTemplate } from "./prompts/audit"
+import { convertPromptTemplate } from "./prompts/convert"
+import { kickoffNewPromptTemplate } from "./prompts/kickoff-new"
 import { projectExistingFragment } from "./project-existing"
 import { projectNewFragment } from "./project-new"
 import type {
-  InstructionAssembly,
+  ContextFilename,
   InstructionFragment,
+  InstructionKit,
   InstructionOption,
   LlmTarget,
   ProjectType,
 } from "./types"
 
 export type {
-  InstructionAssembly,
+  ContextFilename,
   InstructionFragment,
+  InstructionContextFile,
+  InstructionKit,
   InstructionOption,
+  InstructionStep,
   LlmTarget,
   ProjectType,
 } from "./types"
@@ -31,6 +39,8 @@ export {
   baseFragment,
   baseMarkdown,
   designPrinciplesMarkdown,
+  MANIFEST_URL,
+  WORKBENCH_URL,
   llmClaudeCodeFragment,
   llmCursorFragment,
   llmOtherFragment,
@@ -87,7 +97,7 @@ const llmFragments: Record<LlmTarget, InstructionFragment> = {
   other: llmOtherFragment,
 }
 
-const filenames: Record<LlmTarget, InstructionAssembly["filename"]> = {
+const filenames: Record<LlmTarget, ContextFilename> = {
   "claude-code": "CLAUDE.md",
   replit: "replit.md",
   cursor: "AGENTS.md",
@@ -102,13 +112,64 @@ export function getLlmLabel(llm: LlmTarget) {
   return llmOptions.find((option) => option.value === llm)?.label ?? llm
 }
 
-export function assemble(projectType: ProjectType, llm: LlmTarget): InstructionAssembly {
+function fillTemplate(template: string, contextFile: ContextFilename) {
+  return template
+    .replaceAll("{{CONTEXT_FILE}}", contextFile)
+    .replaceAll("{{MANIFEST_URL}}", MANIFEST_URL)
+}
+
+function createContextMarkdown(projectType: ProjectType, llm: LlmTarget) {
   const fragments = [baseFragment, projectFragments[projectType], llmFragments[llm]]
-  const markdown = fragments.map((fragment) => fragment.markdown.trim()).join("\n\n---\n\n")
+  return fragments.map((fragment) => fragment.markdown.trim()).join("\n\n---\n\n")
+}
+
+export function assemble(projectType: ProjectType, llm: LlmTarget): InstructionKit {
+  const filename = filenames[llm]
+  const markdown = createContextMarkdown(projectType, llm)
+  const llmFragment = llmFragments[llm]
+  const contextFile = { filename, markdown }
+
+  const saveStep = {
+    kind: "save" as const,
+    title: "Save your rules file",
+    filename,
+    body: markdown,
+  }
+
+  const steps =
+    projectType === "existing"
+      ? [
+          saveStep,
+          {
+            kind: "prompt" as const,
+            title: "Run the audit",
+            body: fillTemplate(auditPromptTemplate, filename),
+          },
+          {
+            kind: "checkpoint" as const,
+            title: "Review the plan",
+            body:
+              "Open CONVERSION_PLAN.md and review the Component mapping, Token mapping, and Needs review sections before continuing. Add human decisions for anything under Needs review. Do not run the conversion prompt until the plan is approved.",
+          },
+          {
+            kind: "prompt" as const,
+            title: "Run the conversion",
+            body: fillTemplate(convertPromptTemplate, filename),
+          },
+        ]
+      : [
+          saveStep,
+          {
+            kind: "prompt" as const,
+            title: "Run the build",
+            body: fillTemplate(kickoffNewPromptTemplate, filename),
+          },
+        ]
 
   return {
-    markdown,
-    filename: filenames[llm],
+    contextFile,
+    runNote: llmFragment.runNote ?? "",
+    steps,
   }
 }
 
@@ -117,24 +178,35 @@ export function verifyInstructionAssembly() {
   const newClaude = assemble("new", "claude-code")
   const newCursor = assemble("new", "cursor")
   const existingOther = assemble("existing", "other")
-  const existingBase = existingReplit.markdown.split("\n\n---\n\n")[0]
-  const newBase = newClaude.markdown.split("\n\n---\n\n")[0]
+  const existingBase = existingReplit.contextFile.markdown.split("\n\n---\n\n")[0]
+  const newBase = newClaude.contextFile.markdown.split("\n\n---\n\n")[0]
+  const hasNoPlaceholders = [existingReplit, newClaude, newCursor, existingOther].every(
+    (kit) =>
+      !kit.contextFile.markdown.includes("{{") &&
+      !kit.runNote.includes("{{") &&
+      kit.steps.every((step) => !step.body.includes("{{")),
+  )
 
   return {
     existingReplit:
-      existingReplit.filename === "replit.md" &&
-      existingReplit.markdown.includes("Step 7 - Verify visually against the workbench") &&
-      existingReplit.markdown.includes("Environment: Replit"),
+      existingReplit.contextFile.filename === "replit.md" &&
+      existingReplit.steps.map((step) => step.kind).join(" > ") ===
+        "save > prompt > checkpoint > prompt" &&
+      existingReplit.steps[1]?.title === "Run the audit" &&
+      existingReplit.steps[3]?.title === "Run the conversion" &&
+      existingReplit.contextFile.markdown.includes("Environment: Replit"),
     newClaude:
-      newClaude.filename === "CLAUDE.md" &&
-      newClaude.markdown.includes("SPEC.md") &&
-      newClaude.markdown.includes("Environment: Claude Code"),
+      newClaude.contextFile.filename === "CLAUDE.md" &&
+      newClaude.steps.map((step) => step.kind).join(" > ") === "save > prompt" &&
+      newClaude.steps[1]?.title === "Run the build" &&
+      newClaude.contextFile.markdown.includes("Environment: Claude Code"),
     cursor:
-      newCursor.filename === "AGENTS.md" &&
-      newCursor.markdown.includes("Environment: Cursor"),
+      newCursor.contextFile.filename === "AGENTS.md" &&
+      newCursor.runNote.includes("Cursor"),
     other:
-      existingOther.filename === "AGENTS.md" &&
-      existingOther.markdown.includes("Environment: Other / generic"),
+      existingOther.contextFile.filename === "AGENTS.md" &&
+      existingOther.runNote.includes("download nos-manifest.json"),
     sharedBase: existingBase === newBase,
+    placeholdersResolved: hasNoPlaceholders,
   }
 }

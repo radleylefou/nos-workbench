@@ -5,7 +5,7 @@ import {
   projectNewFragment,
 } from "@content/instructions"
 
-export const starterPrompt = assemble("new", "other").markdown
+export const starterPrompt = assemble("new", "other").contextFile.markdown
 
 export const prdBuildPlanPrompt = `${projectNewFragment.markdown}
 
@@ -94,7 +94,7 @@ export const agentSourceFiles = [
   {
     path: "content/instructions/base.ts",
     label: "Core NOS rules",
-    description: "Canonical base fragment used by the homepage generator and Instructions section.",
+    description: "Canonical base fragment used by the workbench instruction generator and Instructions section.",
     githubUrl:
       "https://github.com/radleylefou/nos-workbench/blob/main/content/instructions/base.ts",
   },
@@ -122,7 +122,7 @@ export const agentSourceFiles = [
 ] as const
 
 export const generatedAppChecklist = [
-  "Use the homepage generator to produce the right instruction file for the project type and tool.",
+  "Use the workbench instruction generator to produce the right instruction file for the project type and tool.",
   "Run plan mode first and convert the PRD or existing-app inventory into SPEC.md or an equivalent build plan.",
   "Map requirements to routes, screens, data, NOS components, patterns, and tokens.",
   "Start with NOS compliance setup: instruction file, NOS rules, canonical tokens, NymblAppSidebar, and TooltipProvider.",

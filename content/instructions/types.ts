@@ -5,11 +5,27 @@ export type InstructionFragment = {
   id: string
   title: string
   markdown: string
+  runNote?: string
 }
 
-export type InstructionAssembly = {
+export type ContextFilename = "CLAUDE.md" | "replit.md" | "AGENTS.md"
+
+export type InstructionContextFile = {
+  filename: ContextFilename
   markdown: string
-  filename: "CLAUDE.md" | "replit.md" | "AGENTS.md"
+}
+
+export type InstructionStep = {
+  kind: "save" | "prompt" | "checkpoint"
+  title: string
+  body: string
+  filename?: ContextFilename
+}
+
+export type InstructionKit = {
+  contextFile: InstructionContextFile
+  runNote: string
+  steps: InstructionStep[]
 }
 
 export type InstructionOption<TValue extends string> = {

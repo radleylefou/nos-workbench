@@ -12,4 +12,6 @@ export const llmReplitFragment: InstructionFragment = {
   id: "llm-replit",
   title: "Replit",
   markdown: llmReplitMarkdown,
+  runNote:
+    "Paste each prompt into the Replit Agent; it will queue the steps. The explicit stop lines keep the Agent from converting everything at once. Replit can web-fetch the manifest URL. Note: the Agent may rewrite replit.md over time, so the manifest URL and the workbench are the durable references.",
 }

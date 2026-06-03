@@ -10,4 +10,6 @@ export const llmCursorFragment: InstructionFragment = {
   id: "llm-cursor",
   title: "Cursor",
   markdown: llmCursorMarkdown,
+  runNote:
+    "Paste each prompt into Cursor chat or Composer. It reads AGENTS.md as project context and can fetch the manifest URL.",
 }

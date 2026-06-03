@@ -5,6 +5,7 @@ import { FileText } from "lucide-react"
 
 import { baseMarkdown, designPrinciplesMarkdown } from "@content/instructions"
 import { InstructionGeneratorDialog } from "@/components/onboarding/instruction-generator-dialog"
+import { Badge } from "@/components/ui/badge"
 import { CopyButton } from "@/components/workbench/copy-button"
 import {
   WorkbenchDocsShell,
@@ -33,7 +34,7 @@ const fragmentPages: Partial<
       "Core NOS rules shared by the onboarding generator and the workbench reference pages.",
     sourceLabel: "content/instructions/base.ts",
     source: baseMarkdown,
-    note: "For tailored, project-specific instructions, use the generator on the homepage.",
+    note: "For tailored, project-specific instructions, use the instruction generator on the workbench homepage.",
   },
   rules: {
     title: "Design Rules",
@@ -123,9 +124,10 @@ function InstructionSourcePage({
       <WorkbenchHero
         eyebrow="Instructions"
         title={title}
-        description={`${description} Source: ${sourceLabel}`}
+        description={description}
       >
         <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className="font-mono text-xs">{sourceLabel}</Badge>
           <CopyButton value={source} label="Copy all" />
           <InstructionGeneratorDialog
             triggerLabel="Open generator"

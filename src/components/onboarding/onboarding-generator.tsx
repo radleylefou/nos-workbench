@@ -15,6 +15,7 @@ import {
   assemble,
   getLlmLabel,
   getProjectTypeLabel,
+  type InstructionStep,
   llmOptions,
   projectTypeOptions,
   type LlmTarget,
@@ -104,6 +105,64 @@ function downloadMarkdown(markdown: string, filename: string) {
   link.click()
   link.remove()
   URL.revokeObjectURL(url)
+}
+
+const stepKindLabel: Record<InstructionStep["kind"], string> = {
+  save: "Save",
+  prompt: "Prompt",
+  checkpoint: "Review",
+}
+
+function InstructionStepCard({
+  index,
+  step,
+}: {
+  index: number
+  step: InstructionStep
+}) {
+  const saveFilename = step.kind === "save" ? step.filename : undefined
+  const copyLabel = step.kind === "save" ? "Copy file" : "Copy prompt"
+
+  return (
+    <div className="grid grid-cols-1 gap-6 py-10 lg:grid-cols-[240px_1fr] lg:gap-12">
+      {/* Left: step label + title */}
+      <div className="lg:pt-1">
+        <p className="mb-2 text-sm text-muted-foreground">Step {index + 1}</p>
+        <h3 className="text-2xl font-semibold tracking-tight">{step.title}</h3>
+      </div>
+
+      {/* Right: content card */}
+      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
+        <div className="flex flex-col gap-3 border-b border-border bg-muted/30 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant={step.kind === "checkpoint" ? "outline" : "default"}>
+              {stepKindLabel[step.kind]}
+            </Badge>
+            {step.filename ? <Badge variant="outline">{step.filename}</Badge> : null}
+          </div>
+          {step.kind !== "checkpoint" ? (
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <CopyButton value={step.body} label={copyLabel} />
+              {saveFilename ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => downloadMarkdown(step.body, saveFilename)}
+                >
+                  <Download />
+                  Download
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+        <div className="max-h-[26rem] overflow-auto p-5 sm:p-6">
+          <MarkdownView source={step.body} className="max-w-none" />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function OnboardingGenerator({ className, onClose }: OnboardingGeneratorProps) {
@@ -211,55 +270,83 @@ export function OnboardingGenerator({ className, onClose }: OnboardingGeneratorP
           ) : null}
 
           {step === "result" && result && projectType && llm ? (
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                <div className="max-w-3xl">
-                  <div className="mb-3 flex flex-wrap items-center gap-2">
+            <div className="flex flex-col gap-8">
+              {/* Header */}
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <div className="mb-4 flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{getProjectTypeLabel(projectType)}</Badge>
                     <Badge variant="outline">{getLlmLabel(llm)}</Badge>
-                    <Badge variant="default">{result.filename}</Badge>
+                    <Badge variant="default">{result.contextFile.filename}</Badge>
+                    <span className="text-muted-foreground/40" aria-hidden="true">·</span>
+                    <button
+                      type="button"
+                      className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                      onClick={() => setStep("project")}
+                    >
+                      Change type
+                    </button>
+                    <button
+                      type="button"
+                      className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                      onClick={() => setStep("environment")}
+                    >
+                      Change environment
+                    </button>
                   </div>
                   <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                    Your NOS instructions are ready
+                    Your NOS runbook is ready
                   </h2>
-                  <p className="mt-3 text-base leading-7 text-muted-foreground">
-                    {getProjectTypeLabel(projectType)} / {getLlmLabel(llm)} -&gt; {result.filename}
+                  <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
+                    Follow the steps in order. Save the rules file first, then run each prompt in {getLlmLabel(llm)}.
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <CopyButton value={result.markdown} label="Copy all" />
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <CopyButton value={result.contextFile.markdown} label="Copy rules file" />
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => downloadMarkdown(result.markdown, result.filename)}
+                    onClick={() =>
+                      downloadMarkdown(
+                        result.contextFile.markdown,
+                        result.contextFile.filename,
+                      )
+                    }
                   >
                     <Download />
-                    Download {result.filename}
+                    Download {result.contextFile.filename}
                   </Button>
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
-                <div className="flex flex-col gap-3 border-b border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileText className="size-4 text-muted-foreground" />
-                    <p className="text-sm font-medium">Generated Markdown</p>
+              {/* Run note */}
+              <div className="rounded-lg border border-border bg-muted/20 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-background text-muted-foreground ring-1 ring-border">
+                    <FileText className="size-4" />
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setStep("project")}>
-                      Change project type
-                    </Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setStep("environment")}>
-                      Change environment
-                    </Button>
+                  <div>
+                    <p className="text-sm font-medium">How to run this in {getLlmLabel(llm)}</p>
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                      {result.runNote}
+                    </p>
                   </div>
-                </div>
-                <div className="max-h-[46vh] overflow-auto p-5 sm:p-6">
-                  <MarkdownView source={result.markdown} className="max-w-none" />
                 </div>
               </div>
 
+              {/* Steps */}
+              <div className="divide-y divide-border">
+                {result.steps.map((runbookStep, index) => (
+                  <InstructionStepCard
+                    key={`${runbookStep.kind}-${runbookStep.title}`}
+                    index={index}
+                    step={runbookStep}
+                  />
+                ))}
+              </div>
+
+              {/* Footer */}
               <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
                 <Button type="button" variant="outline" onClick={handleStartOver}>
                   <RotateCcw />

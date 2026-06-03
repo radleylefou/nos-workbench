@@ -9,8 +9,8 @@ The canonical instruction content now lives in:
 - `content/instructions/project-existing.ts`
 - `content/instructions/llm-*.ts`
 
-Use the homepage generator at `/` to assemble the correct project-specific
-instruction file (`CLAUDE.md`, `replit.md`, or `AGENTS.md`).
+Use the instruction generator on `/workbench` to assemble the correct
+project-specific instruction file (`CLAUDE.md`, `replit.md`, or `AGENTS.md`).
 
 The workbench reference page at `/workbench/instructions/agents` renders from
 the same canonical fragments.

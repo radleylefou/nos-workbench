@@ -10,4 +10,6 @@ export const llmOtherFragment: InstructionFragment = {
   id: "llm-other",
   title: "Other / generic",
   markdown: llmOtherMarkdown,
+  runNote:
+    "Paste each prompt into your tool. If it does not auto-read AGENTS.md, paste the file contents first. If it cannot fetch URLs, download nos-manifest.json from the workbench, add it to the project, and point the prompt at the local file instead of the URL.",
 }

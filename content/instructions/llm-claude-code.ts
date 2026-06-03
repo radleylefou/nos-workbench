@@ -10,4 +10,6 @@ export const llmClaudeCodeFragment: InstructionFragment = {
   id: "llm-claude-code",
   title: "Claude Code",
   markdown: llmClaudeCodeMarkdown,
+  runNote:
+    "Paste each prompt into Claude Code. It reads CLAUDE.md automatically and can work through the steps. It can fetch the manifest URL directly.",
 }
