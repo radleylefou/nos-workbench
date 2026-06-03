@@ -1,82 +1,24 @@
-export const starterPrompt = `You are building a new Nymbl internal app with the NOS Design System.
+import {
+  assemble,
+  baseMarkdown,
+  designPrinciplesMarkdown,
+  projectNewFragment,
+} from "@content/instructions"
 
-Use the hosted workbench as the visual reference: https://nos-workbench.vercel.app
-Use the GitHub repo as the implementation reference: https://github.com/radleylefou/nos-workbench
+export const starterPrompt = assemble("new", "other").markdown
 
-Inputs to include:
-1. This starter prompt.
-2. The app PRD, pasted or attached in full.
-3. Any existing repo, API, data, auth, or deployment constraints.
+export const prdBuildPlanPrompt = `${projectNewFragment.markdown}
 
-First response:
-- Enter plan mode before coding.
-- Read the app PRD and convert it into SPEC.md or an equivalent app build plan.
-- Ask only for blocking clarification that cannot be resolved from the PRD or repo.
-- Do not write implementation code until the build plan is approved.
-
-The build plan must include:
-- Product summary, users, goals, and non-goals.
-- Routes, screens, and primary user flows.
-- Data model, sample states, empty/loading/error states, and permissions if relevant.
-- NOS component, pattern, and token mapping for each screen.
-- Ordered build chunks with acceptance checks.
-- Browser verification steps after each chunk.
-
-Before coding:
-1. Get the build plan approved.
-2. Create or update the generated app's root AGENTS.md with the NOS app-building rules.
-3. Copy instructions/rules.md into docs/NOS_RULES.md or an equivalent local docs path.
-4. Browse the workbench Components area and reuse existing NOS components before building new ones.
-5. Browse Tokens before choosing colors, spacing, radius, shadow, or motion values.
-6. Read instructions/AGENTS.md for repo constraints.
-7. Read instructions/rules.md and instructions/compositions.md for design and composition rules.
-
-Rules:
-- Never hardcode colors, spacing, radius, or shadow values. Reference CSS variables from globals.css.
-- Use existing NOS components before creating new ones. Copy canonical components from NOS before editing behavior.
-- Check these first: StatCard, StatusBadge, HealthIndicator, Tag, Empty, Rating, Stepper, Banner, Notification, IdChip, LinkedChip, Timeline.
-- TypeScript and TSX only. No .jsx files.
-- All transitions must use motion tokens (--duration-*, --ease-*).
-- Do not move component surfaces on hover. Cards, stat cards, tables, preview cells, pagination items, and larger components must not use hover:-translate-y-* or hover lift effects.
-- Do not install other component libraries (MUI, Chakra, Radix directly). Shadcn already wraps Radix.
-- Do not use decorative chrome: no colored top borders, side stripes, corner ornaments, or decorative accent marks.
-- Apps are light mode only. Do not install next-themes or add a dark mode toggle.
-- Use NymblAppSidebar from app-sidebar.tsx as the primary navigation. Never build a custom sidebar.
-- Copy NOS token variable names verbatim from src/app/globals.css, including semantic ramps (--success-*, --warning-*, --error-*, --info-*) — do not rename or invent names from memory.
-- Wrap children in TooltipProvider in app/layout.tsx.
-- Do not ship custom rewrites of existing NOS components such as StatCard, StatusBadge, or HealthIndicator.
-- Browser-check desktop and mobile screenshots after each approved chunk.
-
-If a needed component does not exist in the workbench, build it as a Shadcn-compatible component following the existing file conventions in src/components/ui/.`
-
-export const prdBuildPlanPrompt = `Use the app PRD and NOS workbench prompt to create a build plan before coding.
+Use the app PRD and NOS workbench prompt to create a build plan before coding.
 
 Required workflow:
 1. Read the PRD in full.
-2. Inspect the existing app/repo if one exists.
+2. Inspect the existing app or repo if one exists.
 3. Review the NOS workbench for components, patterns, and tokens that map to the PRD.
 4. Produce SPEC.md or an equivalent build plan.
-5. Wait for approval before implementing.
+5. Wait for approval before implementing.`
 
-The build plan must include:
-- Product summary.
-- Primary users and jobs to be done.
-- Goals, non-goals, and success criteria.
-- Routes, screens, and user flows.
-- Data model, sample data, permissions, and integration assumptions.
-- Empty, loading, error, and success states.
-- NOS component and token mapping by screen.
-- Ordered implementation chunks with acceptance checks, starting with NOS compliance setup.
-- Browser verification steps after each chunk.
-
-Default chunks:
-1. NOS compliance setup, app shell, navigation, tokens, and layout foundation.
-2. Core data model and mocked/sample states.
-3. Primary workflow screens.
-4. Secondary screens, tables, forms, and overlays.
-5. Polish, responsive pass, accessibility, visual parity, and browser QA.`
-
-export const buildPlanTemplate = `# SPEC.md
+export const buildPlanTemplate = String.raw`# SPEC.md
 
 ## Product Summary
 - App name:
@@ -111,10 +53,10 @@ export const buildPlanTemplate = `# SPEC.md
 - Components that may need to be created:
 
 ## Build Chunks
-### Chunk 1: NOS compliance setup, app shell, navigation, tokens, layout foundation
+### Chunk 1: NOS compliance setup, app shell, navigation, tokens, and layout foundation
 - Scope:
-  - Root AGENTS.md contains the NOS app-building rules.
-  - docs/NOS_RULES.md or equivalent contains the NOS design rules.
+  - Root AGENTS.md or the tool-specific instruction file contains NOS rules.
+  - docs/NOS_RULES.md or equivalent contains NOS design principles.
   - Canonical token blocks are copied verbatim from NOS.
   - NymblAppSidebar and TooltipProvider are installed.
 - Acceptance checks:
@@ -150,25 +92,25 @@ export const buildPlanTemplate = `# SPEC.md
 
 export const agentSourceFiles = [
   {
-    path: "instructions/AGENTS.md",
-    label: "Agent rules",
-    description: "How coding agents should consume NOS and structure new Nymbl apps.",
+    path: "content/instructions/base.ts",
+    label: "Core NOS rules",
+    description: "Canonical base fragment used by the homepage generator and Instructions section.",
     githubUrl:
-      "https://github.com/radleylefou/nos-workbench/blob/main/instructions/AGENTS.md",
+      "https://github.com/radleylefou/nos-workbench/blob/main/content/instructions/base.ts",
   },
   {
-    path: "instructions/rules.md",
-    label: "Composition rules",
-    description: "Design principles for layout, color, spacing, components, and polish.",
+    path: "content/instructions/project-new.ts",
+    label: "New project flow",
+    description: "SPEC-first workflow fragment for new Nymbl apps.",
     githubUrl:
-      "https://github.com/radleylefou/nos-workbench/blob/main/instructions/rules.md",
+      "https://github.com/radleylefou/nos-workbench/blob/main/content/instructions/project-new.ts",
   },
   {
-    path: "instructions/compositions.md",
-    label: "Composition cookbook",
-    description: "Screen recipes for app shells, dashboards, directories, details, and settings.",
+    path: "content/instructions/project-existing.ts",
+    label: "Existing project conversion",
+    description: "Inventory, mapping, gap-review, token, component-swap, and visual QA workflow.",
     githubUrl:
-      "https://github.com/radleylefou/nos-workbench/blob/main/instructions/compositions.md",
+      "https://github.com/radleylefou/nos-workbench/blob/main/content/instructions/project-existing.ts",
   },
   {
     path: "src/app/globals.css",
@@ -180,23 +122,16 @@ export const agentSourceFiles = [
 ] as const
 
 export const generatedAppChecklist = [
-  "Include the app PRD with the starter prompt so the agent has product intent and scope.",
-  "Run plan mode first and convert the PRD into SPEC.md or an equivalent build plan.",
-  "Map PRD requirements to routes, screens, data, NOS components, patterns, and tokens.",
-  "Start Chunk 1 with NOS compliance setup: persist AGENTS.md and docs/NOS_RULES.md in the generated app.",
-  "Break implementation into approved chunks with acceptance checks.",
-  "Build one chunk at a time and verify it in the browser before continuing.",
-  "Check the workbench for an existing component before building a new one.",
-  "Copy canonical NOS components before editing behavior; do not recreate existing components from memory.",
+  "Use the homepage generator to produce the right instruction file for the project type and tool.",
+  "Run plan mode first and convert the PRD or existing-app inventory into SPEC.md or an equivalent build plan.",
+  "Map requirements to routes, screens, data, NOS components, patterns, and tokens.",
+  "Start with NOS compliance setup: instruction file, NOS rules, canonical tokens, NymblAppSidebar, and TooltipProvider.",
+  "Build one approved chunk at a time and verify it in the browser before continuing.",
+  "Use NOS components before creating new components.",
   "Use NOS token variables for color, spacing, radius, shadow, and motion decisions.",
-  "Use semantic ramp tokens (--success-*, --warning-*, --error-*, --info-*) instead of raw status color choices.",
-  "Keep new primitives Shadcn-compatible and place them in src/components/ui/.",
-  "Use TSX only and avoid bringing in another component library.",
-  "Use NymblAppSidebar from NOS for all left navigation. Do not build a custom sidebar.",
-  "Wrap children in TooltipProvider in app/layout.tsx.",
-  "Copy token variable names verbatim from NOS src/app/globals.css, including semantic ramps — do not rename.",
-  "Apps are light mode only — do not add dark mode or next-themes.",
-  "Confirm no custom StatCard, StatusBadge, HealthIndicator, app shell, or sidebar exists when NOS already provides one.",
-  "Do not add hover-lift motion to component surfaces; preserve only non-positional hover feedback.",
-  "Use the visual parity checklist before completion: sidebar match, restrained brand purple, no decorative card accents, and desktop/mobile screenshots.",
+  "Keep app logic separate from presentational NOS components.",
+  "Confirm no custom shell/sidebar or local rewrite of an existing NOS component exists.",
+  "Use the visual parity checklist before completion: sidebar match, restrained brand purple, no decorative accents, and desktop/mobile screenshots.",
 ] as const
+
+export { baseMarkdown, designPrinciplesMarkdown }

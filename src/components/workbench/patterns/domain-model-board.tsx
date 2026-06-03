@@ -79,12 +79,13 @@ const SAMPLE_EPICS: EpicData[] = [
 export function DomainModelBoardPattern() {
   const [selectedCard, setSelectedCard] = useState<L1Card | null>(null)
   const [selectedEpic, setSelectedEpic] = useState<EpicData | null>(null)
+  const selectedPhases = selectedCard?.phases.map((phase) => phase.replace(/^Phase\s+(\d+)$/i, "P$1")).join(", ")
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex gap-4 overflow-x-auto pb-2">
+      <div className="grid min-w-[960px] grid-cols-4 gap-4 overflow-x-auto pb-2">
         {COLUMNS.map((col) => (
-          <div key={col.type} className="flex min-w-[240px] flex-col gap-3">
+          <div key={col.type} className="flex min-w-0 flex-col gap-3">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">{col.label}</span>
               <Badge variant="secondary" className="text-[10px]">{col.cards.length}</Badge>
@@ -99,6 +100,7 @@ export function DomainModelBoardPattern() {
                 phases={card.phases}
                 health={card.health}
                 description={card.description}
+                className="h-full"
                 onEdit={() => setSelectedCard(card)}
               />
             ))}
@@ -128,7 +130,7 @@ export function DomainModelBoardPattern() {
                 </div>
                 <div>
                   <p className="text-muted-foreground text-xs">Phases</p>
-                  <p className="font-medium">{selectedCard.phases.join(", ")}</p>
+                  <p className="font-medium">{selectedPhases}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-xs">Health</p>

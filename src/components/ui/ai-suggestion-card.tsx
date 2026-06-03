@@ -35,22 +35,20 @@ export function AISuggestionCard({
 
   return (
     <Card className={cn("w-full max-w-sm gap-0 py-0", className)} {...props}>
-      <CardContent className="p-5">
-        <div className="flex items-start gap-3">
-          <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
-                {label}
-              </Badge>
-            </div>
-            <h3 className="mt-2 text-sm font-semibold leading-snug text-foreground">
-              {title}
-            </h3>
-            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              {description}
-            </p>
+      <CardContent className="relative p-5">
+        <Icon className="absolute right-5 top-5 size-4 text-muted-foreground" aria-hidden="true" />
+        <div className="min-w-0 pr-8">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
+              {label}
+            </Badge>
           </div>
+          <h3 className="mt-2 text-sm font-semibold leading-snug text-foreground">
+            {title}
+          </h3>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            {description}
+          </p>
         </div>
         {(onApply || onDismiss) && (
           <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-3">

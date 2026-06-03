@@ -100,7 +100,7 @@ export function Stats08() {
                 href={item.href}
                 className="text-sm font-medium text-primary px-6 py-3 hover:text-primary/90"
               >
-                View more &#8594
+                View more {"\u2192"}
               </a>
             </CardFooter>
           </Card>

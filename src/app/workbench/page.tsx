@@ -1,6 +1,5 @@
 import Link from "next/link"
 import {
-  ArrowRight,
   Component,
   FileText,
   PanelLeft,
@@ -9,6 +8,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { InstructionGeneratorDialog } from "@/components/onboarding/instruction-generator-dialog"
 import { CopyButton } from "@/components/workbench/copy-button"
 import {
   WorkbenchHero,
@@ -80,12 +80,7 @@ export default function WorkbenchHome() {
         description="Browse canonical components, tokens, agent instructions, and composed patterns in one dense documentation surface."
       >
         <div className="flex flex-wrap items-center gap-3">
-          <Button asChild className="bg-zinc-950 text-white hover:bg-zinc-800">
-            <Link href="/workbench/instructions/agents">
-              Start with the agent prompt
-              <ArrowRight />
-            </Link>
-          </Button>
+          <InstructionGeneratorDialog triggerClassName="bg-zinc-950 text-white hover:bg-zinc-800" />
           <Button asChild variant="outline" className="border-zinc-300 text-zinc-950 hover:border-zinc-950">
             <Link href="/workbench/components/button">Browse components</Link>
           </Button>
@@ -118,7 +113,7 @@ export default function WorkbenchHome() {
         </div>
       </WorkbenchSection>
 
-      <WorkbenchSection id="agent-start" title="Using NOS in a new Nymbl app">
+      <WorkbenchSection id="agent-start" title="Generate project instructions">
         <WorkbenchPanel className="overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18rem]">
             <div className="p-6 sm:p-8">
@@ -130,21 +125,20 @@ export default function WorkbenchHome() {
             <div className="flex flex-col justify-between border-t border-zinc-200 bg-zinc-50 p-6 lg:border-l lg:border-t-0">
               <div>
                 <h3 className="text-lg font-semibold tracking-[-0.025em] text-zinc-950">
-                  Start with the agent prompt
+                  Start with the generator
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  Copy the starter prompt into your coding agent before any
-                  component or screen work begins.
+                  Generate the right instruction file for a new app or an
+                  existing-app conversion before component work begins.
                 </p>
               </div>
               <div className="mt-8 flex flex-col gap-2">
-                <CopyButton value={starterPrompt} label="Copy starter prompt" />
-                <Button asChild variant="outline" className="justify-between border-zinc-300">
-                  <Link href="/workbench/instructions/agents">
-                    Go to Instructions
-                    <ArrowRight />
-                  </Link>
-                </Button>
+                <CopyButton value={starterPrompt} label="Copy generic starter" />
+                <InstructionGeneratorDialog
+                  triggerLabel="Open generator"
+                  triggerVariant="outline"
+                  triggerClassName="justify-between border-zinc-300"
+                />
               </div>
             </div>
           </div>

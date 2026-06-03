@@ -1,0 +1,288 @@
+"use client"
+
+import { useMemo, useState } from "react"
+import Link from "next/link"
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Download,
+  FileText,
+  RotateCcw,
+} from "lucide-react"
+
+import {
+  assemble,
+  getLlmLabel,
+  getProjectTypeLabel,
+  llmOptions,
+  projectTypeOptions,
+  type LlmTarget,
+  type ProjectType,
+} from "@content/instructions"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { CopyButton } from "@/components/workbench/copy-button"
+import { MarkdownView } from "@/components/workbench/markdown-view"
+import { cn } from "@/lib/utils"
+
+type Step = "project" | "environment" | "result"
+
+type OnboardingGeneratorProps = {
+  className?: string
+  onClose?: () => void
+}
+
+type SelectionCardProps<TValue extends string> = {
+  label: string
+  description: string
+  selected: boolean
+  value: TValue
+  onSelect: (value: TValue) => void
+}
+
+function SelectionCard<TValue extends string>({
+  label,
+  description,
+  selected,
+  value,
+  onSelect,
+}: SelectionCardProps<TValue>) {
+  return (
+    <button
+      type="button"
+      className="h-full rounded-lg text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      onClick={() => onSelect(value)}
+      aria-pressed={selected}
+    >
+      <Card
+        className={cn(
+          "h-full gap-0 py-0 transition-[background-color,border-color,box-shadow]",
+          selected
+            ? "border-primary bg-primary/5 ring-2 ring-primary/25"
+            : "border-border bg-card hover:border-foreground/20 hover:bg-muted/30",
+        )}
+      >
+        <CardHeader className="p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <CardTitle className="text-base font-semibold">{label}</CardTitle>
+              <CardDescription className="mt-2 text-sm leading-6">
+                {description}
+              </CardDescription>
+            </div>
+            <span
+              className={cn(
+                "flex size-6 shrink-0 items-center justify-center rounded-full border text-primary",
+                selected ? "border-primary bg-primary text-primary-foreground" : "border-border",
+              )}
+              aria-hidden="true"
+            >
+              {selected ? <Check className="size-3.5" /> : null}
+            </span>
+          </div>
+        </CardHeader>
+      </Card>
+    </button>
+  )
+}
+
+function downloadMarkdown(markdown: string, filename: string) {
+  const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+export function OnboardingGenerator({ className, onClose }: OnboardingGeneratorProps) {
+  const [step, setStep] = useState<Step>("project")
+  const [projectType, setProjectTypeState] = useState<ProjectType | null>(null)
+  const [llm, setLlmState] = useState<LlmTarget | null>(null)
+
+  const result = useMemo(
+    () => (projectType && llm ? assemble(projectType, llm) : null),
+    [projectType, llm],
+  )
+  const displayStep = step === "project" ? "Step 1 of 2" : step === "environment" ? "Step 2 of 2" : "Ready"
+
+  function setProjectType(value: ProjectType) {
+    setProjectTypeState(value)
+    setStep("environment")
+  }
+
+  function setLlm(value: LlmTarget) {
+    setLlmState(value)
+    setStep("result")
+  }
+
+  function handleBack() {
+    if (step === "result") {
+      setStep("environment")
+      return
+    }
+
+    if (step === "environment") {
+      setStep("project")
+    }
+  }
+
+  function handleStartOver() {
+    setProjectTypeState(null)
+    setLlmState(null)
+    setStep("project")
+  }
+
+  return (
+    <div className={cn("bg-background p-6 text-foreground sm:p-8", className)}>
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8">
+        <section className="flex flex-col gap-6">
+          <div className="flex items-center justify-between gap-4">
+            <Badge variant="secondary" className="h-7 px-2.5 text-xs">
+              {displayStep}
+            </Badge>
+            {step !== "project" ? (
+              <Button type="button" variant="ghost" size="sm" onClick={handleBack}>
+                <ArrowLeft />
+                Back
+              </Button>
+            ) : null}
+          </div>
+
+          {step === "project" ? (
+            <div className="flex flex-col gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Set up NOS in your project
+                </h2>
+                <p className="mt-3 text-base leading-7 text-muted-foreground">
+                  Answer two questions and we&apos;ll generate tailored instructions.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {projectTypeOptions.map((option) => (
+                  <SelectionCard
+                    key={option.value}
+                    value={option.value}
+                    label={option.label}
+                    description={option.description}
+                    selected={projectType === option.value}
+                    onSelect={setProjectType}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {step === "environment" ? (
+            <div className="flex flex-col gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  What are you building with?
+                </h2>
+                <p className="mt-3 text-base leading-7 text-muted-foreground">
+                  Choose the environment that should receive the generated instruction file.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {llmOptions.map((option) => (
+                  <SelectionCard
+                    key={option.value}
+                    value={option.value}
+                    label={option.label}
+                    description={option.description}
+                    selected={llm === option.value}
+                    onSelect={setLlm}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {step === "result" && result && projectType && llm ? (
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl">
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <Badge variant="secondary">{getProjectTypeLabel(projectType)}</Badge>
+                    <Badge variant="outline">{getLlmLabel(llm)}</Badge>
+                    <Badge variant="default">{result.filename}</Badge>
+                  </div>
+                  <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                    Your NOS instructions are ready
+                  </h2>
+                  <p className="mt-3 text-base leading-7 text-muted-foreground">
+                    {getProjectTypeLabel(projectType)} / {getLlmLabel(llm)} -&gt; {result.filename}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <CopyButton value={result.markdown} label="Copy all" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => downloadMarkdown(result.markdown, result.filename)}
+                  >
+                    <Download />
+                    Download {result.filename}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
+                <div className="flex flex-col gap-3 border-b border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="size-4 text-muted-foreground" />
+                    <p className="text-sm font-medium">Generated Markdown</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setStep("project")}>
+                      Change project type
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setStep("environment")}>
+                      Change environment
+                    </Button>
+                  </div>
+                </div>
+                <div className="max-h-[46vh] overflow-auto p-5 sm:p-6">
+                  <MarkdownView source={result.markdown} className="max-w-none" />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <Button type="button" variant="outline" onClick={handleStartOver}>
+                  <RotateCcw />
+                  Start over
+                </Button>
+                {onClose ? (
+                  <Button type="button" onClick={onClose}>
+                    Back to workbench
+                    <ArrowRight />
+                  </Button>
+                ) : (
+                  <Button asChild>
+                    <Link href="/workbench/components/button">
+                      Continue to workbench
+                      <ArrowRight />
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </section>
+      </div>
+    </div>
+  )
+}

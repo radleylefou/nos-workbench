@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Check, ListFilter, Plus, X } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -257,9 +256,9 @@ function FilterChip({
             <ListFilter className="size-3.5 text-muted-foreground" />
             <span className="font-medium">{field.label}</span>
             <span className="text-muted-foreground">{operatorLabels[filter.operator]}</span>
-            <Badge variant="secondary" className="h-5 rounded px-1.5 text-[11px]">
+            <span className="inline-flex h-6 items-center rounded-md bg-muted px-2 text-sm font-semibold text-foreground">
               {getFieldValueLabel(field, filter.values)}
-            </Badge>
+            </span>
           </button>
         </PopoverTrigger>
         <button

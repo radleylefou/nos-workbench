@@ -36,6 +36,10 @@ interface L1ComponentCardProps extends React.HTMLAttributes<HTMLDivElement> {
   onAddEpic?: () => void
 }
 
+function formatPhaseLabel(phase: string) {
+  return phase.replace(/^Phase\s+(\d+)$/i, "P$1")
+}
+
 export function L1ComponentCard({
   name,
   description,
@@ -52,11 +56,12 @@ export function L1ComponentCard({
   ...props
 }: L1ComponentCardProps) {
   const hasMenu = Boolean(onEdit || onDelete)
+  const phaseLabel = phases.map(formatPhaseLabel).join(", ")
 
   return (
-    <Card className={cn("w-full gap-0 py-0", className)} {...props}>
-      <CardHeader className="p-5">
-        <CardTitle className="text-sm leading-snug">{name}</CardTitle>
+    <Card className={cn("h-full min-h-[184px] w-full gap-0 py-0", className)} {...props}>
+      <CardHeader className="min-h-24 p-5">
+        <CardTitle className="line-clamp-2 text-sm leading-snug">{name}</CardTitle>
         {description && (
           <CardDescription className="line-clamp-2 text-xs leading-5">
             {description}
@@ -92,17 +97,17 @@ export function L1ComponentCard({
         </CardAction>
       </CardHeader>
 
-      <CardContent className="border-t border-border/60 p-5">
+      <CardContent className="min-h-14 border-t border-border/60 p-5">
         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <span>{epicCount} epics</span>
           <span>{estimate} pts</span>
-          {phases.length > 0 && <span className="truncate">{phases.join(", ")}</span>}
+          {phaseLabel && <span className="truncate">{phaseLabel}</span>}
         </div>
       </CardContent>
 
       <CardFooter
         className={cn(
-          "border-t border-border/60 p-5",
+          "min-h-16 border-t border-border/60 p-5",
           onAddEpic ? "justify-between" : "justify-start"
         )}
       >
