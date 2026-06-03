@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import {
   AlertTriangle,
   ArrowUpRight,
+  BookOpen,
   Building2,
   CalendarDays,
   CheckCircle2,
@@ -13,19 +14,31 @@ import {
   Filter,
   Flag,
   Gauge,
+  GitBranch,
+  History,
+  Layers3,
+  ListChecks,
+  ReceiptText,
   Search,
   Send,
+  ShieldCheck,
+  Sparkles,
   Target,
+  UserCheck,
   UserPlus,
   Users,
+  WalletCards,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { EntityPicker, type EntityPickerOption } from "@/components/ui/entity-picker"
+import { FileUpload } from "@/components/ui/file-upload"
 import { Input } from "@/components/ui/input"
 import { KanbanBoard } from "@/components/ui/kanban-board"
 import { Progress } from "@/components/ui/progress"
+import { Scrollspy, type ScrollspySection } from "@/components/ui/scrollspy"
 import { Separator } from "@/components/ui/separator"
 import { StatCard } from "@/components/ui/stat-card"
 import { StatusBadge } from "@/components/ui/status-badge"
@@ -38,6 +51,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { Timeline } from "@/components/ui/timeline"
+import { Tree, type TreeNode } from "@/components/ui/tree"
 import { cn } from "@/lib/utils"
 
 type Tone = "success" | "warning" | "error" | "info" | "primary" | "neutral"
@@ -977,6 +993,509 @@ export function GuidePriorityCommandPattern() {
               ].map((item) => (
                 <div key={item} className="rounded-md bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
                   {item}
+                </div>
+              ))}
+            </div>
+          </Panel>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const accountWorkspaceEntities: EntityPickerOption[] = [
+  { id: "acme", label: "Acme Health", description: "Clinical portal and intake transformation", type: "Account", meta: "$180k", avatar: "AH", status: "active" },
+  { id: "northstar", label: "Northstar HealthTech", description: "Data platform and referral workflow", type: "Account", meta: "$240k", avatar: "NH", status: "watch" },
+  { id: "summit", label: "Summit Care Group", description: "Staffing model expansion", type: "Account", meta: "$160k", avatar: "SG", status: "active" },
+]
+
+const proposalSections: ScrollspySection[] = [
+  { id: "proposal-story", title: "Story", description: "Narrative and outcomes" },
+  { id: "proposal-scope", title: "Scope", description: "What will be built" },
+  { id: "proposal-commercials", title: "Commercials", description: "Budget and milestones" },
+  { id: "proposal-proof", title: "Proof", description: "Assets and case studies" },
+]
+
+const epicTree: TreeNode[] = [
+  {
+    id: "epic-root",
+    label: "Release 1: Clinical intake",
+    icon: <Layers3 className="size-4" />,
+    meta: <Badge variant="secondary">18 stories</Badge>,
+    children: [
+      {
+        id: "epic-intake",
+        label: "Epic: Intake capture",
+        icon: <GitBranch className="size-4" />,
+        meta: <ToneBadge tone="success">Ready</ToneBadge>,
+        children: [
+          { id: "story-form", label: "Story: Dynamic intake form", icon: <ListChecks className="size-4" />, meta: <Badge variant="outline">Done</Badge> },
+          { id: "story-validation", label: "Story: Field validation rules", icon: <ListChecks className="size-4" />, meta: <Badge variant="outline">QA</Badge> },
+        ],
+      },
+      {
+        id: "epic-routing",
+        label: "Epic: Referral routing",
+        icon: <GitBranch className="size-4" />,
+        meta: <ToneBadge tone="warning">Watch</ToneBadge>,
+        children: [
+          { id: "story-rules", label: "Story: Routing rule editor", icon: <ListChecks className="size-4" />, meta: <Badge variant="outline">Blocked</Badge> },
+          { id: "story-queue", label: "Story: Fallback queue", icon: <ListChecks className="size-4" />, meta: <Badge variant="outline">Review</Badge> },
+        ],
+      },
+    ],
+  },
+]
+
+export function AccountWorkspacePattern() {
+  return (
+    <div className="flex flex-col gap-4">
+      <PatternToolbar
+        title="Account workspace"
+        description="A focused CRM-style workspace for one account, combining stakeholders, activity, opportunity state, and next actions."
+        action={
+          <>
+            <Button variant="outline" size="sm">
+              <History className="size-4" />
+              Log activity
+            </Button>
+            <Button size="sm">
+              <Send className="size-4" />
+              Send follow-up
+            </Button>
+          </>
+        }
+      />
+
+      <div className="grid gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_21rem]">
+        <div className="flex flex-col gap-4">
+          <Panel title="Account selector" description="Switch context without leaving the workspace.">
+            <EntityPicker options={accountWorkspaceEntities} defaultValue={["acme"]} placeholder="Select account" />
+          </Panel>
+          <Panel title="Stakeholder coverage" description="Relationship strength by buying role.">
+            <div className="flex flex-col gap-3">
+              {[
+                ["Sofia Chen", "Sponsor", "Strong", "success" as Tone],
+                ["Ben Carter", "Procurement", "Medium", "warning" as Tone],
+                ["Maya Patel", "Clinical lead", "Strong", "success" as Tone],
+                ["IT security", "Unknown", "Gap", "error" as Tone],
+              ].map(([name, role, strength, tone]) => (
+                <div key={name as string} className="flex items-center justify-between gap-3 rounded-md border border-border p-3">
+                  <Person initials={String(name).slice(0, 2).toUpperCase()} name={name as string} detail={role as string} />
+                  <ToneBadge tone={tone as Tone}>{strength}</ToneBadge>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        </div>
+
+        <Panel title="Account activity" description="Timeline, notes, and opportunity movement for the selected account.">
+          <Tabs defaultValue="activity">
+            <TabsList variant="line">
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
+              <TabsTrigger value="notes">Notes</TabsTrigger>
+            </TabsList>
+            <TabsContent value="activity" className="pt-4">
+              <Timeline
+                steps={[
+                  { role: "Sponsor call completed", reviewer: "Alice Rivera", status: "complete", label: "Logged", timestamp: "Today 10:12", note: "Confirmed need for intake automation and executive review timeline." },
+                  { role: "Case study opened", reviewer: "Sofia Chen", status: "complete", label: "Signal", timestamp: "Yesterday" },
+                  { role: "Security stakeholder missing", reviewer: "Engage", status: "pending", label: "Next", timestamp: "This week" },
+                ]}
+              />
+            </TabsContent>
+            <TabsContent value="opportunities" className="pt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Opportunity</TableHead>
+                    <TableHead>Stage</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Probability</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[
+                    ["Clinical intake portal", "Scope", "$180k", 72],
+                    ["Referral workflow", "Discovery", "$95k", 45],
+                    ["Status reporting automation", "Proposal", "$64k", 61],
+                  ].map(([name, stage, value, probability]) => (
+                    <TableRow key={name as string}>
+                      <TableCell className="font-medium">{name}</TableCell>
+                      <TableCell><Badge variant="secondary">{stage}</Badge></TableCell>
+                      <TableCell className="tabular-nums">{value}</TableCell>
+                      <TableCell><ProgressLine value={probability as number} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+            <TabsContent value="notes" className="pt-4">
+              <Textarea defaultValue="Client wants a concise scope narrative before sharing internally. Procurement needs early visibility into milestones and billing model." className="min-h-32" />
+            </TabsContent>
+          </Tabs>
+        </Panel>
+
+        <Panel title="Next best actions" description="Guided actions based on relationship and opportunity state.">
+          <div className="flex flex-col gap-3">
+            {[
+              ["Map IT security stakeholder", "error" as Tone],
+              ["Send proposal skeleton", "primary" as Tone],
+              ["Confirm budget owner", "warning" as Tone],
+              ["Schedule scope validation", "success" as Tone],
+            ].map(([action, tone]) => (
+              <div key={action as string} className="rounded-md border border-border p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium">{action}</p>
+                  <ToneBadge tone={tone as Tone}>{tone}</ToneBadge>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      </div>
+    </div>
+  )
+}
+
+export function ProposalBuilderPattern() {
+  return (
+    <div className="grid gap-4 xl:grid-cols-[15rem_minmax(0,1fr)_21rem]">
+      <Panel title="Proposal sections" description="Persistent navigation for long client artifacts.">
+        <Scrollspy sections={proposalSections} />
+      </Panel>
+
+      <div className="flex flex-col gap-4">
+        <PatternToolbar
+          title="Proposal builder"
+          description="A document assembly workspace for turning scope, estimate, proof, and approvals into a client-ready proposal."
+          action={
+            <>
+              <Button variant="outline" size="sm">
+                <BookOpen className="size-4" />
+                Preview
+              </Button>
+              <Button size="sm">
+                <Sparkles className="size-4" />
+                Generate draft
+              </Button>
+            </>
+          }
+        />
+
+        {proposalSections.map((section, index) => (
+          <Panel key={section.id} title={section.title} description={section.description} className="scroll-mt-24">
+            <section id={section.id} className="space-y-3">
+              <Textarea
+                defaultValue={[
+                  "Acme Health is modernising clinical intake so care teams can qualify referrals faster and reduce manual routing effort.",
+                  "The proposed solution includes patient intake, referral triage, routing rules, EHR handoff, and status reporting.",
+                  "Commercials are split into discovery completion, phase 1 build, integration validation, and launch support milestones.",
+                  "Attach relevant case studies, client-ready diagrams, and delivery evidence to support the recommendation.",
+                ][index]}
+                className="min-h-28"
+              />
+              <div className="flex flex-wrap gap-2">
+                {["AI drafted", "Needs review", "Client-ready"].map((state, stateIndex) => (
+                  <Badge key={state} variant={stateIndex === index % 3 ? "default" : "secondary"}>{state}</Badge>
+                ))}
+              </div>
+            </section>
+          </Panel>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Panel title="Readiness" description="Quality gates before sharing.">
+          <div className="flex flex-col gap-3">
+            {[
+              ["Scope narrative", "completed" as ChecklistStatus],
+              ["Budget milestones", "pending" as ChecklistStatus],
+              ["Client proof assets", "pending" as ChecklistStatus],
+              ["Approval trail", "failed" as ChecklistStatus],
+            ].map(([label, status]) => (
+              <div key={label as string} className="flex items-center justify-between rounded-md border border-border p-3">
+                <span className="text-sm">{label}</span>
+                <StatusBadge status={status as ChecklistStatus} showIcon variant="light" />
+              </div>
+            ))}
+          </div>
+        </Panel>
+        <Panel title="Proposal assets" description="Attach diagrams, logos, proof, and supporting evidence.">
+          <FileUpload accept="image/*,.pdf,.ppt,.pptx" multiple description="Images, decks, and PDFs up to 25MB" className="p-6" />
+        </Panel>
+      </div>
+    </div>
+  )
+}
+
+export function SpendApprovalQueuePattern() {
+  return (
+    <div className="flex flex-col gap-4">
+      <PatternToolbar
+        title="Spend approval queue"
+        description="A finance operations pattern for mapping expenses to projects, reviewing policy state, and approving spend with receipt context."
+        action={
+          <>
+            <Button variant="outline" size="sm">
+              <Filter className="size-4" />
+              Policy filters
+            </Button>
+            <Button size="sm">
+              <WalletCards className="size-4" />
+              Approve selected
+            </Button>
+          </>
+        }
+      />
+
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+        <Panel title="Expense queue" description="Review spend by policy, owner, project, and receipt state.">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Expense</TableHead>
+                <TableHead>Owner</TableHead>
+                <TableHead>Project</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Policy</TableHead>
+                <TableHead>Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                ["Discovery travel", "Alice Rivera", "Acme Health", "$1,240", "Review", "warning" as Tone],
+                ["Cloud sandbox", "Marcus James", "Northstar", "$640", "Approved", "success" as Tone],
+                ["Workshop catering", "Priya Kapoor", "Meridian", "$380", "Needs bucket", "error" as Tone],
+                ["QA device rental", "Sam Lee", "Acme Health", "$220", "Review", "warning" as Tone],
+              ].map(([expense, owner, project, amount, policy, tone]) => (
+                <TableRow key={expense as string}>
+                  <TableCell className="font-medium">{expense}</TableCell>
+                  <TableCell>{owner}</TableCell>
+                  <TableCell className="text-muted-foreground">{project}</TableCell>
+                  <TableCell className="tabular-nums">{amount}</TableCell>
+                  <TableCell><ToneBadge tone={tone as Tone}>{policy}</ToneBadge></TableCell>
+                  <TableCell><Button variant="ghost" size="sm">Review</Button></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Panel>
+
+        <div className="flex flex-col gap-4">
+          <Panel title="Receipt preview" description="Selected item context.">
+            <div className="flex aspect-[4/5] flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 text-center">
+              <ReceiptText className="size-10 text-muted-foreground" />
+              <p className="mt-3 text-sm font-medium">Discovery travel receipt</p>
+              <p className="mt-1 text-xs text-muted-foreground">$1,240 - Acme Health</p>
+            </div>
+          </Panel>
+          <Panel title="Policy checks" description="Approval rules for this spend.">
+            <div className="flex flex-col gap-3">
+              {[
+                ["Receipt attached", "completed" as ChecklistStatus],
+                ["Project bucket selected", "completed" as ChecklistStatus],
+                ["Over travel threshold", "pending" as ChecklistStatus],
+                ["Client billable flag", "failed" as ChecklistStatus],
+              ].map(([label, status]) => (
+                <div key={label as string} className="flex items-center justify-between rounded-md bg-muted/40 px-3 py-2">
+                  <span className="text-sm">{label}</span>
+                  <StatusBadge status={status as ChecklistStatus} showIcon variant="light" />
+                </div>
+              ))}
+            </div>
+          </Panel>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function EpicHierarchyViewPattern() {
+  return (
+    <div className="flex flex-col gap-4">
+      <PatternToolbar
+        title="Epic hierarchy view"
+        description="Trace release work from epic to story to validation evidence, while keeping dependencies and blockers visible."
+        action={
+          <>
+            <Button variant="outline" size="sm">
+              <GitBranch className="size-4" />
+              Dependencies
+            </Button>
+            <Button size="sm">
+              <ShieldCheck className="size-4" />
+              Validate
+            </Button>
+          </>
+        }
+      />
+
+      <div className="grid gap-4 xl:grid-cols-[21rem_minmax(0,1fr)_20rem]">
+        <Panel title="Release hierarchy" description="Nested epics and stories.">
+          <Tree data={epicTree} defaultExpandedIds={["epic-root", "epic-intake", "epic-routing"]} selectedId="story-rules" showLines />
+        </Panel>
+
+        <Panel title="Story detail" description="Acceptance criteria, evidence, and delivery state.">
+          <div className="flex flex-col gap-4">
+            <div className="rounded-lg border border-border p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold">Routing rule editor</h3>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    Allows care operations to define fallback queues and routing conditions without engineering intervention.
+                  </p>
+                </div>
+                <ToneBadge tone="warning">Blocked</ToneBadge>
+              </div>
+            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Acceptance criteria</TableHead>
+                  <TableHead>Owner</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[
+                  ["Can create routing rule with condition groups", "Priya", "completed" as ChecklistStatus],
+                  ["Can preview affected referral volume", "Marcus", "pending" as ChecklistStatus],
+                  ["Client approves fallback queue naming", "Alice", "failed" as ChecklistStatus],
+                ].map(([criteria, owner, status]) => (
+                  <TableRow key={criteria as string}>
+                    <TableCell className="font-medium">{criteria}</TableCell>
+                    <TableCell>{owner}</TableCell>
+                    <TableCell><StatusBadge status={status as ChecklistStatus} showIcon variant="light" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </Panel>
+
+        <Panel title="Evidence and blockers" description="Validation artifacts attached to selected story.">
+          <div className="flex flex-col gap-3">
+            {[
+              ["Figma acceptance screenshot", "completed" as ChecklistStatus],
+              ["QA recording", "pending" as ChecklistStatus],
+              ["Client decision note", "failed" as ChecklistStatus],
+            ].map(([label, status]) => (
+              <div key={label as string} className="flex items-center justify-between rounded-md border border-border p-3">
+                <span className="text-sm">{label}</span>
+                <StatusBadge status={status as ChecklistStatus} showIcon variant="light" />
+              </div>
+            ))}
+          </div>
+        </Panel>
+      </div>
+    </div>
+  )
+}
+
+export function ReadinessProfilePattern() {
+  return (
+    <div className="flex flex-col gap-4">
+      <PatternToolbar
+        title="Readiness profile"
+        description="A person-centered enablement pattern for skills, growth actions, capacity, and next assignment fit."
+        action={
+          <>
+            <Button variant="outline" size="sm">
+              <UserCheck className="size-4" />
+              Manager review
+            </Button>
+            <Button size="sm">
+              <Target className="size-4" />
+              Assign next role
+            </Button>
+          </>
+        }
+      />
+
+      <div className="grid gap-4 xl:grid-cols-[20rem_minmax(0,1fr)]">
+        <div className="flex flex-col gap-4">
+          <Panel title="Profile" description="Individual readiness context.">
+            <div className="flex flex-col items-center text-center">
+              <Avatar size="lg">
+                <AvatarFallback>PK</AvatarFallback>
+              </Avatar>
+              <h3 className="mt-3 text-base font-semibold">Priya Kapoor</h3>
+              <p className="text-sm text-muted-foreground">Solution architect - 72% allocated</p>
+              <ToneBadge tone="success" className="mt-3">Ready for Scope lead</ToneBadge>
+            </div>
+            <Separator className="my-4" />
+            <EntityPicker
+              multiple
+              defaultValue={["scope", "platform"]}
+              placeholder="Select strengths"
+              options={[
+                { id: "scope", label: "Scope architecture", type: "Skill", avatar: "SA", status: "active" },
+                { id: "platform", label: "Platform integration", type: "Skill", avatar: "PI", status: "active" },
+                { id: "ai", label: "AI workflow design", type: "Skill", avatar: "AI", status: "watch" },
+              ]}
+            />
+          </Panel>
+          <Panel title="Assignment fit" description="Fit against open work.">
+            <div className="flex flex-col gap-3">
+              {[
+                ["Clinical portal scope lead", 94, "success" as Tone],
+                ["Data platform architect", 78, "primary" as Tone],
+                ["Budget controls reviewer", 54, "warning" as Tone],
+              ].map(([role, fit, tone]) => (
+                <div key={role as string} className="rounded-md border border-border p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">{role}</span>
+                    <ToneBadge tone={tone as Tone}>{fit}%</ToneBadge>
+                  </div>
+                  <div className="mt-3"><ProgressLine value={fit as number} /></div>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Panel title="Competency depth" description="Current readiness by capability.">
+            <div className="flex flex-col gap-4">
+              {[
+                ["Discovery facilitation", 88],
+                ["Scope decomposition", 96],
+                ["Technical integration", 82],
+                ["Commercial estimation", 64],
+              ].map(([skill, value]) => (
+                <div key={skill as string}>
+                  <div className="mb-2 flex items-center justify-between text-sm">
+                    <span>{skill}</span>
+                    <span className="tabular-nums text-muted-foreground">{value}%</span>
+                  </div>
+                  <Progress value={value as number} className="h-2" />
+                </div>
+              ))}
+            </div>
+          </Panel>
+          <Panel title="Growth plan" description="Recommended enablement steps.">
+            <Timeline
+              steps={[
+                { role: "Pair on pricing review", reviewer: "Nora Chen", status: "pending", label: "Next", timestamp: "This week" },
+                { role: "Complete AI workflow module", reviewer: "Enable", status: "pending", label: "Learning", timestamp: "Jun 12" },
+                { role: "Lead client scope playback", reviewer: "Sam Lee", status: "complete", label: "Done", timestamp: "Last week" },
+              ]}
+            />
+          </Panel>
+          <Panel title="Capacity forecast" description="Future availability by week." className="lg:col-span-2">
+            <div className="grid gap-3 sm:grid-cols-4">
+              {[
+                ["Jun 8", 72],
+                ["Jun 15", 68],
+                ["Jun 22", 54],
+                ["Jun 29", 48],
+              ].map(([week, value]) => (
+                <div key={week as string} className="rounded-md border border-border p-3">
+                  <p className="text-xs text-muted-foreground">{week}</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums">{value}%</p>
+                  <Progress value={value as number} className="mt-3 h-2" />
                 </div>
               ))}
             </div>

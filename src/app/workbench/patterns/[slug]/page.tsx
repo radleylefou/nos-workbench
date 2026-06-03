@@ -8,11 +8,16 @@ import { EstimationScreenPattern } from "@/components/workbench/patterns/estimat
 import { ScopeDocumentPattern } from "@/components/workbench/patterns/scope-document"
 import { ReportingAdminPattern } from "@/components/workbench/patterns/reporting-admin"
 import {
+  AccountWorkspacePattern,
   BudgetControlCenterPattern,
   DeliveryReleaseTrackerPattern,
   EnablementSkillsMatrixPattern,
+  EpicHierarchyViewPattern,
   GuidePriorityCommandPattern,
+  ProposalBuilderPattern,
   ProspectCommandCenterPattern,
+  ReadinessProfilePattern,
+  SpendApprovalQueuePattern,
   StaffingCapacityPlannerPattern,
 } from "@/components/workbench/patterns/research-backed"
 import {
@@ -32,12 +37,17 @@ const patternComponents: Record<string, ComponentType> = {
   "domain-model-board": DomainModelBoardPattern,
   "estimation-screen": EstimationScreenPattern,
   "scope-document": ScopeDocumentPattern,
+  "proposal-builder": ProposalBuilderPattern,
   "reporting-admin": ReportingAdminPattern,
   "prospect-command-center": ProspectCommandCenterPattern,
+  "account-workspace": AccountWorkspacePattern,
   "staffing-capacity-planner": StaffingCapacityPlannerPattern,
   "delivery-release-tracker": DeliveryReleaseTrackerPattern,
+  "epic-hierarchy-view": EpicHierarchyViewPattern,
   "enablement-skills-matrix": EnablementSkillsMatrixPattern,
+  "readiness-profile": ReadinessProfilePattern,
   "budget-control-center": BudgetControlCenterPattern,
+  "spend-approval-queue": SpendApprovalQueuePattern,
   "guide-priority-command": GuidePriorityCommandPattern,
 }
 

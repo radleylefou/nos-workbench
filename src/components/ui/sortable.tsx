@@ -1,6 +1,25 @@
 "use client"
 
 import * as React from "react"
+import {
+  DndContext,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { ArrowDown, ArrowUp, GripVertical } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -24,12 +43,10 @@ type SortableProps<T> = React.HTMLAttributes<HTMLDivElement> & {
   layout?: SortableLayout
 }
 
-function moveItem<T>(items: T[], from: number, to: number) {
-  const next = [...items]
-  const [item] = next.splice(from, 1)
-  next.splice(to, 0, item)
-  return next
-}
+// Passes drag listeners from useSortable down to SortableItemHandle
+const SortableDragContext = React.createContext<{
+  listeners?: ReturnType<typeof useSortable>["listeners"]
+}>({})
 
 function Sortable<T>({
   value,
@@ -40,55 +57,171 @@ function Sortable<T>({
   className,
   ...props
 }: SortableProps<T>) {
+  const dndId = React.useId()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setMounted(true))
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
+
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
+
+  const ids = React.useMemo(() => value.map(getItemValue), [value, getItemValue])
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      const oldIndex = ids.indexOf(String(active.id))
+      const newIndex = ids.indexOf(String(over.id))
+      onValueChange(arrayMove(value, oldIndex, newIndex))
+    }
+  }
+
   const move = React.useCallback(
     (from: number, to: number) => {
       if (to < 0 || to >= value.length) return
-      onValueChange(moveItem(value, from, to))
+      onValueChange(arrayMove(value, from, to))
     },
     [onValueChange, value],
   )
 
+  const containerClass = cn(
+    "grid gap-2",
+    layout === "grid" && "grid-cols-1 sm:grid-cols-2",
+    className,
+  )
+
+  if (!mounted) {
+    return (
+      <div
+        data-slot="sortable"
+        data-layout={layout}
+        className={containerClass}
+        {...props}
+      >
+        {value.map((item, index) => {
+          const id = getItemValue(item)
+          return (
+            <SortableDragContext.Provider key={id} value={{}}>
+              <div
+                data-slot="sortable-item"
+                className="rounded-md border border-border bg-background shadow-xs"
+              >
+                {renderItem(item, {
+                  index,
+                  isFirst: index === 0,
+                  isLast: index === value.length - 1,
+                  moveUp: () => move(index, index - 1),
+                  moveDown: () => move(index, index + 1),
+                })}
+              </div>
+            </SortableDragContext.Provider>
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
-    <div
-      data-slot="sortable"
-      data-layout={layout}
-      className={cn(
-        "grid gap-2",
-        layout === "grid" && "grid-cols-1 sm:grid-cols-2",
-        className,
-      )}
-      {...props}
+    <DndContext
+      id={dndId}
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
     >
-      {value.map((item, index) => (
-        <SortableItem key={getItemValue(item)}>
-          {renderItem(item, {
-            index,
-            isFirst: index === 0,
-            isLast: index === value.length - 1,
-            moveUp: () => move(index, index - 1),
-            moveDown: () => move(index, index + 1),
+      <SortableContext
+        items={ids}
+        strategy={layout === "grid" ? rectSortingStrategy : verticalListSortingStrategy}
+      >
+        <div
+          data-slot="sortable"
+          data-layout={layout}
+          className={containerClass}
+          {...props}
+        >
+          {value.map((item, index) => {
+            const id = getItemValue(item)
+            return (
+              <SortableListItem key={id} id={id}>
+                {renderItem(item, {
+                  index,
+                  isFirst: index === 0,
+                  isLast: index === value.length - 1,
+                  moveUp: () => move(index, index - 1),
+                  moveDown: () => move(index, index + 1),
+                })}
+              </SortableListItem>
+            )
           })}
-        </SortableItem>
-      ))}
-    </div>
+        </div>
+      </SortableContext>
+    </DndContext>
   )
 }
 
-function SortableItem({ className, ...props }: React.ComponentProps<"div">) {
+function SortableListItem({
+  id,
+  children,
+  className,
+}: {
+  id: string
+  children: React.ReactNode
+  className?: string
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
   return (
-    <div
-      data-slot="sortable-item"
-      className={cn("rounded-md border border-border bg-background shadow-xs", className)}
-      {...props}
-    />
+    <SortableDragContext.Provider value={{ listeners }}>
+      <div
+        ref={setNodeRef}
+        style={style}
+        data-slot="sortable-item"
+        data-dragging={isDragging || undefined}
+        className={cn(
+          "rounded-md border border-border bg-background shadow-xs",
+          "data-[dragging]:z-10 data-[dragging]:opacity-50 data-[dragging]:shadow-md",
+          className,
+        )}
+        {...attributes}
+      >
+        {children}
+      </div>
+    </SortableDragContext.Provider>
   )
 }
+
+// Alias so existing code that imports SortableItem still works
+const SortableItem = SortableListItem
 
 function SortableItemHandle({ className, ...props }: React.ComponentProps<"div">) {
+  const { listeners } = React.useContext(SortableDragContext)
   return (
     <div
       data-slot="sortable-item-handle"
-      className={cn("flex size-8 shrink-0 items-center justify-center text-muted-foreground", className)}
+      className={cn(
+        "flex size-8 shrink-0 cursor-grab items-center justify-center text-muted-foreground active:cursor-grabbing",
+        className,
+      )}
+      {...listeners}
       {...props}
     >
       <GripVertical className="size-4" />

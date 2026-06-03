@@ -75,8 +75,8 @@ function Scrollspy({
             type="button"
             aria-current={active ? "true" : undefined}
             className={cn(
-              "flex min-w-0 flex-col rounded-md border-l-2 border-transparent px-3 py-2 text-left transition-colors hover:bg-muted/60",
-              active && "border-primary bg-primary/5 text-primary",
+              "flex min-w-0 flex-col rounded-md px-3 py-2 text-left transition-colors hover:bg-muted/60",
+              active && "bg-primary/5 text-primary",
             )}
             onClick={() => handleClick(section.id)}
           >
