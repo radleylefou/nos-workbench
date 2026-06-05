@@ -41,7 +41,7 @@ const data = [
 const chartConfig = {
   capacity: {
     label: "Capacity",
-    color: "hsl(var(--primary))",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig
 

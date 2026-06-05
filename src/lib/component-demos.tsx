@@ -258,6 +258,7 @@ import { StepperCounter } from "@/components/ui/stepper-counter"
 import { L1DistributionBar } from "@/components/ui/l1-distribution-bar"
 import { AIActionBarDemo, AIActionBarMinimalDemo } from "@/components/workbench/demos/ai-action-bar-demo"
 // Phase 3 — Metrics & Feeds
+import { AnimatedNumber } from "@/components/ui/animated-number"
 import { StatCard } from "@/components/ui/stat-card"
 import { Timeline } from "@/components/ui/timeline"
 import { ActivityFeed } from "@/components/ui/activity-feed"
@@ -391,7 +392,15 @@ import {
 } from "@/components/ui/number-field"
 import { ChevronUp as ChevronUpIcon, ChevronDown as ChevronDownIcon } from "lucide-react"
 
-export type DemoGroup = { label: string; node: ReactNode }
+export type DemoGroup = {
+  label: string
+  node: ReactNode
+  span?: "full"
+  /** Consumer-facing TSX for this exact preview card. */
+  code?: string
+  /** Optional extra imports needed only by this variant. */
+  importLine?: string
+}
 
 export type ComponentDemo = {
   importLine: string
@@ -425,6 +434,11 @@ export const demos: Record<string, ComponentDemo> = {
             </div>
           </AspectRatio>
         ),
+        code: `<AspectRatio ratio={16 / 9} className="w-64 overflow-hidden rounded-md bg-muted">
+            <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+              16 / 9
+            </div>
+          </AspectRatio>`,
       },
       {
         label: "4/3",
@@ -435,6 +449,11 @@ export const demos: Record<string, ComponentDemo> = {
             </div>
           </AspectRatio>
         ),
+        code: `<AspectRatio ratio={4 / 3} className="w-40 overflow-hidden rounded-md bg-muted">
+            <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+              4 / 3
+            </div>
+          </AspectRatio>`,
       },
       {
         label: "1/1",
@@ -445,6 +464,11 @@ export const demos: Record<string, ComponentDemo> = {
             </div>
           </AspectRatio>
         ),
+        code: `<AspectRatio ratio={1} className="w-24 overflow-hidden rounded-md bg-muted">
+            <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+              1 / 1
+            </div>
+          </AspectRatio>`,
       },
     ],
   },
@@ -474,6 +498,19 @@ export const demos: Record<string, ComponentDemo> = {
             </ResizablePanel>
           </ResizablePanelGroup>
         ),
+        code: `<ResizablePanelGroup orientation="horizontal" className="h-28 w-full rounded-md border">
+            <ResizablePanel defaultSize={50}>
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                Left
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={50}>
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                Right
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>`,
       },
     ],
   },
@@ -494,12 +531,18 @@ export const demos: Record<string, ComponentDemo> = {
 </Frame>`,
     variantSpan: "full",
     variants: [
-      { label: "default", node: <FrameDefaultDemo /> },
-      { label: "dense", node: <FrameDenseDemo /> },
-      { label: "separated", node: <FrameSeparatedDemo /> },
-      { label: "stacked", node: <FrameStackedDemo /> },
-      { label: "borderless", node: <FrameBorderlessDemo /> },
-      { label: "search frame", node: <FilteredFrameDemo /> },
+      { label: "default", node: <FrameDefaultDemo />,
+      code: `<FrameDefaultDemo />` },
+      { label: "dense", node: <FrameDenseDemo />,
+      code: `<FrameDenseDemo />` },
+      { label: "separated", node: <FrameSeparatedDemo />,
+      code: `<FrameSeparatedDemo />` },
+      { label: "stacked", node: <FrameStackedDemo />,
+      code: `<FrameStackedDemo />` },
+      { label: "borderless", node: <FrameBorderlessDemo />,
+      code: `<FrameBorderlessDemo />` },
+      { label: "search frame", node: <FilteredFrameDemo />,
+      code: `<FilteredFrameDemo />` },
     ],
   },
 
@@ -522,6 +565,15 @@ export const demos: Record<string, ComponentDemo> = {
             </div>
           </ScrollArea>
         ),
+        code: `<ScrollArea className="h-40 w-48 rounded-md border">
+            <div className="p-4">
+              {Array.from({ length: 20 }, (_, i) => (
+                <div key={i} className="py-1 text-sm text-muted-foreground">
+                  Row {i + 1}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>`,
       },
     ],
   },
@@ -540,6 +592,11 @@ export const demos: Record<string, ComponentDemo> = {
             <div className="text-sm">Below</div>
           </div>
         ),
+        code: `<div className="w-48 space-y-2">
+            <div className="text-sm">Above</div>
+            <Separator />
+            <div className="text-sm">Below</div>
+          </div>`,
       },
       {
         label: "vertical",
@@ -550,6 +607,11 @@ export const demos: Record<string, ComponentDemo> = {
             <span>Right</span>
           </div>
         ),
+        code: `<div className="flex h-10 items-center gap-3 text-sm">
+            <span>Left</span>
+            <Separator orientation="vertical" />
+            <span>Right</span>
+          </div>`,
       },
     ],
   },
@@ -560,21 +622,35 @@ export const demos: Record<string, ComponentDemo> = {
     importLine: `import { Badge } from "@/components/ui/badge"`,
     exampleCode: `<Badge>New</Badge>`,
     variants: [
-      { label: "default", node: <Badge>Default</Badge> },
-      { label: "secondary", node: <Badge variant="secondary">Secondary</Badge> },
-      { label: "destructive", node: <Badge variant="destructive">Destructive</Badge> },
-      { label: "outline", node: <Badge variant="outline">Outline</Badge> },
-      { label: "ghost", node: <Badge variant="ghost">Ghost</Badge> },
+      { label: "default", node: <Badge>Default</Badge>,
+      code: `<Badge>Default</Badge>` },
+      { label: "secondary", node: <Badge variant="secondary">Secondary</Badge>,
+      code: `<Badge variant="secondary">Secondary</Badge>` },
+      { label: "destructive", node: <Badge variant="destructive">Destructive</Badge>,
+      code: `<Badge variant="destructive">Destructive</Badge>` },
+      { label: "outline", node: <Badge variant="outline">Outline</Badge>,
+      code: `<Badge variant="outline">Outline</Badge>` },
+      { label: "ghost", node: <Badge variant="ghost">Ghost</Badge>,
+      code: `<Badge variant="ghost">Ghost</Badge>` },
       // T1-01: Stage & Status colours
-      { label: "Solution Definition", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--brand-600) 15%, transparent)", color: "var(--brand-600)" }}>Solution Definition</Badge> },
-      { label: "Estimation", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--info) 15%, transparent)", color: "var(--info)" }}>Estimation</Badge> },
-      { label: "Triage", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--warning) 15%, transparent)", color: "var(--warning)" }}>Triage</Badge> },
-      { label: "Client Review", node: <Badge style={{ backgroundColor: "var(--brand-600)", color: "white" }}>Client Review</Badge> },
-      { label: "On Track", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--success) 15%, transparent)", color: "var(--success)" }}>On Track</Badge> },
-      { label: "At Risk", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--warning) 15%, transparent)", color: "var(--warning)" }}>At Risk</Badge> },
-      { label: "Blocked", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--error) 15%, transparent)", color: "var(--error)" }}>Blocked</Badge> },
-      { label: "Healthy", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--success) 15%, transparent)", color: "var(--success)" }}>Healthy</Badge> },
-      { label: "Mitigated", node: <Badge variant="secondary">Mitigated</Badge> },
+      { label: "Solution Definition", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--brand-600) 15%, transparent)", color: "var(--brand-600)" }}>Solution Definition</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--brand-600) 15%, transparent)", color: "var(--brand-600)" }}>Solution Definition</Badge>` },
+      { label: "Estimation", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--info) 15%, transparent)", color: "var(--info)" }}>Estimation</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--info) 15%, transparent)", color: "var(--info)" }}>Estimation</Badge>` },
+      { label: "Triage", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--warning) 15%, transparent)", color: "var(--warning)" }}>Triage</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--warning) 15%, transparent)", color: "var(--warning)" }}>Triage</Badge>` },
+      { label: "Client Review", node: <Badge style={{ backgroundColor: "var(--brand-600)", color: "white" }}>Client Review</Badge>,
+      code: `<Badge style={{ backgroundColor: "var(--brand-600)", color: "white" }}>Client Review</Badge>` },
+      { label: "On Track", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--success) 15%, transparent)", color: "var(--success)" }}>On Track</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--success) 15%, transparent)", color: "var(--success)" }}>On Track</Badge>` },
+      { label: "At Risk", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--warning) 15%, transparent)", color: "var(--warning)" }}>At Risk</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--warning) 15%, transparent)", color: "var(--warning)" }}>At Risk</Badge>` },
+      { label: "Blocked", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--error) 15%, transparent)", color: "var(--error)" }}>Blocked</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--error) 15%, transparent)", color: "var(--error)" }}>Blocked</Badge>` },
+      { label: "Healthy", node: <Badge style={{ backgroundColor: "color-mix(in oklch, var(--success) 15%, transparent)", color: "var(--success)" }}>Healthy</Badge>,
+      code: `<Badge style={{ backgroundColor: "color-mix(in oklch, var(--success) 15%, transparent)", color: "var(--success)" }}>Healthy</Badge>` },
+      { label: "Mitigated", node: <Badge variant="secondary">Mitigated</Badge>,
+      code: `<Badge variant="secondary">Mitigated</Badge>` },
     ],
   },
 
@@ -593,6 +669,10 @@ export const demos: Record<string, ComponentDemo> = {
             <AlertDescription>You can add components using the CLI.</AlertDescription>
           </Alert>
         ),
+        code: `<Alert className="w-full">
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>You can add components using the CLI.</AlertDescription>
+          </Alert>`,
       },
       {
         label: "destructive",
@@ -602,9 +682,14 @@ export const demos: Record<string, ComponentDemo> = {
             <AlertDescription>Your session has expired. Please sign in again.</AlertDescription>
           </Alert>
         ),
+        code: `<Alert variant="destructive" className="w-full">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>Your session has expired. Please sign in again.</AlertDescription>
+          </Alert>`,
       },
       // T1-04: Dismissible banner
-      { label: "dismissible", node: <DismissibleAlert /> },
+      { label: "dismissible", node: <DismissibleAlert />,
+      code: `<DismissibleAlert />` },
     ],
   },
 
@@ -621,6 +706,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Input id="wb-label-1" type="email" placeholder="you@nymbl.com" />
           </div>
         ),
+        code: `<div className="flex flex-col gap-1.5">
+            <Label htmlFor="wb-label-1">Email address</Label>
+            <Input id="wb-label-1" type="email" placeholder="you@nymbl.com" />
+          </div>`,
       },
       {
         label: "disabled",
@@ -630,6 +719,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Input id="wb-label-2" disabled placeholder="Not editable" />
           </div>
         ),
+        code: `<div className="flex flex-col gap-1.5 opacity-50">
+            <Label htmlFor="wb-label-2">Disabled field</Label>
+            <Input id="wb-label-2" disabled placeholder="Not editable" />
+          </div>`,
       },
     ],
   },
@@ -641,7 +734,8 @@ export const demos: Record<string, ComponentDemo> = {
   <Kbd>K</Kbd>
 </KbdGroup>`,
     variants: [
-      { label: "single", node: <Kbd>⌘</Kbd> },
+      { label: "single", node: <Kbd>⌘</Kbd>,
+      code: `<Kbd>⌘</Kbd>` },
       {
         label: "chord",
         node: (
@@ -650,6 +744,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Kbd>K</Kbd>
           </KbdGroup>
         ),
+        code: `<KbdGroup>
+            <Kbd>⌘</Kbd>
+            <Kbd>K</Kbd>
+          </KbdGroup>`,
       },
       {
         label: "sequence",
@@ -660,6 +758,11 @@ export const demos: Record<string, ComponentDemo> = {
             <Kbd>P</Kbd>
           </KbdGroup>
         ),
+        code: `<KbdGroup>
+            <Kbd>Ctrl</Kbd>
+            <Kbd>Shift</Kbd>
+            <Kbd>P</Kbd>
+          </KbdGroup>`,
       },
     ],
   },
@@ -678,6 +781,11 @@ export const demos: Record<string, ComponentDemo> = {
             Approve scope
           </Button>
         ),
+        importLine: `import { Button } from "@/components/ui/button"\nimport { Check } from "lucide-react"`,
+        code: `<Button>
+  <Check data-icon="inline-start" />
+  Approve scope
+</Button>`,
       },
       {
         label: "outline",
@@ -687,9 +795,14 @@ export const demos: Record<string, ComponentDemo> = {
             Export estimate
           </Button>
         ),
+        importLine: `import { Button } from "@/components/ui/button"\nimport { Download } from "lucide-react"`,
+        code: `<Button variant="outline">
+  <Download data-icon="inline-start" />
+  Export estimate
+</Button>`,
       },
-      { label: "secondary", node: <Button variant="secondary">Save draft</Button> },
-      { label: "ghost", node: <Button variant="ghost">Preview</Button> },
+      { label: "secondary", node: <Button variant="secondary">Save draft</Button>, code: `<Button variant="secondary">Save draft</Button>` },
+      { label: "ghost", node: <Button variant="ghost">Preview</Button>, code: `<Button variant="ghost">Preview</Button>` },
       {
         label: "destructive",
         node: (
@@ -698,14 +811,19 @@ export const demos: Record<string, ComponentDemo> = {
             Delete draft
           </Button>
         ),
+        importLine: `import { Button } from "@/components/ui/button"\nimport { Trash2 } from "lucide-react"`,
+        code: `<Button variant="destructive">
+  <Trash2 data-icon="inline-start" />
+  Delete draft
+</Button>`,
       },
-      { label: "link", node: <Button variant="link">View details</Button> },
+      { label: "link", node: <Button variant="link">View details</Button>, code: `<Button variant="link">View details</Button>` },
     ],
     sizes: [
-      { label: "xs", node: <Button size="xs">Tag action</Button> },
-      { label: "sm", node: <Button size="sm">Review</Button> },
-      { label: "default", node: <Button>Continue</Button> },
-      { label: "lg", node: <Button size="lg">Start intake</Button> },
+      { label: "xs", node: <Button size="xs">Tag action</Button>, code: `<Button size="xs">Tag action</Button>` },
+      { label: "sm", node: <Button size="sm">Review</Button>, code: `<Button size="sm">Review</Button>` },
+      { label: "default", node: <Button>Continue</Button>, code: `<Button>Continue</Button>` },
+      { label: "lg", node: <Button size="lg">Start intake</Button>, code: `<Button size="lg">Start intake</Button>` },
       {
         label: "icon",
         node: (
@@ -713,6 +831,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Search />
           </Button>
         ),
+        importLine: `import { Button } from "@/components/ui/button"\nimport { Search } from "lucide-react"`,
+        code: `<Button size="icon" aria-label="Search workbench">
+  <Search />
+</Button>`,
       },
     ],
   },
@@ -734,6 +856,11 @@ export const demos: Record<string, ComponentDemo> = {
             <Button>Continue</Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline">Back</Button>
+            <Button variant="outline">Filter</Button>
+            <Button>Continue</Button>
+          </ButtonGroup>`,
       },
       {
         label: "vertical",
@@ -744,6 +871,11 @@ export const demos: Record<string, ComponentDemo> = {
             <Button variant="outline">Bottom</Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup orientation="vertical">
+            <Button variant="outline">Top</Button>
+            <Button variant="outline">Middle</Button>
+            <Button variant="outline">Bottom</Button>
+          </ButtonGroup>`,
       },
       {
         label: "with-input",
@@ -753,6 +885,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Input placeholder="Filter records..." />
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline">Search</Button>
+            <Input placeholder="Filter records..." />
+          </ButtonGroup>`,
       },
       {
         label: "split-button",
@@ -773,6 +909,21 @@ export const demos: Record<string, ComponentDemo> = {
             </DropdownMenu>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button>Deploy</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" aria-label="More deploy options">
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem>Production</DropdownMenuItem>
+                <DropdownMenuItem>Staging</DropdownMenuItem>
+                <DropdownMenuItem>Development</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>`,
       },
       {
         label: "icon-toolbar",
@@ -789,6 +940,17 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline" size="icon" aria-label="Grid view">
+              <LayoutGrid className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="List view">
+              <List className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Table view">
+              <Table2 className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "text-alignment",
@@ -808,6 +970,20 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline" size="icon-sm" aria-label="Align left">
+              <AlignLeft className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon-sm" aria-label="Align center">
+              <AlignCenter className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon-sm" aria-label="Align right">
+              <AlignRight className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon-sm" aria-label="Align justify">
+              <AlignJustify className="size-3.5" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "pagination",
@@ -826,6 +1002,19 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="size-3.5" />
+              Previous
+            </Button>
+            <Button variant="outline" size="sm">1</Button>
+            <Button variant="outline" size="sm">2</Button>
+            <Button variant="outline" size="sm">3</Button>
+            <Button variant="outline" size="sm">
+              Next
+              <ArrowRight className="size-3.5" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "with-separator",
@@ -838,6 +1027,13 @@ export const demos: Record<string, ComponentDemo> = {
             <Button>Media</Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup className="**:data-[slot=button]:border-0">
+            <Button>Files</Button>
+            <ButtonGroupSeparator className="bg-primary/25" />
+            <Button>Folder</Button>
+            <ButtonGroupSeparator className="bg-primary/25" />
+            <Button>Media</Button>
+          </ButtonGroup>`,
       },
       {
         label: "filter-search",
@@ -863,6 +1059,26 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup className="max-w-xs">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <ListFilter className="size-4" />
+                  Filter
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem>All Records</DropdownMenuItem>
+                <DropdownMenuItem>Recent</DropdownMenuItem>
+                <DropdownMenuItem>Archived</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Input placeholder="Search records..." />
+            <Button variant="outline" size="icon" aria-label="Clear search">
+              <X className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "disabled",
@@ -873,6 +1089,11 @@ export const demos: Record<string, ComponentDemo> = {
             <Button variant="outline">Delete</Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline">Save</Button>
+            <Button variant="outline" disabled>Publish</Button>
+            <Button variant="outline">Delete</Button>
+          </ButtonGroup>`,
       },
       {
         label: "vertical-icons",
@@ -886,6 +1107,14 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup orientation="vertical">
+            <Button variant="outline" size="icon" aria-label="Add">
+              <Plus className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Subtract">
+              <Minus className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "branch-status",
@@ -917,6 +1146,32 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <GitMerge className="size-4" />
+                  main
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem>main</DropdownMenuItem>
+                <DropdownMenuItem>develop</DropdownMenuItem>
+                <DropdownMenuItem>feature/auth</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <ButtonGroupText className="bg-transparent">
+              <span className="size-1.5 animate-pulse rounded-full bg-green-600" />
+              Production
+            </ButtonGroupText>
+            <Button variant="outline" size="icon" aria-label="Refresh">
+              <RefreshCw className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Open">
+              <ExternalLink className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "badge-actions",
@@ -935,6 +1190,19 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Button variant="outline">
+              <FileText className="size-4" />
+              <Badge variant="secondary">Draft</Badge>
+            </Button>
+            <Button variant="outline">
+              <Pencil className="size-4" />
+              Edit
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Upload">
+              <Upload className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "status-search",
@@ -958,6 +1226,24 @@ export const demos: Record<string, ComponentDemo> = {
             <Input placeholder="Search tasks..." />
           </ButtonGroup>
         ),
+        code: `<ButtonGroup className="max-w-xs">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-36 justify-start gap-2">
+                  <span className="size-1.5 rounded-full bg-green-500" />
+                  Completed
+                  <ChevronDown className="ml-auto size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem>In Progress</DropdownMenuItem>
+                <DropdownMenuItem>Completed</DropdownMenuItem>
+                <DropdownMenuItem>Pending</DropdownMenuItem>
+                <DropdownMenuItem>Cancelled</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Input placeholder="Search tasks..." />
+          </ButtonGroup>`,
       },
       {
         label: "paired-selects",
@@ -986,10 +1272,34 @@ export const demos: Record<string, ComponentDemo> = {
             </Select>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <Select defaultValue="development">
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="production">Production</SelectItem>
+                <SelectItem value="staging">Staging</SelectItem>
+                <SelectItem value="development">Development</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select defaultValue="12h">
+              <SelectTrigger className="w-44">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1h">Last hour</SelectItem>
+                <SelectItem value="6h">Last 6 hours</SelectItem>
+                <SelectItem value="12h">Last 12 hours</SelectItem>
+                <SelectItem value="24h">Last 24 hours</SelectItem>
+              </SelectContent>
+            </Select>
+          </ButtonGroup>`,
       },
       {
         label: "segmented-actions",
         node: <ButtonGroupSegmentedDemo />,
+        code: `<ButtonGroupSegmentedDemo />`,
       },
       {
         label: "toolbar-filter",
@@ -1021,6 +1331,32 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <ListFilter className="size-4" />
+                  Sort
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuItem>Newest</DropdownMenuItem>
+                <DropdownMenuItem>Oldest</DropdownMenuItem>
+                <DropdownMenuItem>Recently Updated</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button variant="outline">
+              <Download className="size-4" />
+              Export
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Grid view">
+              <LayoutGrid className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="List view">
+              <List className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
       {
         label: "publish-controls",
@@ -1045,6 +1381,25 @@ export const demos: Record<string, ComponentDemo> = {
             </DropdownMenu>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup className="**:data-[slot=button]:border-r-0">
+            <Button>Publish</Button>
+            <ButtonGroupSeparator className="bg-primary/25" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="icon"
+                  className="rounded-l-none border-l border-primary-foreground/20"
+                >
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem>Save as draft</DropdownMenuItem>
+                <DropdownMenuItem>Schedule</DropdownMenuItem>
+                <DropdownMenuItem>Preview</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>`,
       },
       {
         label: "attachment-download",
@@ -1059,6 +1414,15 @@ export const demos: Record<string, ComponentDemo> = {
             </Button>
           </ButtonGroup>
         ),
+        code: `<ButtonGroup>
+            <ButtonGroupText>
+              <FileText className="size-4" />
+              project-brief.pdf
+            </ButtonGroupText>
+            <Button variant="outline" size="icon" aria-label="Download">
+              <Download className="size-4" />
+            </Button>
+          </ButtonGroup>`,
       },
     ],
   },
@@ -1075,6 +1439,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Input id="wb-input-client" placeholder="Northstar Health" />
           </div>
         ),
+        code: `<div className="flex w-72 flex-col gap-1.5">
+            <Label htmlFor="wb-input-client">Client name</Label>
+            <Input id="wb-input-client" placeholder="Northstar Health" />
+          </div>`,
       },
       {
         label: "disabled",
@@ -1084,6 +1452,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Input id="wb-input-locked" placeholder="ENG-1042" disabled />
           </div>
         ),
+        code: `<div className="flex w-72 flex-col gap-1.5">
+            <Label htmlFor="wb-input-locked">Engagement ID</Label>
+            <Input id="wb-input-locked" placeholder="ENG-1042" disabled />
+          </div>`,
       },
       {
         label: "invalid",
@@ -1094,6 +1466,11 @@ export const demos: Record<string, ComponentDemo> = {
             <p className="text-xs text-destructive">Enter a score between 0 and 100.</p>
           </div>
         ),
+        code: `<div className="flex w-72 flex-col gap-1.5">
+            <Label htmlFor="wb-input-invalid">Confidence score</Label>
+            <Input id="wb-input-invalid" placeholder="0-100" aria-invalid />
+            <p className="text-xs text-destructive">Enter a score between 0 and 100.</p>
+          </div>`,
       },
     ],
   },
@@ -1113,6 +1490,10 @@ export const demos: Record<string, ComponentDemo> = {
             <InputGroupInput placeholder="nymbl.com" />
           </InputGroup>
         ),
+        code: `<InputGroup className="w-64">
+  <InputGroupAddon>https://</InputGroupAddon>
+  <InputGroupInput placeholder="nymbl.com" />
+</InputGroup>`,
       },
       {
         label: "suffix",
@@ -1124,6 +1505,12 @@ export const demos: Record<string, ComponentDemo> = {
             </InputGroupAddon>
           </InputGroup>
         ),
+        code: `<InputGroup className="w-72">
+  <InputGroupInput placeholder="Estimate" />
+  <InputGroupAddon align="inline-end">
+    <InputGroupText>hrs</InputGroupText>
+  </InputGroupAddon>
+</InputGroup>`,
       },
       {
         label: "icon prefix",
@@ -1135,6 +1522,13 @@ export const demos: Record<string, ComponentDemo> = {
             <InputGroupInput placeholder="Username" />
           </InputGroup>
         ),
+        importLine: `import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"\nimport { User } from "lucide-react"`,
+        code: `<InputGroup className="w-64">
+  <InputGroupAddon>
+    <User className="size-4" />
+  </InputGroupAddon>
+  <InputGroupInput placeholder="Username" />
+</InputGroup>`,
       },
       {
         label: "search action",
@@ -1151,6 +1545,18 @@ export const demos: Record<string, ComponentDemo> = {
             </InputGroupAddon>
           </InputGroup>
         ),
+        importLine: `import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"\nimport { Search, X } from "lucide-react"`,
+        code: `<InputGroup className="w-72">
+  <InputGroupAddon>
+    <Search className="size-4" />
+  </InputGroupAddon>
+  <InputGroupInput placeholder="Search accounts..." />
+  <InputGroupAddon align="inline-end">
+    <InputGroupButton aria-label="Clear search" size="icon-xs">
+      <X className="size-3.5" />
+    </InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>`,
       },
       {
         label: "inline buttons",
@@ -1165,6 +1571,16 @@ export const demos: Record<string, ComponentDemo> = {
             </InputGroupAddon>
           </InputGroup>
         ),
+        importLine: `import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"\nimport { Plus } from "lucide-react"`,
+        code: `<InputGroup className="w-72">
+  <InputGroupInput placeholder="Add collaborator" />
+  <InputGroupAddon align="inline-end">
+    <InputGroupButton>
+      <Plus className="size-3.5" />
+      Add
+    </InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>`,
       },
       {
         label: "block start",
@@ -1179,6 +1595,16 @@ export const demos: Record<string, ComponentDemo> = {
             <InputGroupInput placeholder="Q3 delivery plan" />
           </InputGroup>
         ),
+        importLine: `import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group"\nimport { CalendarIcon } from "lucide-react"`,
+        code: `<InputGroup className="w-80">
+  <InputGroupAddon align="block-start" className="border-b border-border">
+    <InputGroupText>
+      <CalendarIcon className="size-4" />
+      Planning window
+    </InputGroupText>
+  </InputGroupAddon>
+  <InputGroupInput placeholder="Q3 delivery plan" />
+</InputGroup>`,
       },
       {
         label: "textarea",
@@ -1190,6 +1616,12 @@ export const demos: Record<string, ComponentDemo> = {
             </InputGroupAddon>
           </InputGroup>
         ),
+        code: `<InputGroup className="w-80">
+  <InputGroupTextarea rows={3} placeholder="Capture project context..." />
+  <InputGroupAddon align="block-end" className="border-t border-border">
+    <InputGroupText>Use short operational notes.</InputGroupText>
+  </InputGroupAddon>
+</InputGroup>`,
       },
       {
         label: "invalid",
@@ -1204,6 +1636,16 @@ export const demos: Record<string, ComponentDemo> = {
             </InputGroupAddon>
           </InputGroup>
         ),
+        importLine: `import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group"\nimport { Table2 } from "lucide-react"`,
+        code: `<InputGroup className="w-72">
+  <InputGroupAddon>
+    <Table2 className="size-4" />
+  </InputGroupAddon>
+  <InputGroupInput aria-invalid placeholder="Budget variance" />
+  <InputGroupAddon align="inline-end">
+    <InputGroupText className="text-error">Required</InputGroupText>
+  </InputGroupAddon>
+</InputGroup>`,
       },
     ],
   },
@@ -1232,6 +1674,13 @@ export const demos: Record<string, ComponentDemo> = {
             </InputOTPGroup>
           </InputOTP>
         ),
+        code: `<InputOTP maxLength={6}>
+            <InputOTPGroup>
+              {Array.from({ length: 6 }, (_, i) => (
+                <InputOTPSlot key={i} index={i} />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>`,
       },
       {
         label: "4-digit",
@@ -1244,6 +1693,13 @@ export const demos: Record<string, ComponentDemo> = {
             </InputOTPGroup>
           </InputOTP>
         ),
+        code: `<InputOTP maxLength={4}>
+            <InputOTPGroup>
+              {Array.from({ length: 4 }, (_, i) => (
+                <InputOTPSlot key={i} index={i} />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>`,
       },
     ],
   },
@@ -1252,8 +1708,10 @@ export const demos: Record<string, ComponentDemo> = {
     importLine: `import { Textarea } from "@/components/ui/textarea"`,
     exampleCode: `<Textarea placeholder="Write a note…" />`,
     variants: [
-      { label: "default", node: <Textarea placeholder="Write a note…" className="w-full" /> },
-      { label: "disabled", node: <Textarea placeholder="Disabled" disabled className="w-full" /> },
+      { label: "default", node: <Textarea placeholder="Write a note…" className="w-full" />,
+      code: `<Textarea placeholder="Write a note…" className="w-full" />` },
+      { label: "disabled", node: <Textarea placeholder="Disabled" disabled className="w-full" />,
+      code: `<Textarea placeholder="Disabled" disabled className="w-full" />` },
     ],
   },
 
@@ -1272,6 +1730,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Label htmlFor="wb-chk-1">Unchecked</Label>
           </div>
         ),
+        code: `<div className="flex items-center gap-2">
+            <Checkbox id="wb-chk-1" />
+            <Label htmlFor="wb-chk-1">Unchecked</Label>
+          </div>`,
       },
       {
         label: "checked",
@@ -1281,6 +1743,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Label htmlFor="wb-chk-2">Checked</Label>
           </div>
         ),
+        code: `<div className="flex items-center gap-2">
+            <Checkbox id="wb-chk-2" defaultChecked />
+            <Label htmlFor="wb-chk-2">Checked</Label>
+          </div>`,
       },
       {
         label: "disabled",
@@ -1290,6 +1756,10 @@ export const demos: Record<string, ComponentDemo> = {
             <Label htmlFor="wb-chk-3">Disabled</Label>
           </div>
         ),
+        code: `<div className="flex items-center gap-2">
+            <Checkbox id="wb-chk-3" disabled />
+            <Label htmlFor="wb-chk-3">Disabled</Label>
+          </div>`,
       },
     ],
   },
@@ -1321,6 +1791,20 @@ export const demos: Record<string, ComponentDemo> = {
             </div>
           </RadioGroup>
         ),
+        code: `<RadioGroup defaultValue="card" className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="card" id="wb-r-card" />
+              <Label htmlFor="wb-r-card">Card</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="bank" id="wb-r-bank" />
+              <Label htmlFor="wb-r-bank">Bank transfer</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="invoice" id="wb-r-inv" disabled />
+              <Label htmlFor="wb-r-inv">Invoice (disabled)</Label>
+            </div>
+          </RadioGroup>`,
       },
     ],
   },
@@ -1348,6 +1832,16 @@ export const demos: Record<string, ComponentDemo> = {
             </SelectContent>
           </Select>
         ),
+        code: `<Select>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Choose…" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="a">Option A</SelectItem>
+              <SelectItem value="b">Option B</SelectItem>
+              <SelectItem value="c">Option C</SelectItem>
+            </SelectContent>
+          </Select>`,
       },
     ],
     sizes: [
@@ -1363,6 +1857,14 @@ export const demos: Record<string, ComponentDemo> = {
             </SelectContent>
           </Select>
         ),
+        code: `<Select>
+            <SelectTrigger size="sm" className="w-48">
+              <SelectValue placeholder="Small" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="a">Option A</SelectItem>
+            </SelectContent>
+          </Select>`,
       },
       {
         label: "default",
@@ -1376,6 +1878,14 @@ export const demos: Record<string, ComponentDemo> = {
             </SelectContent>
           </Select>
         ),
+        code: `<Select>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Default" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="a">Option A</SelectItem>
+            </SelectContent>
+          </Select>`,
       },
     ],
   },
@@ -1396,6 +1906,11 @@ export const demos: Record<string, ComponentDemo> = {
             <NativeSelectOption value="b">Option B</NativeSelectOption>
           </NativeSelect>
         ),
+        code: `<NativeSelect>
+            <NativeSelectOption value="">Pick one…</NativeSelectOption>
+            <NativeSelectOption value="a">Option A</NativeSelectOption>
+            <NativeSelectOption value="b">Option B</NativeSelectOption>
+          </NativeSelect>`,
       },
       {
         label: "disabled",
@@ -1404,6 +1919,9 @@ export const demos: Record<string, ComponentDemo> = {
             <NativeSelectOption value="">Disabled</NativeSelectOption>
           </NativeSelect>
         ),
+        code: `<NativeSelect disabled>
+            <NativeSelectOption value="">Disabled</NativeSelectOption>
+          </NativeSelect>`,
       },
     ],
     sizes: [
@@ -1414,6 +1932,9 @@ export const demos: Record<string, ComponentDemo> = {
             <NativeSelectOption value="">Small</NativeSelectOption>
           </NativeSelect>
         ),
+        code: `<NativeSelect size="sm">
+            <NativeSelectOption value="">Small</NativeSelectOption>
+          </NativeSelect>`,
       },
       {
         label: "default",
@@ -1422,6 +1943,9 @@ export const demos: Record<string, ComponentDemo> = {
             <NativeSelectOption value="">Default</NativeSelectOption>
           </NativeSelect>
         ),
+        code: `<NativeSelect>
+            <NativeSelectOption value="">Default</NativeSelectOption>
+          </NativeSelect>`,
       },
     ],
   },
@@ -1430,9 +1954,12 @@ export const demos: Record<string, ComponentDemo> = {
     importLine: `import { Switch } from "@/components/ui/switch"`,
     exampleCode: `<Switch />`,
     variants: [
-      { label: "off", node: <Switch /> },
-      { label: "on", node: <Switch defaultChecked /> },
-      { label: "disabled", node: <Switch disabled /> },
+      { label: "off", node: <Switch />,
+      code: `<Switch />` },
+      { label: "on", node: <Switch defaultChecked />,
+      code: `<Switch defaultChecked />` },
+      { label: "disabled", node: <Switch disabled />,
+      code: `<Switch disabled />` },
     ],
   },
 
@@ -1440,9 +1967,12 @@ export const demos: Record<string, ComponentDemo> = {
     importLine: `import { Slider } from "@/components/ui/slider"`,
     exampleCode: `<Slider defaultValue={[50]} max={100} step={1} className="w-64" />`,
     variants: [
-      { label: "default", node: <Slider defaultValue={[40]} max={100} step={1} className="w-64" /> },
-      { label: "range", node: <Slider defaultValue={[20, 70]} max={100} step={1} className="w-64" /> },
-      { label: "disabled", node: <Slider defaultValue={[50]} max={100} disabled className="w-64" /> },
+      { label: "default", node: <Slider defaultValue={[40]} max={100} step={1} className="w-64" />,
+      code: `<Slider defaultValue={[40]} max={100} step={1} className="w-64" />` },
+      { label: "range", node: <Slider defaultValue={[20, 70]} max={100} step={1} className="w-64" />,
+      code: `<Slider defaultValue={[20, 70]} max={100} step={1} className="w-64" />` },
+      { label: "disabled", node: <Slider defaultValue={[50]} max={100} disabled className="w-64" />,
+      code: `<Slider defaultValue={[50]} max={100} disabled className="w-64" />` },
     ],
   },
 
@@ -1450,10 +1980,14 @@ export const demos: Record<string, ComponentDemo> = {
     importLine: `import { Toggle } from "@/components/ui/toggle"`,
     exampleCode: `<Toggle aria-label="Bold"><Bold /></Toggle>`,
     variants: [
-      { label: "default", node: <Toggle aria-label="Bold"><Bold /></Toggle> },
-      { label: "outline", node: <Toggle variant="outline" aria-label="Italic"><Italic /></Toggle> },
-      { label: "pressed", node: <Toggle defaultPressed aria-label="Underline"><Underline /></Toggle> },
-      { label: "labelled mode switch", node: <LabelledModeToggle /> },
+      { label: "default", node: <Toggle aria-label="Bold"><Bold /></Toggle>,
+      code: `<Toggle aria-label="Bold"><Bold /></Toggle>` },
+      { label: "outline", node: <Toggle variant="outline" aria-label="Italic"><Italic /></Toggle>,
+      code: `<Toggle variant="outline" aria-label="Italic"><Italic /></Toggle>` },
+      { label: "pressed", node: <Toggle defaultPressed aria-label="Underline"><Underline /></Toggle>,
+      code: `<Toggle defaultPressed aria-label="Underline"><Underline /></Toggle>` },
+      { label: "labelled mode switch", node: <LabelledModeToggle />,
+      code: `<LabelledModeToggle />` },
     ],
   },
 
@@ -1473,6 +2007,11 @@ export const demos: Record<string, ComponentDemo> = {
             <ToggleGroupItem value="underline" aria-label="Underline"><Underline /></ToggleGroupItem>
           </ToggleGroup>
         ),
+        code: `<ToggleGroup type="multiple">
+            <ToggleGroupItem value="bold" aria-label="Bold"><Bold /></ToggleGroupItem>
+            <ToggleGroupItem value="italic" aria-label="Italic"><Italic /></ToggleGroupItem>
+            <ToggleGroupItem value="underline" aria-label="Underline"><Underline /></ToggleGroupItem>
+          </ToggleGroup>`,
       },
       {
         label: "single",
@@ -1483,6 +2022,11 @@ export const demos: Record<string, ComponentDemo> = {
             <ToggleGroupItem value="lg">L</ToggleGroupItem>
           </ToggleGroup>
         ),
+        code: `<ToggleGroup type="single" defaultValue="sm">
+            <ToggleGroupItem value="sm">S</ToggleGroupItem>
+            <ToggleGroupItem value="md">M</ToggleGroupItem>
+            <ToggleGroupItem value="lg">L</ToggleGroupItem>
+          </ToggleGroup>`,
       },
     ],
   },
@@ -1495,6 +2039,7 @@ export const demos: Record<string, ComponentDemo> = {
       {
         label: "default",
         node: <Calendar mode="single" className="rounded-md border" />,
+        code: `<Calendar mode="single" className="rounded-md border" />`,
       },
     ],
   },
@@ -1513,11 +2058,16 @@ export const demos: Record<string, ComponentDemo> = {
 </Combobox>`,
     variantSpan: "full",
     variants: [
-      { label: "basic", node: <ComboboxBasicDemo /> },
-      { label: "with clear", node: <ComboboxWithClearDemo /> },
-      { label: "grouped", node: <ComboboxGroupedDemo /> },
-      { label: "grouped + separator", node: <ComboboxGroupedSeparatorDemo /> },
-      { label: "multi-select", node: <ComboboxMultiSelectDemo /> },
+      { label: "basic", node: <ComboboxBasicDemo />,
+      code: `<ComboboxBasicDemo />` },
+      { label: "with clear", node: <ComboboxWithClearDemo />,
+      code: `<ComboboxWithClearDemo />` },
+      { label: "grouped", node: <ComboboxGroupedDemo />,
+      code: `<ComboboxGroupedDemo />` },
+      { label: "grouped + separator", node: <ComboboxGroupedSeparatorDemo />,
+      code: `<ComboboxGroupedSeparatorDemo />` },
+      { label: "multi-select", node: <ComboboxMultiSelectDemo />,
+      code: `<ComboboxMultiSelectDemo />` },
     ],
   },
 
@@ -1533,12 +2083,18 @@ export const demos: Record<string, ComponentDemo> = {
 />`,
     variantSpan: "full",
     variants: [
-      { label: "accounts", node: <EntityPickerAccountsDemo /> },
-      { label: "contacts", node: <EntityPickerContactsDemo /> },
-      { label: "projects", node: <EntityPickerProjectsDemo /> },
-      { label: "people", node: <EntityPickerPeopleDemo /> },
-      { label: "skills", node: <EntityPickerSkillsDemo /> },
-      { label: "roles", node: <EntityPickerRolesDemo /> },
+      { label: "accounts", node: <EntityPickerAccountsDemo />,
+      code: `<EntityPickerAccountsDemo />` },
+      { label: "contacts", node: <EntityPickerContactsDemo />,
+      code: `<EntityPickerContactsDemo />` },
+      { label: "projects", node: <EntityPickerProjectsDemo />,
+      code: `<EntityPickerProjectsDemo />` },
+      { label: "people", node: <EntityPickerPeopleDemo />,
+      code: `<EntityPickerPeopleDemo />` },
+      { label: "skills", node: <EntityPickerSkillsDemo />,
+      code: `<EntityPickerSkillsDemo />` },
+      { label: "roles", node: <EntityPickerRolesDemo />,
+      code: `<EntityPickerRolesDemo />` },
     ],
   },
 
@@ -1563,6 +2119,13 @@ export const demos: Record<string, ComponentDemo> = {
             </NumberFieldGroup>
           </NumberField>
         ),
+        code: `<NumberField defaultValue={10} min={0} max={100}>
+            <NumberFieldGroup>
+              <NumberFieldDecrement />
+              <NumberFieldInput />
+              <NumberFieldIncrement />
+            </NumberFieldGroup>
+          </NumberField>`,
       },
       {
         label: "buttons right",
@@ -1575,6 +2138,13 @@ export const demos: Record<string, ComponentDemo> = {
             </NumberFieldGroup>
           </NumberField>
         ),
+        code: `<NumberField defaultValue={5} min={0} max={99}>
+            <NumberFieldGroup>
+              <NumberFieldInput />
+              <NumberFieldDecrement />
+              <NumberFieldIncrement />
+            </NumberFieldGroup>
+          </NumberField>`,
       },
       {
         label: "spinner buttons",
@@ -1593,6 +2163,19 @@ export const demos: Record<string, ComponentDemo> = {
             </NumberFieldGroup>
           </NumberField>
         ),
+        code: `<NumberField defaultValue={0}>
+            <NumberFieldGroup>
+              <NumberFieldInput />
+              <div className="flex flex-col border-l border-input">
+                <NumberFieldIncrement className="h-1/2 rounded-none border-b border-input">
+                  <ChevronUpIcon className="size-3" />
+                </NumberFieldIncrement>
+                <NumberFieldDecrement className="h-1/2 rounded-none border-0">
+                  <ChevronDownIcon className="size-3" />
+                </NumberFieldDecrement>
+              </div>
+            </NumberFieldGroup>
+          </NumberField>`,
       },
     ],
   },
@@ -1614,6 +2197,11 @@ export const demos: Record<string, ComponentDemo> = {
             <FieldDescription>{"We'll never share your email."}</FieldDescription>
           </Field>
         ),
+        code: `<Field className="w-64">
+            <Label>Email</Label>
+            <Input type="email" placeholder="you@nymbl.com" />
+            <FieldDescription>{"We'll never share your email."}</FieldDescription>
+          </Field>`,
       },
       {
         label: "with error",
@@ -1624,6 +2212,11 @@ export const demos: Record<string, ComponentDemo> = {
             <FieldError>Password must be at least 8 characters.</FieldError>
           </Field>
         ),
+        code: `<Field className="w-64" data-invalid="true">
+            <Label>Password</Label>
+            <Input type="password" aria-invalid />
+            <FieldError>Password must be at least 8 characters.</FieldError>
+          </Field>`,
       },
     ],
   },
@@ -1634,9 +2227,12 @@ export const demos: Record<string, ComponentDemo> = {
   defaultValue={{ country: "US", number: "(415) 555-0138" }}
 />`,
     variants: [
-      { label: "prospect contact", node: <PhoneInputProspectDemo /> },
-      { label: "engage contact", node: <PhoneInputEngageDemo /> },
-      { label: "read-only CRM", node: <PhoneInputDisabledDemo /> },
+      { label: "prospect contact", node: <PhoneInputProspectDemo />,
+      code: `<PhoneInputProspectDemo />` },
+      { label: "engage contact", node: <PhoneInputEngageDemo />,
+      code: `<PhoneInputEngageDemo />` },
+      { label: "read-only CRM", node: <PhoneInputDisabledDemo />,
+      code: `<PhoneInputDisabledDemo />` },
     ],
   },
 
@@ -1651,6 +2247,9 @@ export const demos: Record<string, ComponentDemo> = {
             <FormLayoutsGallery />
           </div>
         ),
+        code: `<div className="w-full">
+            <FormLayoutsGallery />
+          </div>`,
       },
     ],
   },
@@ -1688,10 +2287,26 @@ export const demos: Record<string, ComponentDemo> = {
             </BreadcrumbList>
           </Breadcrumb>
         ),
+        code: `<Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">Components</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Button</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>`,
       },
       {
         label: "workspace nav",
         node: <WorkspaceNavBreadcrumb />,
+        code: `<WorkspaceNavBreadcrumb />`,
       },
     ],
   },
@@ -1731,6 +2346,24 @@ export const demos: Record<string, ComponentDemo> = {
             </MenubarMenu>
           </Menubar>
         ),
+        code: `<Menubar>
+            <MenubarMenu>
+              <MenubarTrigger>File</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>New</MenubarItem>
+                <MenubarItem>Open</MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem>Quit</MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+            <MenubarMenu>
+              <MenubarTrigger>Edit</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>Undo</MenubarItem>
+                <MenubarItem>Redo</MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>`,
       },
     ],
   },
@@ -1758,6 +2391,15 @@ export const demos: Record<string, ComponentDemo> = {
             </PaginationContent>
           </Pagination>
         ),
+        code: `<Pagination>
+            <PaginationContent>
+              <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+              <PaginationItem><PaginationLink href="#" isActive>1</PaginationLink></PaginationItem>
+              <PaginationItem><PaginationLink href="#">2</PaginationLink></PaginationItem>
+              <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
+              <PaginationItem><PaginationNext href="#" /></PaginationItem>
+            </PaginationContent>
+          </Pagination>`,
       },
     ],
   },
@@ -1786,6 +2428,16 @@ export const demos: Record<string, ComponentDemo> = {
             <TabsContent value="activity" className="text-sm text-muted-foreground">Activity content</TabsContent>
           </Tabs>
         ),
+        code: `<Tabs defaultValue="overview" className="w-full">
+            <TabsList>
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+            </TabsList>
+            <TabsContent value="overview" className="text-sm text-muted-foreground">Overview content</TabsContent>
+            <TabsContent value="settings" className="text-sm text-muted-foreground">Settings content</TabsContent>
+            <TabsContent value="activity" className="text-sm text-muted-foreground">Activity content</TabsContent>
+          </Tabs>`,
       },
       {
         label: "underline with counts",
@@ -1803,6 +2455,18 @@ export const demos: Record<string, ComponentDemo> = {
             <TabsContent value="user-groups" className="text-sm text-muted-foreground pt-2">User groups content</TabsContent>
           </Tabs>
         ),
+        code: `<Tabs defaultValue="overview" className="w-full">
+            <TabsList variant="line">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="pain-points">Pain Points <Badge variant="secondary" className="ml-1.5 text-[10px] px-1.5 py-0">7</Badge></TabsTrigger>
+              <TabsTrigger value="wish-list">Wish List <Badge variant="secondary" className="ml-1.5 text-[10px] px-1.5 py-0">12</Badge></TabsTrigger>
+              <TabsTrigger value="user-groups">User Groups <Badge variant="secondary" className="ml-1.5 text-[10px] px-1.5 py-0">4</Badge></TabsTrigger>
+            </TabsList>
+            <TabsContent value="overview" className="text-sm text-muted-foreground pt-2">Overview content</TabsContent>
+            <TabsContent value="pain-points" className="text-sm text-muted-foreground pt-2">Pain points content</TabsContent>
+            <TabsContent value="wish-list" className="text-sm text-muted-foreground pt-2">Wish list content</TabsContent>
+            <TabsContent value="user-groups" className="text-sm text-muted-foreground pt-2">User groups content</TabsContent>
+          </Tabs>`,
       },
     ],
   },
@@ -1817,10 +2481,14 @@ export const demos: Record<string, ComponentDemo> = {
 <Scrollspy sections={sections} />`,
     variantSpan: "full",
     variants: [
-      { label: "scope docs", node: <ScrollspyScopeDemo /> },
-      { label: "proposal builder", node: <ScrollspyProposalDemo /> },
-      { label: "admin page", node: <ScrollspyAdminDemo /> },
-      { label: "pattern docs", node: <ScrollspyPatternDemo /> },
+      { label: "scope docs", node: <ScrollspyScopeDemo />,
+      code: `<ScrollspyScopeDemo />` },
+      { label: "proposal builder", node: <ScrollspyProposalDemo />,
+      code: `<ScrollspyProposalDemo />` },
+      { label: "admin page", node: <ScrollspyAdminDemo />,
+      code: `<ScrollspyAdminDemo />` },
+      { label: "pattern docs", node: <ScrollspyPatternDemo />,
+      code: `<ScrollspyPatternDemo />` },
     ],
   },
 
@@ -1872,6 +2540,36 @@ export const demos: Record<string, ComponentDemo> = {
             </NavigationMenuList>
           </NavigationMenu>
         ),
+        code: `<NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="w-48 p-1">
+                    <NavigationMenuLink className="block rounded px-3 py-2 text-sm hover:bg-muted">
+                      Documentation
+                    </NavigationMenuLink>
+                    <NavigationMenuLink className="block rounded px-3 py-2 text-sm hover:bg-muted">
+                      API Reference
+                    </NavigationMenuLink>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="w-48 p-1">
+                    <NavigationMenuLink className="block rounded px-3 py-2 text-sm hover:bg-muted">
+                      Blog
+                    </NavigationMenuLink>
+                    <NavigationMenuLink className="block rounded px-3 py-2 text-sm hover:bg-muted">
+                      Community
+                    </NavigationMenuLink>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>`,
       },
     ],
   },
@@ -1911,6 +2609,19 @@ export const demos: Record<string, ComponentDemo> = {
             </DialogContent>
           </Dialog>
         ),
+        code: `<Dialog>
+            <DialogTrigger asChild><Button>Open dialog</Button></DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirm action</DialogTitle>
+                <DialogDescription>This will permanently update your settings.</DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline">Cancel</Button>
+                <Button>Confirm</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>`,
       },
     ],
   },
@@ -1952,6 +2663,23 @@ export const demos: Record<string, ComponentDemo> = {
             </AlertDialogContent>
           </AlertDialog>
         ),
+        code: `<AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete account</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your account.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>`,
       },
     ],
   },
@@ -1992,6 +2720,22 @@ export const demos: Record<string, ComponentDemo> = {
             </DrawerContent>
           </Drawer>
         ),
+        code: `<Drawer>
+            <DrawerTrigger asChild><Button variant="outline">Open drawer</Button></DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Edit profile</DrawerTitle>
+                <DrawerDescription>Make changes to your profile here.</DrawerDescription>
+              </DrawerHeader>
+              <div className="px-4 py-2">
+                <Input placeholder="Name" />
+              </div>
+              <DrawerFooter>
+                <Button>Save</Button>
+                <DrawerClose asChild><Button variant="outline">Cancel</Button></DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>`,
       },
     ],
   },
@@ -2021,6 +2765,15 @@ export const demos: Record<string, ComponentDemo> = {
             </SheetContent>
           </Sheet>
         ),
+        code: `<Sheet>
+            <SheetTrigger asChild><Button variant="outline">Open sheet</Button></SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Settings</SheetTitle>
+                <SheetDescription>Manage your account settings.</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>`,
       },
       {
         label: "left",
@@ -2035,6 +2788,15 @@ export const demos: Record<string, ComponentDemo> = {
             </SheetContent>
           </Sheet>
         ),
+        code: `<Sheet>
+            <SheetTrigger asChild><Button variant="outline">Open left</Button></SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader>
+                <SheetTitle>Navigation</SheetTitle>
+                <SheetDescription>Site navigation drawer.</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>`,
       },
     ],
   },
@@ -2071,6 +2833,22 @@ export const demos: Record<string, ComponentDemo> = {
             </PopoverContent>
           </Popover>
         ),
+        code: `<Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <CalendarIcon />
+                Pick date
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72">
+              <PopoverHeader>
+                <PopoverTitle>Schedule review</PopoverTitle>
+                <PopoverDescription>
+                  Pick a date, add filters, or expose compact contextual actions.
+                </PopoverDescription>
+              </PopoverHeader>
+            </PopoverContent>
+          </Popover>`,
       },
       {
         label: "form",
@@ -2102,6 +2880,32 @@ export const demos: Record<string, ComponentDemo> = {
             </PopoverContent>
           </Popover>
         ),
+        code: `<Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Plus className="size-4" />
+                Add note
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <PopoverHeader>
+                <PopoverTitle>Pipeline note</PopoverTitle>
+                <PopoverDescription>
+                  Add a short update without leaving the current view.
+                </PopoverDescription>
+              </PopoverHeader>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="popover-note-title">Title</Label>
+                  <Input id="popover-note-title" placeholder="Client review complete" />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button size="sm" variant="outline">Cancel</Button>
+                  <Button size="sm">Save</Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>`,
       },
       {
         label: "confirmation",
@@ -2127,6 +2931,26 @@ export const demos: Record<string, ComponentDemo> = {
             </PopoverContent>
           </Popover>
         ),
+        code: `<Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Trash2 className="size-4" />
+                Archive
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72" align="end">
+              <PopoverHeader>
+                <PopoverTitle>Archive engagement?</PopoverTitle>
+                <PopoverDescription>
+                  This removes it from active pipeline views.
+                </PopoverDescription>
+              </PopoverHeader>
+              <div className="flex justify-end gap-2">
+                <Button size="sm" variant="outline">Cancel</Button>
+                <Button size="sm" variant="destructive">Archive</Button>
+              </div>
+            </PopoverContent>
+          </Popover>`,
       },
       {
         label: "filters",
@@ -2156,6 +2980,30 @@ export const demos: Record<string, ComponentDemo> = {
             </PopoverContent>
           </Popover>
         ),
+        code: `<Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <ListFilter className="size-4" />
+                Filters
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72" align="start">
+              <PopoverHeader>
+                <PopoverTitle>Pipeline filters</PopoverTitle>
+                <PopoverDescription>
+                  Narrow the visible records by stage and status.
+                </PopoverDescription>
+              </PopoverHeader>
+              <div className="flex flex-col gap-2">
+                {["In estimation", "Needs review", "High confidence"].map((item) => (
+                  <label key={item} className="flex items-center gap-2 text-sm">
+                    <Checkbox />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>`,
       },
       {
         label: "profile",
@@ -2187,6 +3035,32 @@ export const demos: Record<string, ComponentDemo> = {
             </PopoverContent>
           </Popover>
         ),
+        code: `<Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <User className="size-4" />
+                Owner
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <div className="flex items-start gap-3">
+                <Avatar className="size-10">
+                  <AvatarFallback>AR</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <PopoverTitle>Alice Rivera</PopoverTitle>
+                  <PopoverDescription>
+                    Delivery lead for healthcare engagements.
+                  </PopoverDescription>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    <Badge variant="secondary">Scope</Badge>
+                    <Badge variant="secondary">Estimate</Badge>
+                    <Badge variant="secondary">Manage</Badge>
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>`,
       },
       {
         label: "quick actions",
@@ -2216,6 +3090,30 @@ export const demos: Record<string, ComponentDemo> = {
             </PopoverContent>
           </Popover>
         ),
+        code: `<Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Settings className="size-4" />
+                Actions
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-2" align="end">
+              {[
+                ["Refresh data", RefreshCw],
+                ["Export view", Download],
+                ["Open settings", Settings],
+              ].map(([label, Icon]) => (
+                <button
+                  key={label as string}
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Icon className="size-4" />
+                  {label as string}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>`,
       },
     ],
   },
@@ -2242,6 +3140,17 @@ export const demos: Record<string, ComponentDemo> = {
             </HoverCardContent>
           </HoverCard>
         ),
+        code: `<HoverCard>
+            <HoverCardTrigger asChild>
+              <Button variant="link">@nymbl</Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-64">
+              <div className="flex flex-col gap-1">
+                <div className="font-semibold">Nymbl</div>
+                <div className="text-xs text-muted-foreground">Building modern enterprise SaaS.</div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>`,
       },
     ],
   },
@@ -2273,6 +3182,19 @@ export const demos: Record<string, ComponentDemo> = {
             </ContextMenuContent>
           </ContextMenu>
         ),
+        code: `<ContextMenu>
+            <ContextMenuTrigger className="flex h-20 w-48 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+              Right click here
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuLabel>Actions</ContextMenuLabel>
+              <ContextMenuSeparator />
+              <ContextMenuItem>Edit</ContextMenuItem>
+              <ContextMenuItem>Duplicate</ContextMenuItem>
+              <ContextMenuSeparator />
+              <ContextMenuItem className="text-destructive">Delete</ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>`,
       },
     ],
   },
@@ -2308,6 +3230,23 @@ export const demos: Record<string, ComponentDemo> = {
             </DropdownMenuContent>
           </DropdownMenu>
         ),
+        code: `<DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Open menu</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <User />Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings />Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive">Sign out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>`,
       },
     ],
   },
@@ -2327,6 +3266,10 @@ export const demos: Record<string, ComponentDemo> = {
             <TooltipContent>This is a tooltip</TooltipContent>
           </Tooltip>
         ),
+        code: `<Tooltip>
+            <TooltipTrigger asChild><Button variant="outline">Hover me</Button></TooltipTrigger>
+            <TooltipContent>This is a tooltip</TooltipContent>
+          </Tooltip>`,
       },
       {
         label: "with kbd",
@@ -2338,6 +3281,12 @@ export const demos: Record<string, ComponentDemo> = {
             </TooltipContent>
           </Tooltip>
         ),
+        code: `<Tooltip>
+            <TooltipTrigger asChild><Button variant="outline">Command palette</Button></TooltipTrigger>
+            <TooltipContent>
+              Open <KbdGroup><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
+            </TooltipContent>
+          </Tooltip>`,
       },
       {
         label: "sides",
@@ -2353,6 +3302,16 @@ export const demos: Record<string, ComponentDemo> = {
             ))}
           </div>
         ),
+        code: `<div className="flex flex-wrap items-center justify-center gap-3">
+            {(["top", "right", "bottom", "left"] as const).map((side) => (
+              <Tooltip key={side}>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="sm">{side}</Button>
+                </TooltipTrigger>
+                <TooltipContent side={side}>Tooltip on {side}</TooltipContent>
+              </Tooltip>
+            ))}
+          </div>`,
       },
       {
         label: "icon trigger",
@@ -2367,6 +3326,15 @@ export const demos: Record<string, ComponentDemo> = {
             <TooltipContent>More information</TooltipContent>
           </Tooltip>
         ),
+        code: `<Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <InfoIcon className="size-4" />
+                <span className="sr-only">Info</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>More information</TooltipContent>
+          </Tooltip>`,
       },
       {
         label: "icon + description",
@@ -2384,6 +3352,18 @@ export const demos: Record<string, ComponentDemo> = {
             </TooltipContent>
           </Tooltip>
         ),
+        code: `<Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="sm">
+                <InfoIcon className="size-4" />
+                Help
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <p className="font-semibold">Keyboard shortcuts</p>
+              <p className="text-muted-foreground text-xs mt-0.5">Use shortcuts to navigate faster. Press <span className="font-mono">?</span> to see all available shortcuts.</p>
+            </TooltipContent>
+          </Tooltip>`,
       },
       {
         label: "disabled button",
@@ -2397,6 +3377,14 @@ export const demos: Record<string, ComponentDemo> = {
             <TooltipContent>You don&apos;t have permission to do this</TooltipContent>
           </Tooltip>
         ),
+        code: `<Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0} className="inline-flex">
+                <Button disabled>Disabled action</Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>You don&apos;t have permission to do this</TooltipContent>
+          </Tooltip>`,
       },
     ],
   },
@@ -2413,6 +3401,7 @@ toast.info("Your trial ends in 3 days.")`,
       {
         label: "all types",
         node: <ToastDemo />,
+        code: `<ToastDemo />`,
       },
     ],
   },
@@ -2437,6 +3426,12 @@ toast.error("Something went wrong.")`,
             </p>
           </div>
         ),
+        code: `<div className="flex w-64 flex-col gap-2 rounded-md border bg-muted/30 p-4 text-sm">
+            <p className="text-muted-foreground">
+              Add <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{"<Toaster />"}</code> to your root layout, then call{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">toast()</code> anywhere.
+            </p>
+          </div>`,
       },
     ],
   },
@@ -2476,6 +3471,25 @@ toast.error("Something went wrong.")`,
             </CardFooter>
           </Card>
         ),
+        code: `<Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle>Scope readiness</CardTitle>
+              <CardDescription>Pre-sales review package</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Sections complete</span>
+                <span className="font-medium">7 / 9</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-muted">
+                <div className="h-full w-3/4 rounded-full bg-primary" />
+              </div>
+            </CardContent>
+            <CardFooter className="justify-between gap-3">
+              <Badge variant="secondary">On track</Badge>
+              <Button size="sm">Open review</Button>
+            </CardFooter>
+          </Card>`,
       },
     ],
     sizes: [
@@ -2490,6 +3504,13 @@ toast.error("Something went wrong.")`,
             <CardContent><p className="text-sm text-muted-foreground">Content</p></CardContent>
           </Card>
         ),
+        code: `<Card className="w-64">
+            <CardHeader>
+              <CardTitle>Default</CardTitle>
+              <CardDescription>Relaxed spacing</CardDescription>
+            </CardHeader>
+            <CardContent><p className="text-sm text-muted-foreground">Content</p></CardContent>
+          </Card>`,
       },
       {
         label: "sm",
@@ -2502,6 +3523,13 @@ toast.error("Something went wrong.")`,
             <CardContent><p className="text-sm text-muted-foreground">Content</p></CardContent>
           </Card>
         ),
+        code: `<Card size="sm" className="w-64">
+            <CardHeader>
+              <CardTitle>Small</CardTitle>
+              <CardDescription>Dense spacing</CardDescription>
+            </CardHeader>
+            <CardContent><p className="text-sm text-muted-foreground">Content</p></CardContent>
+          </Card>`,
       },
     ],
   },
@@ -2538,6 +3566,27 @@ toast.error("Something went wrong.")`,
             </TableBody>
           </Table>
         ),
+        code: `<Table className="w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead className="text-right">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Alex Rivera</TableCell>
+                <TableCell>Engineer</TableCell>
+                <TableCell className="text-right"><Badge>Active</Badge></TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Priya Shah</TableCell>
+                <TableCell>Designer</TableCell>
+                <TableCell className="text-right"><Badge variant="secondary">Away</Badge></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>`,
       },
     ],
   },
@@ -2557,17 +3606,26 @@ toast.error("Something went wrong.")`,
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
         ),
+        code: `<Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
+            <AvatarFallback>SC</AvatarFallback>
+          </Avatar>`,
       },
-      { label: "fallback", node: <Avatar><AvatarFallback>AR</AvatarFallback></Avatar> },
+      { label: "fallback", node: <Avatar><AvatarFallback>AR</AvatarFallback></Avatar>,
+      code: `<Avatar><AvatarFallback>AR</AvatarFallback></Avatar>` },
       {
         label: "icon",
         node: <Avatar><AvatarFallback><User className="size-4" /></AvatarFallback></Avatar>,
+        code: `<Avatar><AvatarFallback><User className="size-4" /></AvatarFallback></Avatar>`,
       },
     ],
     sizes: [
-      { label: "sm", node: <Avatar className="size-6"><AvatarFallback className="text-xs">AR</AvatarFallback></Avatar> },
-      { label: "default", node: <Avatar><AvatarFallback>AR</AvatarFallback></Avatar> },
-      { label: "lg", node: <Avatar className="size-12"><AvatarFallback>AR</AvatarFallback></Avatar> },
+      { label: "sm", node: <Avatar className="size-6"><AvatarFallback className="text-xs">AR</AvatarFallback></Avatar>,
+      code: `<Avatar className="size-6"><AvatarFallback className="text-xs">AR</AvatarFallback></Avatar>` },
+      { label: "default", node: <Avatar><AvatarFallback>AR</AvatarFallback></Avatar>,
+      code: `<Avatar><AvatarFallback>AR</AvatarFallback></Avatar>` },
+      { label: "lg", node: <Avatar className="size-12"><AvatarFallback>AR</AvatarFallback></Avatar>,
+      code: `<Avatar className="size-12"><AvatarFallback>AR</AvatarFallback></Avatar>` },
     ],
   },
 
@@ -2575,21 +3633,28 @@ toast.error("Something went wrong.")`,
     importLine: `import { Progress } from "@/components/ui/progress"`,
     exampleCode: `<Progress value={60} className="w-64" />`,
     variants: [
-      { label: "60%", node: <Progress value={60} className="w-64" /> },
-      { label: "25%", node: <Progress value={25} className="w-64" /> },
-      { label: "100%", node: <Progress value={100} className="w-64" /> },
-      { label: "indeterminate", node: <Progress className="w-64" /> },
+      { label: "60%", node: <Progress value={60} className="w-64" />,
+      code: `<Progress value={60} className="w-64" />` },
+      { label: "25%", node: <Progress value={25} className="w-64" />,
+      code: `<Progress value={25} className="w-64" />` },
+      { label: "100%", node: <Progress value={100} className="w-64" />,
+      code: `<Progress value={100} className="w-64" />` },
+      { label: "indeterminate", node: <Progress className="w-64" />,
+      code: `<Progress className="w-64" />` },
       {
         label: "budget — on track",
         node: <Progress value={60} className="w-64 [&>div]:bg-[var(--success)]" />,
+        code: `<Progress value={60} className="w-64 [&>div]:bg-[var(--success)]" />`,
       },
       {
         label: "budget — at risk",
         node: <Progress value={88} className="w-64 [&>div]:bg-[var(--warning)]" />,
+        code: `<Progress value={88} className="w-64 [&>div]:bg-[var(--warning)]" />`,
       },
       {
         label: "budget — over",
         node: <Progress value={100} className="w-64 [&>div]:bg-[var(--error)]" />,
+        code: `<Progress value={100} className="w-64 [&>div]:bg-[var(--error)]" />`,
       },
       {
         label: "labelled percentage",
@@ -2602,6 +3667,13 @@ toast.error("Something went wrong.")`,
             <Progress value={93} className="[&>div]:bg-[var(--warning)]" />
           </div>
         ),
+        code: `<div className="flex w-64 flex-col gap-1">
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Budget consumed</span>
+              <span className="font-medium text-foreground">93%</span>
+            </div>
+            <Progress value={93} className="[&>div]:bg-[var(--warning)]" />
+          </div>`,
       },
     ],
   },
@@ -2610,9 +3682,12 @@ toast.error("Something went wrong.")`,
     importLine: `import { Spinner } from "@/components/ui/spinner"`,
     exampleCode: `<Spinner />`,
     variants: [
-      { label: "default", node: <Spinner /> },
-      { label: "md", node: <Spinner className="size-6" /> },
-      { label: "lg", node: <Spinner className="size-8 text-primary" /> },
+      { label: "default", node: <Spinner />,
+      code: `<Spinner />` },
+      { label: "md", node: <Spinner className="size-6" />,
+      code: `<Spinner className="size-6" />` },
+      { label: "lg", node: <Spinner className="size-8 text-primary" />,
+      code: `<Spinner className="size-8 text-primary" />` },
     ],
   },
 
@@ -2629,9 +3704,16 @@ toast.error("Something went wrong.")`,
             <Skeleton className="h-4 w-24" />
           </div>
         ),
+        code: `<div className="flex w-48 flex-col gap-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-48" />
+            <Skeleton className="h-4 w-24" />
+          </div>`,
       },
-      { label: "circle", node: <Skeleton className="size-12 rounded-full" /> },
-      { label: "card", node: <Skeleton className="h-32 w-48 rounded-xl" /> },
+      { label: "circle", node: <Skeleton className="size-12 rounded-full" />,
+      code: `<Skeleton className="size-12 rounded-full" />` },
+      { label: "card", node: <Skeleton className="h-32 w-48 rounded-xl" />,
+      code: `<Skeleton className="h-32 w-48 rounded-xl" />` },
     ],
   },
 
@@ -2657,6 +3739,14 @@ toast.error("Something went wrong.")`,
             <Button size="sm" variant="outline">Clear filters</Button>
           </Empty>
         ),
+        code: `<Empty className="w-64">
+            <EmptyHeader>
+              <EmptyMedia variant="icon"><LayoutDashboard /></EmptyMedia>
+              <EmptyTitle>No results</EmptyTitle>
+              <EmptyDescription>Try adjusting your filters to find what you&apos;re looking for.</EmptyDescription>
+            </EmptyHeader>
+            <Button size="sm" variant="outline">Clear filters</Button>
+          </Empty>`,
       },
     ],
   },
@@ -2676,29 +3766,52 @@ toast.error("Something went wrong.")`,
   </BarChart>
 </ChartContainer>`,
     variants: [
-      { label: "bar chart", node: <ChartBarDemo /> },
-      { label: "line chart", node: <ChartLineDemo /> },
-      { label: "area-default", node: <ChartAreaDefaultDemo /> },
-      { label: "area-linear", node: <ChartAreaLinearDemo /> },
-      { label: "area-stacked", node: <ChartAreaStackedDemo /> },
-      { label: "area-gradient", node: <ChartAreaGradientDemo /> },
-      { label: "area-step", node: <ChartAreaStepDemo /> },
-      { label: "bar-horizontal", node: <ChartBarHorizontalDemo /> },
-      { label: "bar-multiple", node: <ChartBarMultipleDemo /> },
-      { label: "bar-stacked", node: <ChartBarStackedDemo /> },
-      { label: "bar-label", node: <ChartBarLabelDemo /> },
-      { label: "bar-negative", node: <ChartBarNegativeDemo /> },
-      { label: "line-dots", node: <ChartLineDotsDemo /> },
-      { label: "line-multiple", node: <ChartLineMultipleDemo /> },
-      { label: "line-step", node: <ChartLineStepDemo /> },
-      { label: "line-label", node: <ChartLineLabelDemo /> },
-      { label: "line-threshold", node: <ChartLineThresholdDemo /> },
-      { label: "pie-simple", node: <ChartPieSimpleDemo /> },
-      { label: "pie-donut", node: <ChartPieDonutDemo /> },
-      { label: "pie-donut-text", node: <ChartPieDonutTextDemo /> },
-      { label: "pie-label", node: <ChartPieLabelDemo /> },
-      { label: "pie-legend", node: <ChartPieLegendDemo /> },
-      { label: "pie-stacked", node: <ChartPieStackedDemo /> },
+      { label: "bar chart", node: <ChartBarDemo />,
+      code: `<ChartBarDemo />` },
+      { label: "line chart", node: <ChartLineDemo />,
+      code: `<ChartLineDemo />` },
+      { label: "area-default", node: <ChartAreaDefaultDemo />,
+      code: `<ChartAreaDefaultDemo />` },
+      { label: "area-linear", node: <ChartAreaLinearDemo />,
+      code: `<ChartAreaLinearDemo />` },
+      { label: "area-stacked", node: <ChartAreaStackedDemo />,
+      code: `<ChartAreaStackedDemo />` },
+      { label: "area-gradient", node: <ChartAreaGradientDemo />,
+      code: `<ChartAreaGradientDemo />` },
+      { label: "area-step", node: <ChartAreaStepDemo />,
+      code: `<ChartAreaStepDemo />` },
+      { label: "bar-horizontal", node: <ChartBarHorizontalDemo />,
+      code: `<ChartBarHorizontalDemo />` },
+      { label: "bar-multiple", node: <ChartBarMultipleDemo />,
+      code: `<ChartBarMultipleDemo />` },
+      { label: "bar-stacked", node: <ChartBarStackedDemo />,
+      code: `<ChartBarStackedDemo />` },
+      { label: "bar-label", node: <ChartBarLabelDemo />,
+      code: `<ChartBarLabelDemo />` },
+      { label: "bar-negative", node: <ChartBarNegativeDemo />,
+      code: `<ChartBarNegativeDemo />` },
+      { label: "line-dots", node: <ChartLineDotsDemo />,
+      code: `<ChartLineDotsDemo />` },
+      { label: "line-multiple", node: <ChartLineMultipleDemo />,
+      code: `<ChartLineMultipleDemo />` },
+      { label: "line-step", node: <ChartLineStepDemo />,
+      code: `<ChartLineStepDemo />` },
+      { label: "line-label", node: <ChartLineLabelDemo />,
+      code: `<ChartLineLabelDemo />` },
+      { label: "line-threshold", node: <ChartLineThresholdDemo />,
+      code: `<ChartLineThresholdDemo />` },
+      { label: "pie-simple", node: <ChartPieSimpleDemo />,
+      code: `<ChartPieSimpleDemo />` },
+      { label: "pie-donut", node: <ChartPieDonutDemo />,
+      code: `<ChartPieDonutDemo />` },
+      { label: "pie-donut-text", node: <ChartPieDonutTextDemo />,
+      code: `<ChartPieDonutTextDemo />` },
+      { label: "pie-label", node: <ChartPieLabelDemo />,
+      code: `<ChartPieLabelDemo />` },
+      { label: "pie-legend", node: <ChartPieLegendDemo />,
+      code: `<ChartPieLegendDemo />` },
+      { label: "pie-stacked", node: <ChartPieStackedDemo />,
+      code: `<ChartPieStackedDemo />` },
     ],
   },
 
@@ -2733,6 +3846,21 @@ toast.error("Something went wrong.")`,
             </Carousel>
           </div>
         ),
+        code: `<div className="relative w-full px-8">
+            <Carousel>
+              <CarouselContent>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <CarouselItem key={i}>
+                    <div className="flex h-36 items-center justify-center rounded-md bg-muted text-xl font-semibold text-muted-foreground">
+                      {i}
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>`,
       },
       {
         label: "multi-item",
@@ -2753,6 +3881,21 @@ toast.error("Something went wrong.")`,
             </Carousel>
           </div>
         ),
+        code: `<div className="relative w-full px-8">
+            <Carousel opts={{ align: "start" }}>
+              <CarouselContent className="-ml-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <CarouselItem key={i} className="pl-2 basis-1/3">
+                    <div className="flex h-20 items-center justify-center rounded-md bg-muted text-sm font-medium text-muted-foreground">
+                      {i}
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>`,
       },
     ],
   },
@@ -2772,8 +3915,10 @@ toast.error("Something went wrong.")`,
   </PopoverContent>
 </Popover>`,
     variants: [
-      { label: "single date", node: <DatePickerDemo /> },
-      { label: "date range", node: <DateRangeDemo /> },
+      { label: "single date", node: <DatePickerDemo />,
+      code: `<DatePickerDemo />` },
+      { label: "date range", node: <DateRangeDemo />,
+      code: `<DateRangeDemo />` },
     ],
   },
 
@@ -2793,10 +3938,14 @@ toast.error("Something went wrong.")`,
   periodTypes={["quarter", "half-year", "year"]}
 />`,
     variants: [
-      { label: "status date", node: <DateSelectorStatusDemo /> },
-      { label: "billing period", node: <DateSelectorBillingDemo /> },
-      { label: "capacity window", node: <DateSelectorStaffingDemo /> },
-      { label: "planning horizon", node: <DateSelectorPlanningDemo /> },
+      { label: "status date", node: <DateSelectorStatusDemo />,
+      code: `<DateSelectorStatusDemo />` },
+      { label: "billing period", node: <DateSelectorBillingDemo />,
+      code: `<DateSelectorBillingDemo />` },
+      { label: "capacity window", node: <DateSelectorStaffingDemo />,
+      code: `<DateSelectorStaffingDemo />` },
+      { label: "planning horizon", node: <DateSelectorPlanningDemo />,
+      code: `<DateSelectorPlanningDemo />` },
     ],
   },
 
@@ -2807,7 +3956,8 @@ toast.error("Something went wrong.")`,
   <Input placeholder="اكتب هنا..." />
 </DirectionProvider>`,
     variants: [
-      { label: "ltr / rtl toggle", node: <DirectionDemo /> },
+      { label: "ltr / rtl toggle", node: <DirectionDemo />,
+      code: `<DirectionDemo />` },
     ],
   },
 
@@ -2840,6 +3990,20 @@ toast.error("Something went wrong.")`,
             </AccordionItem>
           </Accordion>
         ),
+        code: `<Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="a">
+              <AccordionTrigger>Is it accessible?</AccordionTrigger>
+              <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="b">
+              <AccordionTrigger>Is it styled?</AccordionTrigger>
+              <AccordionContent>Yes. It comes with default styles that match NOS tokens.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="c">
+              <AccordionTrigger>Is it animated?</AccordionTrigger>
+              <AccordionContent>Yes. Motion tokens drive the expand/collapse animation.</AccordionContent>
+            </AccordionItem>
+          </Accordion>`,
       },
     ],
   },
@@ -2872,6 +4036,21 @@ toast.error("Something went wrong.")`,
             </CollapsibleContent>
           </Collapsible>
         ),
+        code: `<Collapsible className="w-64">
+            <CollapsibleTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+                View members
+                <ChevronRight className="size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-2 flex flex-col gap-1 rounded-md border p-2 text-sm">
+                <div>@alice</div>
+                <div>@bob</div>
+                <div>@carol</div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>`,
       },
     ],
   },
@@ -2897,9 +4076,12 @@ toast.error("Something went wrong.")`,
 />`,
     variantSpan: "full",
     variants: [
-      { label: "scope hierarchy", node: <TreeScopeDemo /> },
-      { label: "delivery release", node: <TreeDeliveryDemo /> },
-      { label: "skills matrix", node: <TreeSkillsDemo /> },
+      { label: "scope hierarchy", node: <TreeScopeDemo />,
+      code: `<TreeScopeDemo />` },
+      { label: "delivery release", node: <TreeDeliveryDemo />,
+      code: `<TreeDeliveryDemo />` },
+      { label: "skills matrix", node: <TreeSkillsDemo />,
+      code: `<TreeSkillsDemo />` },
     ],
   },
 
@@ -2928,6 +4110,14 @@ toast.error("Something went wrong.")`,
             </div>
           </div>
         ),
+        code: `<div className="w-full rounded-md border shadow-md">
+            {/* Dynamically import Command to avoid SSR issues with CommandInput */}
+            <div className="p-3 text-sm text-muted-foreground">
+              Command is used inside dialogs via{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{"<CommandDialog>"}</code>.
+              It powers the Combobox and search palettes.
+            </div>
+          </div>`,
       },
     ],
   },
@@ -2957,6 +4147,20 @@ toast.error("Something went wrong.")`,
             </ItemComp>
           </ItemGroup>
         ),
+        code: `<ItemGroup className="w-48">
+            <ItemComp>
+              <LayoutDashboard className="size-4" />
+              Dashboard
+            </ItemComp>
+            <ItemComp>
+              <Settings className="size-4" />
+              Settings
+            </ItemComp>
+            <ItemComp>
+              <User className="size-4" />
+              Profile
+            </ItemComp>
+          </ItemGroup>`,
       },
     ],
   },
@@ -2968,12 +4172,18 @@ toast.error("Something went wrong.")`,
     exampleCode: `<IdChip id="EPIC-014" />
 <IdChip id="RISK-01" href="#" />`,
     variants: [
-      { label: "epic", node: <IdChip id="EPIC-014" /> },
-      { label: "risk", node: <IdChip id="RISK-01" /> },
-      { label: "question", node: <IdChip id="Q-03" /> },
-      { label: "assumption", node: <IdChip id="A-07" /> },
-      { label: "component", node: <IdChip id="COMP-02" /> },
-      { label: "with href", node: <IdChip id="EPIC-031" href="#" /> },
+      { label: "epic", node: <IdChip id="EPIC-014" />,
+      code: `<IdChip id="EPIC-014" />` },
+      { label: "risk", node: <IdChip id="RISK-01" />,
+      code: `<IdChip id="RISK-01" />` },
+      { label: "question", node: <IdChip id="Q-03" />,
+      code: `<IdChip id="Q-03" />` },
+      { label: "assumption", node: <IdChip id="A-07" />,
+      code: `<IdChip id="A-07" />` },
+      { label: "component", node: <IdChip id="COMP-02" />,
+      code: `<IdChip id="COMP-02" />` },
+      { label: "with href", node: <IdChip id="EPIC-031" href="#" />,
+      code: `<IdChip id="EPIC-031" href="#" />` },
     ],
   },
 
@@ -2982,12 +4192,18 @@ toast.error("Something went wrong.")`,
     exampleCode: `<LinkedChip id="EPIC-031" type="epic" />
 <LinkedChip id="RISK-01" type="risk" />`,
     variants: [
-      { label: "epic", node: <LinkedChip id="EPIC-031" type="epic" /> },
-      { label: "story", node: <LinkedChip id="STORY-04" type="story" /> },
-      { label: "risk", node: <LinkedChip id="RISK-01" type="risk" /> },
-      { label: "question", node: <LinkedChip id="Q-03" type="question" /> },
-      { label: "assumption", node: <LinkedChip id="A-07" type="assumption" /> },
-      { label: "component", node: <LinkedChip id="COMP-02" type="component" /> },
+      { label: "epic", node: <LinkedChip id="EPIC-031" type="epic" />,
+      code: `<LinkedChip id="EPIC-031" type="epic" />` },
+      { label: "story", node: <LinkedChip id="STORY-04" type="story" />,
+      code: `<LinkedChip id="STORY-04" type="story" />` },
+      { label: "risk", node: <LinkedChip id="RISK-01" type="risk" />,
+      code: `<LinkedChip id="RISK-01" type="risk" />` },
+      { label: "question", node: <LinkedChip id="Q-03" type="question" />,
+      code: `<LinkedChip id="Q-03" type="question" />` },
+      { label: "assumption", node: <LinkedChip id="A-07" type="assumption" />,
+      code: `<LinkedChip id="A-07" type="assumption" />` },
+      { label: "component", node: <LinkedChip id="COMP-02" type="component" />,
+      code: `<LinkedChip id="COMP-02" type="component" />` },
     ],
   },
 
@@ -2997,10 +4213,14 @@ toast.error("Something went wrong.")`,
 <HealthIndicator status="warning" message="2 open risks" />
 <HealthIndicator status="error" message="Missing estimates" />`,
     variants: [
-      { label: "healthy", node: <HealthIndicator status="healthy" /> },
-      { label: "warning", node: <HealthIndicator status="warning" message="2 open risks" /> },
-      { label: "error", node: <HealthIndicator status="error" message="Missing estimates" /> },
-      { label: "no label", node: <HealthIndicator status="warning" showLabel={false} /> },
+      { label: "healthy", node: <HealthIndicator status="healthy" />,
+      code: `<HealthIndicator status="healthy" />` },
+      { label: "warning", node: <HealthIndicator status="warning" message="2 open risks" />,
+      code: `<HealthIndicator status="warning" message="2 open risks" />` },
+      { label: "error", node: <HealthIndicator status="error" message="Missing estimates" />,
+      code: `<HealthIndicator status="error" message="Missing estimates" />` },
+      { label: "no label", node: <HealthIndicator status="warning" showLabel={false} />,
+      code: `<HealthIndicator status="warning" showLabel={false} />` },
     ],
   },
 
@@ -3019,6 +4239,11 @@ toast.error("Something went wrong.")`,
             <ReadinessItem label="Missing estimates on Phase 3" status="fail" />
           </div>
         ),
+        code: `<div className="flex flex-col gap-2 w-full">
+            <ReadinessItem label="Scope approved" status="pass" />
+            <ReadinessItem label="2 open questions remain" status="warning" />
+            <ReadinessItem label="Missing estimates on Phase 3" status="fail" />
+          </div>`,
       },
     ],
   },
@@ -3029,9 +4254,12 @@ toast.error("Something went wrong.")`,
     importLine: `import { StepperCounter } from "@/components/ui/stepper-counter"`,
     exampleCode: `<StepperCounter current={4} total={12} percent={33} />`,
     variants: [
-      { label: "early stage", node: <StepperCounter current={1} total={12} percent={8} /> },
-      { label: "mid stage", node: <StepperCounter current={4} total={12} percent={33} /> },
-      { label: "late stage", node: <StepperCounter current={10} total={12} percent={83} /> },
+      { label: "early stage", node: <StepperCounter current={1} total={12} percent={8} />,
+      code: `<StepperCounter current={1} total={12} percent={8} />` },
+      { label: "mid stage", node: <StepperCounter current={4} total={12} percent={33} />,
+      code: `<StepperCounter current={4} total={12} percent={33} />` },
+      { label: "late stage", node: <StepperCounter current={10} total={12} percent={83} />,
+      code: `<StepperCounter current={10} total={12} percent={83} />` },
     ],
   },
 
@@ -3058,6 +4286,16 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <L1DistributionBar
+              segments={[
+                { type: "Experience", value: 8 },
+                { type: "Workflow", value: 12 },
+                { type: "Integration", value: 5 },
+                { type: "Foundation", value: 3 },
+              ]}
+            />
+          </div>`,
       },
       {
         label: "md height",
@@ -3074,6 +4312,17 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <L1DistributionBar
+              height="md"
+              segments={[
+                { type: "Experience", value: 10 },
+                { type: "Workflow", value: 8 },
+                { type: "Integration", value: 6 },
+                { type: "Foundation", value: 4 },
+              ]}
+            />
+          </div>`,
       },
       {
         label: "with legend",
@@ -3090,6 +4339,17 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <L1DistributionBar
+              showLegend
+              segments={[
+                { type: "Experience", value: 8 },
+                { type: "Workflow", value: 12 },
+                { type: "Integration", value: 5 },
+                { type: "Foundation", value: 3 },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -3103,8 +4363,10 @@ toast.error("Something went wrong.")`,
   ]}
 />`,
     variants: [
-      { label: "default", node: <AIActionBarDemo /> },
-      { label: "custom label", node: <AIActionBarMinimalDemo /> },
+      { label: "default", node: <AIActionBarDemo />,
+      code: `<AIActionBarDemo />` },
+      { label: "custom label", node: <AIActionBarMinimalDemo />,
+      code: `<AIActionBarMinimalDemo />` },
     ],
   },
 
@@ -3127,6 +4389,11 @@ toast.error("Something went wrong.")`,
             <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
           </AvatarGroup>
         ),
+        code: `<AvatarGroup>
+            <Avatar><AvatarFallback>JD</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
+          </AvatarGroup>`,
       },
       {
         label: "with overflow",
@@ -3138,6 +4405,12 @@ toast.error("Something went wrong.")`,
             <AvatarGroupCount>+4</AvatarGroupCount>
           </AvatarGroup>
         ),
+        code: `<AvatarGroup>
+            <Avatar><AvatarFallback>JD</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
+            <AvatarGroupCount>+4</AvatarGroupCount>
+          </AvatarGroup>`,
       },
       {
         label: "sm size",
@@ -3148,6 +4421,11 @@ toast.error("Something went wrong.")`,
             <AvatarGroupCount data-size="sm">+2</AvatarGroupCount>
           </AvatarGroup>
         ),
+        code: `<AvatarGroup data-size="sm">
+            <Avatar data-size="sm"><AvatarFallback>JD</AvatarFallback></Avatar>
+            <Avatar data-size="sm"><AvatarFallback>SC</AvatarFallback></Avatar>
+            <AvatarGroupCount data-size="sm">+2</AvatarGroupCount>
+          </AvatarGroup>`,
       },
       {
         label: "compact · with overflow",
@@ -3159,6 +4437,12 @@ toast.error("Something went wrong.")`,
             <AvatarGroupCompactOverflow>+4</AvatarGroupCompactOverflow>
           </AvatarGroupCompact>
         ),
+        code: `<AvatarGroupCompact>
+            <Avatar><AvatarFallback>SC</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>MT</AvatarFallback></Avatar>
+            <Avatar><AvatarFallback>AJ</AvatarFallback></Avatar>
+            <AvatarGroupCompactOverflow>+4</AvatarGroupCompactOverflow>
+          </AvatarGroupCompact>`,
       },
       {
         label: "compact · lg · stroke",
@@ -3169,6 +4453,11 @@ toast.error("Something went wrong.")`,
             <Avatar size="lg"><AvatarFallback>AJ</AvatarFallback></Avatar>
           </AvatarGroupCompact>
         ),
+        code: `<AvatarGroupCompact size="lg" variant="stroke">
+            <Avatar size="lg"><AvatarFallback>SC</AvatarFallback></Avatar>
+            <Avatar size="lg"><AvatarFallback>MT</AvatarFallback></Avatar>
+            <Avatar size="lg"><AvatarFallback>AJ</AvatarFallback></Avatar>
+          </AvatarGroupCompact>`,
       },
     ],
   },
@@ -3191,6 +4480,12 @@ toast.error("Something went wrong.")`,
             trend={{ direction: "up", value: "+12%", label: "vs last quarter" }}
           />
         ),
+        code: `<StatCard
+            label="Total Pipeline Value"
+            value="$2.4M"
+            subLabel="Active engagements"
+            trend={{ direction: "up", value: "+12%", label: "vs last quarter" }}
+          />`,
       },
       {
         label: "negative trend",
@@ -3201,6 +4496,11 @@ toast.error("Something went wrong.")`,
             trend={{ direction: "down", value: "-24.4%", label: "vs last quarter" }}
           />
         ),
+        code: `<StatCard
+            label="Avg. Time to Close"
+            value="47 days"
+            trend={{ direction: "down", value: "-24.4%", label: "vs last quarter" }}
+          />`,
       },
       {
         label: "neutral",
@@ -3211,6 +4511,11 @@ toast.error("Something went wrong.")`,
             trend={{ direction: "neutral", value: "0%", label: "unchanged" }}
           />
         ),
+        code: `<StatCard
+            label="Win Rate"
+            value="68%"
+            trend={{ direction: "neutral", value: "0%", label: "unchanged" }}
+          />`,
       },
       {
         label: "no trend",
@@ -3221,6 +4526,57 @@ toast.error("Something went wrong.")`,
             subLabel="Across all engagements"
           />
         ),
+        code: `<StatCard
+            label="Open Questions"
+            value={12}
+            subLabel="Across all engagements"
+          />`,
+      },
+    ],
+  },
+
+  "animated-number": {
+    importLine: `import { AnimatedNumber } from "@/components/ui/animated-number"`,
+    exampleCode: `<AnimatedNumber value="$24.8K" className="text-3xl font-semibold tracking-tight" />`,
+    variants: [
+      {
+        label: "number",
+        node: (
+          <div className="rounded-lg border bg-background p-5">
+            <p className="text-sm text-muted-foreground">Qualified accounts</p>
+            <AnimatedNumber value="1,248" className="mt-1 text-3xl font-semibold tracking-tight" />
+          </div>
+        ),
+        code: `<div className="rounded-lg border bg-background p-5">
+            <p className="text-sm text-muted-foreground">Qualified accounts</p>
+            <AnimatedNumber value="1,248" className="mt-1 text-3xl font-semibold tracking-tight" />
+          </div>`,
+      },
+      {
+        label: "currency",
+        node: (
+          <div className="rounded-lg border bg-background p-5">
+            <p className="text-sm text-muted-foreground">Pipeline value</p>
+            <AnimatedNumber value="$2.4M" className="mt-1 text-3xl font-semibold tracking-tight" />
+          </div>
+        ),
+        code: `<div className="rounded-lg border bg-background p-5">
+            <p className="text-sm text-muted-foreground">Pipeline value</p>
+            <AnimatedNumber value="$2.4M" className="mt-1 text-3xl font-semibold tracking-tight" />
+          </div>`,
+      },
+      {
+        label: "percentage",
+        node: (
+          <div className="rounded-lg border bg-background p-5">
+            <p className="text-sm text-muted-foreground">Win rate</p>
+            <AnimatedNumber value="68%" className="mt-1 text-3xl font-semibold tracking-tight" />
+          </div>
+        ),
+        code: `<div className="rounded-lg border bg-background p-5">
+            <p className="text-sm text-muted-foreground">Win rate</p>
+            <AnimatedNumber value="68%" className="mt-1 text-3xl font-semibold tracking-tight" />
+          </div>`,
       },
     ],
   },
@@ -3236,6 +4592,7 @@ toast.error("Something went wrong.")`,
             <MetricPanelsGallery />
           </div>
         ),
+        code: `<MetricPanelsGallery />`,
       },
     ],
   },
@@ -3261,11 +4618,24 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <Timeline
+              steps={[
+                { role: "Solution Architect", reviewer: "Sarah Chen", status: "complete", timestamp: "May 20, 2026" },
+                { role: "Delivery Lead", reviewer: "Mark Torres", status: "pending" },
+                { role: "Client Sponsor", status: "pending" },
+              ]}
+            />
+          </div>`,
       },
-      { label: "account activity", node: <div className="w-full"><TimelineAccountActivityDemo /></div> },
-      { label: "project history", node: <div className="w-full"><TimelineProjectHistoryDemo /></div> },
-      { label: "audit trail", node: <div className="w-full"><TimelineAuditTrailDemo /></div> },
-      { label: "status updates", node: <div className="w-full"><TimelineStatusUpdatesDemo /></div> },
+      { label: "account activity", node: <div className="w-full"><TimelineAccountActivityDemo /></div>,
+      code: `<div className="w-full"><TimelineAccountActivityDemo /></div>` },
+      { label: "project history", node: <div className="w-full"><TimelineProjectHistoryDemo /></div>,
+      code: `<div className="w-full"><TimelineProjectHistoryDemo /></div>` },
+      { label: "audit trail", node: <div className="w-full"><TimelineAuditTrailDemo /></div>,
+      code: `<div className="w-full"><TimelineAuditTrailDemo /></div>` },
+      { label: "status updates", node: <div className="w-full"><TimelineStatusUpdatesDemo /></div>,
+      code: `<div className="w-full"><TimelineStatusUpdatesDemo /></div>` },
       {
         label: "with rejection",
         node: (
@@ -3279,6 +4649,15 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <Timeline
+              steps={[
+                { role: "Solution Architect", reviewer: "Sarah Chen", status: "complete", timestamp: "May 18" },
+                { role: "Delivery Lead", reviewer: "Mark Torres", status: "rejected", timestamp: "May 19", note: "Scope needs revision" },
+                { role: "Client Sponsor", status: "pending" },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -3303,6 +4682,16 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <ActivityFeed
+              items={[
+                { id: "1", actor: { name: "Alice Johnson", initials: "AJ" }, action: "updated", subject: "Clinical Intake Automation Platform", timestamp: "2h ago" },
+                { id: "2", actor: { name: "Ben Carter", initials: "BC" }, action: "commented on", subject: "Domain Model Board", timestamp: "4h ago" },
+                { id: "3", actor: { name: "Sarah Chen", initials: "SC" }, action: "approved", subject: "Phase 1 Estimate", timestamp: "Yesterday" },
+                { id: "4", actor: { name: "Mark Torres", initials: "MT" }, action: "created", subject: "Reconciliation Panel", timestamp: "2 days ago" },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -3341,6 +4730,18 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {[1, 2, 3, 4].map((step) => (
+                <StepperItem key={step} step={step}>
+                  <StepperTrigger><StepperIndicator /></StepperTrigger>
+                  {step < 4 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "completed-state",
@@ -3360,6 +4761,20 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {[1, 2, 3, 4].map((step) => (
+                <StepperItem key={step} step={step}>
+                  <StepperTrigger>
+                    <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                  </StepperTrigger>
+                  {step < 4 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "loading-state",
@@ -3388,10 +4803,34 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper
+            defaultValue={2}
+            className="w-full max-w-md"
+            indicators={{
+              completed: <Check className="size-3.5" />,
+              loading: <Loader2 className="size-3.5 animate-spin" />,
+            }}
+          >
+            <StepperNav>
+              {[1, 2, 3].map((step) => (
+                <StepperItem key={step} step={step} loading={step === 2}>
+                  <StepperTrigger>
+                    <StepperIndicator className="size-5 border-2 border-muted data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:border-success data-[state=completed]:bg-success data-[state=completed]:text-white">
+                      <span className="hidden size-1.5 rounded-full bg-primary-foreground group-data-[state=active]/step:block" />
+                    </StepperIndicator>
+                  </StepperTrigger>
+                  {step < 3 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "controlled",
         node: <StepperControlledDemo />,
+        code: `<StepperControlledDemo />`,
       },
       {
         label: "title",
@@ -3412,6 +4851,21 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {(["Account", "Profile", "Review"] as const).map((title, index) => (
+                <StepperItem key={index} step={index + 1} className="relative flex-1 items-start">
+                  <StepperTrigger className="flex flex-col gap-2.5">
+                    <StepperIndicator />
+                    <StepperTitle>{title}</StepperTitle>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="absolute inset-x-0 top-3 left-[calc(50%+0.875rem)] m-0 group-data-[state=completed]/step:bg-primary group-data-[orientation=horizontal]/stepper-nav:w-[calc(100%-2rem+0.225rem)] group-data-[orientation=horizontal]/stepper-nav:flex-none" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "descriptions",
@@ -3437,6 +4891,26 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {([
+                { title: "Account", desc: "Create your account" },
+                { title: "Profile", desc: "Set up your profile" },
+                { title: "Complete", desc: "Review and finish" },
+              ] as const).map(({ title, desc }, index) => (
+                <StepperItem key={index} step={index + 1} className="relative flex-1 items-start">
+                  <StepperTrigger className="flex flex-col gap-2.5">
+                    <StepperIndicator />
+                    <StepperTitle>{title}</StepperTitle>
+                    <StepperDescription>{desc}</StepperDescription>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="absolute inset-x-0 top-2.5 left-[calc(50%+0.875rem)] m-0 group-data-[state=completed]/step:bg-primary group-data-[orientation=horizontal]/stepper-nav:w-[calc(100%-2rem+0.225rem)] group-data-[orientation=horizontal]/stepper-nav:flex-none" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "inline-title",
@@ -3457,6 +4931,21 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper defaultValue={2} className="w-full max-w-md">
+            <StepperNav>
+              {(["Account", "Profile", "Review"] as const).map((title, index) => (
+                <StepperItem key={index} step={index + 1} className="relative">
+                  <StepperTrigger className="flex justify-start gap-1.5">
+                    <StepperIndicator />
+                    <StepperTitle>{title}</StepperTitle>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary md:mx-2.5" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "inline-title-description",
@@ -3484,10 +4973,33 @@ toast.error("Something went wrong.")`,
             </StepperNav>
           </Stepper>
         ),
+        code: `<Stepper defaultValue={2} className="w-full max-w-lg">
+            <StepperNav>
+              {([
+                { title: "Step 1", desc: "Description" },
+                { title: "Step 2", desc: "Description" },
+                { title: "Step 3", desc: "Description" },
+              ] as const).map(({ title, desc }, index) => (
+                <StepperItem key={index} step={index + 1} className="relative">
+                  <StepperTrigger className="flex justify-start gap-1.5">
+                    <StepperIndicator />
+                    <div className="flex flex-col items-start gap-0.5">
+                      <StepperTitle>{title}</StepperTitle>
+                      <StepperDescription>{desc}</StepperDescription>
+                    </div>
+                  </StepperTrigger>
+                  {index < 2 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary md:mx-2.5" />
+                  )}
+                </StepperItem>
+              ))}
+            </StepperNav>
+          </Stepper>`,
       },
       {
         label: "segmented",
         node: <StepperSegmentedDemo />,
+        code: `<StepperSegmentedDemo />`,
       },
       {
         label: "vertical",
@@ -3516,6 +5028,29 @@ toast.error("Something went wrong.")`,
             </Stepper>
           </div>
         ),
+        code: `<div className="flex w-full items-center justify-center">
+            <Stepper
+              orientation="vertical"
+              defaultValue={2}
+              indicators={{
+                completed: <Check className="size-3.5" />,
+                loading: <Loader2 className="size-3.5 animate-spin" />,
+              }}
+            >
+              <StepperNav>
+                {[1, 2, 3].map((step) => (
+                  <StepperItem key={step} step={step} loading={step === 2}>
+                    <StepperTrigger>
+                      <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                    </StepperTrigger>
+                    {step < 3 && (
+                      <StepperSeparator className="group-data-[state=completed]/step:bg-success" />
+                    )}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>`,
       },
       {
         label: "vertical-title",
@@ -3540,6 +5075,25 @@ toast.error("Something went wrong.")`,
             </Stepper>
           </div>
         ),
+        code: `<div className="flex w-full items-center justify-center">
+            <Stepper orientation="vertical" defaultValue={2}>
+              <StepperNav>
+                {(["Account", "Profile", "Review"] as const).map((title, index) => (
+                  <StepperItem key={index} step={index + 1} className="relative items-start not-last:flex-1">
+                    <StepperTrigger className="items-start gap-2.5 pb-12 last:pb-0">
+                      <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                      <div className="mt-0.5 text-left">
+                        <StepperTitle>{title}</StepperTitle>
+                      </div>
+                    </StepperTrigger>
+                    {index < 2 && (
+                      <StepperSeparator className="absolute inset-y-0 top-7 left-3 -order-1 m-0 -translate-x-1/2 group-data-[state=completed]/step:bg-success group-data-[orientation=vertical]/stepper-nav:h-[calc(100%-2rem)]" />
+                    )}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>`,
       },
       {
         label: "vertical-description",
@@ -3569,6 +5123,30 @@ toast.error("Something went wrong.")`,
             </Stepper>
           </div>
         ),
+        code: `<div className="flex w-full items-center justify-center">
+            <Stepper orientation="vertical" defaultValue={2}>
+              <StepperNav>
+                {([
+                  { title: "Account", desc: "Create your account" },
+                  { title: "Profile", desc: "Set up your profile" },
+                  { title: "Review", desc: "Confirm your details" },
+                ] as const).map(({ title, desc }, index) => (
+                  <StepperItem key={index} step={index + 1} className="relative items-start not-last:flex-1">
+                    <StepperTrigger className="items-start gap-2.5 pb-12 last:pb-0">
+                      <StepperIndicator className="data-[state=completed]:bg-success data-[state=completed]:text-white" />
+                      <div className="mt-0.5 text-left">
+                        <StepperTitle>{title}</StepperTitle>
+                        <StepperDescription>{desc}</StepperDescription>
+                      </div>
+                    </StepperTrigger>
+                    {index < 2 && (
+                      <StepperSeparator className="absolute inset-y-0 top-7 left-3 -order-1 m-0 -translate-x-1/2 group-data-[state=completed]/step:bg-success group-data-[orientation=vertical]/stepper-nav:h-[calc(100%-2rem)]" />
+                    )}
+                  </StepperItem>
+                ))}
+              </StepperNav>
+            </Stepper>
+          </div>`,
       },
     ],
   },
@@ -3582,7 +5160,8 @@ toast.error("Something went wrong.")`,
   rowSelection
 />`,
     variants: [
-      { label: "full featured", node: <DataTableDemo /> },
+      { label: "full featured", node: <DataTableDemo />,
+      code: `<DataTableDemo />` },
     ],
   },
 
@@ -3598,10 +5177,14 @@ toast.error("Something went wrong.")`,
 />`,
     variantSpan: "full",
     variants: [
-      { label: "pipeline filters", node: <FiltersPipelineDemo /> },
-      { label: "staffing filters", node: <FiltersStaffingDemo /> },
-      { label: "budget filters", node: <FiltersBudgetDemo /> },
-      { label: "health filters", node: <FiltersHealthDemo /> },
+      { label: "pipeline filters", node: <FiltersPipelineDemo />,
+      code: `<FiltersPipelineDemo />` },
+      { label: "staffing filters", node: <FiltersStaffingDemo />,
+      code: `<FiltersStaffingDemo />` },
+      { label: "budget filters", node: <FiltersBudgetDemo />,
+      code: `<FiltersBudgetDemo />` },
+      { label: "health filters", node: <FiltersHealthDemo />,
+      code: `<FiltersHealthDemo />` },
     ],
   },
 
@@ -3616,18 +5199,137 @@ toast.error("Something went wrong.")`,
 />`,
     variantSpan: "full",
     variants: [
-      { label: "comfortable CRM", node: <DataGridDemo /> },
-      { label: "dense operations", node: <DataGridDenseDemo /> },
-      { label: "financial review", node: <DataGridFinancialDemo /> },
-      { label: "people allocation", node: <DataGridPeopleDemo /> },
-      { label: "risk register", node: <DataGridRiskDemo /> },
-      { label: "pinned priorities", node: <DataGridPinnedRowsDemo /> },
-      { label: "grouped operations", node: <DataGridGroupedRowsDemo /> },
-      { label: "wide columns", node: <DataGridResizableColumnsDemo /> },
-      { label: "saved views", node: <DataGridSavedViewsDemo /> },
-      { label: "expandable rows", node: <DataGridExpandableDemo /> },
-      { label: "loading", node: <DataGridLoadingDemo /> },
-      { label: "empty", node: <DataGridEmptyDemo /> },
+      {
+        label: "comfortable CRM",
+        node: <DataGridDemo />,
+        code: `<DataGrid
+  columns={crmColumns}
+  data={clients}
+  searchKey="client"
+  rowSelection
+  columnVisibility
+/>`,
+      },
+      {
+        label: "dense operations",
+        node: <DataGridDenseDemo />,
+        code: `<DataGrid
+  columns={operationColumns}
+  data={operations}
+  density="compact"
+  cellBorders
+  stickyHeader
+  rowSelection
+/>`,
+      },
+      {
+        label: "financial review",
+        node: <DataGridFinancialDemo />,
+        code: `<DataGrid
+  columns={financialColumns}
+  data={budgetLines}
+  searchKey="account"
+  columnVisibility
+  striped
+/>`,
+      },
+      {
+        label: "people allocation",
+        node: <DataGridPeopleDemo />,
+        code: `<DataGrid
+  columns={peopleColumns}
+  data={allocations}
+  searchKey="person"
+  rowSelection
+  columnVisibility
+/>`,
+      },
+      {
+        label: "risk register",
+        node: <DataGridRiskDemo />,
+        code: `<DataGrid
+  columns={riskColumns}
+  data={risks}
+  searchKey="risk"
+  stickyHeader
+  rowSelection
+/>`,
+      },
+      {
+        label: "pinned priorities",
+        node: <DataGridPinnedRowsDemo />,
+        code: `<DataGrid
+  columns={priorityColumns}
+  data={priorities}
+  searchKey="title"
+  stickyHeader
+  columnVisibility
+/>`,
+      },
+      {
+        label: "grouped operations",
+        node: <DataGridGroupedRowsDemo />,
+        code: `<DataGrid
+  columns={groupedColumns}
+  data={groupedOperations}
+  searchKey="name"
+  rowSelection
+  striped
+/>`,
+      },
+      {
+        label: "wide columns",
+        node: <DataGridResizableColumnsDemo />,
+        code: `<DataGrid
+  columns={wideColumns}
+  data={wideRows}
+  searchKey="client"
+  columnVisibility
+  stickyHeader
+/>`,
+      },
+      {
+        label: "saved views",
+        node: <DataGridSavedViewsDemo />,
+        code: `<DataGrid
+  columns={savedViewColumns}
+  data={savedViewRows}
+  searchKey="name"
+  columnVisibility
+  rowSelection
+/>`,
+      },
+      {
+        label: "expandable rows",
+        node: <DataGridExpandableDemo />,
+        code: `<DataGrid
+  columns={columns}
+  data={data}
+  searchKey="client"
+  renderExpandedRow={(row) => <EngagementDetails engagement={row.original} />}
+/>`,
+      },
+      {
+        label: "loading",
+        node: <DataGridLoadingDemo />,
+        code: `<DataGrid
+  columns={columns}
+  data={[]}
+  loading
+  searchKey="client"
+/>`,
+      },
+      {
+        label: "empty",
+        node: <DataGridEmptyDemo />,
+        code: `<DataGrid
+  columns={columns}
+  data={[]}
+  searchKey="client"
+  emptyTitle="No clients found"
+  emptyDescription="Try changing the search or filters."
+/>`,
+      },
     ],
   },
 
@@ -3652,9 +5354,12 @@ toast.error("Something went wrong.")`,
 />`,
     variantSpan: "full",
     variants: [
-      { label: "priority order", node: <SortablePriorityDemo /> },
-      { label: "document sections", node: <SortableDocumentDemo /> },
-      { label: "nested checklist", node: <SortableNestedChecklistDemo /> },
+      { label: "priority order", node: <SortablePriorityDemo />,
+      code: `<SortablePriorityDemo />` },
+      { label: "document sections", node: <SortableDocumentDemo />,
+      code: `<SortableDocumentDemo />` },
+      { label: "nested checklist", node: <SortableNestedChecklistDemo />,
+      code: `<SortableNestedChecklistDemo />` },
     ],
   },
 
@@ -3663,11 +5368,16 @@ toast.error("Something went wrong.")`,
     exampleCode: `<KanbanBoard columns={columns} onItemMove={handleMove} />`,
     variantSpan: "full",
     variants: [
-      { label: "4-column board", node: <KanbanBoardDemo /> },
-      { label: "swimlanes", node: <KanbanSwimlanesDemo /> },
-      { label: "WIP limits", node: <KanbanWipLimitsDemo /> },
-      { label: "release validation", node: <KanbanReleaseValidationDemo /> },
-      { label: "grouped by owner", node: <KanbanOwnerGroupedDemo /> },
+      { label: "4-column board", node: <KanbanBoardDemo />,
+      code: `<KanbanBoardDemo />` },
+      { label: "swimlanes", node: <KanbanSwimlanesDemo />,
+      code: `<KanbanSwimlanesDemo />` },
+      { label: "WIP limits", node: <KanbanWipLimitsDemo />,
+      code: `<KanbanWipLimitsDemo />` },
+      { label: "release validation", node: <KanbanReleaseValidationDemo />,
+      code: `<KanbanReleaseValidationDemo />` },
+      { label: "grouped by owner", node: <KanbanOwnerGroupedDemo />,
+      code: `<KanbanOwnerGroupedDemo />` },
     ],
   },
 
@@ -3699,6 +5409,26 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <Gantt
+              columns={[
+                { id: "jan", label: "Jan" },
+                { id: "feb", label: "Feb" },
+                { id: "mar", label: "Mar" },
+                { id: "apr", label: "Apr" },
+                { id: "may", label: "May" },
+                { id: "jun", label: "Jun" },
+              ]}
+              tasks={[
+                { id: "1", label: "Phase 1: Discovery", start: 0, duration: 2 },
+                { id: "2", label: "Phase 2: Solution Design", start: 1, duration: 3 },
+                { id: "3", label: "Phase 3: Estimation", start: 3, duration: 2 },
+                { id: "4", label: "Client Review", start: 4, duration: 1, type: "milestone" },
+                { id: "5", label: "Phase 4: Delivery", start: 5, duration: 1 },
+              ]}
+              todayColumn={2}
+            />
+          </div>`,
       },
     ],
   },
@@ -3714,8 +5444,10 @@ toast.error("Something went wrong.")`,
   onApprove={() => {}}
 />`,
     variants: [
-      { label: "interactive", node: <AIDraftStateDemo /> },
-      { label: "all states", node: <AIDraftStateStaticDemo /> },
+      { label: "interactive", node: <AIDraftStateDemo />,
+      code: `<AIDraftStateDemo />` },
+      { label: "all states", node: <AIDraftStateStaticDemo />,
+      code: `<AIDraftStateStaticDemo />` },
     ],
   },
 
@@ -3723,10 +5455,14 @@ toast.error("Something went wrong.")`,
     importLine: `import { AISuggestionCard } from "@/components/ui/ai-suggestion-card"`,
     exampleCode: `<AISuggestionCard type="suggestion" title="Reuse Clinical Assessment epic" description="..." onApply={() => {}} onDismiss={() => {}} />`,
     variants: [
-      { label: "suggestion", node: <AISuggestionSuggestionDemo /> },
-      { label: "hint", node: <AISuggestionHintDemo /> },
-      { label: "match", node: <AISuggestionMatchDemo /> },
-      { label: "warning", node: <AISuggestionWarningDemo /> },
+      { label: "suggestion", node: <AISuggestionSuggestionDemo />,
+      code: `<AISuggestionSuggestionDemo />` },
+      { label: "hint", node: <AISuggestionHintDemo />,
+      code: `<AISuggestionHintDemo />` },
+      { label: "match", node: <AISuggestionMatchDemo />,
+      code: `<AISuggestionMatchDemo />` },
+      { label: "warning", node: <AISuggestionWarningDemo />,
+      code: `<AISuggestionWarningDemo />` },
     ],
   },
 
@@ -3734,8 +5470,10 @@ toast.error("Something went wrong.")`,
     importLine: `import { SectionDocumentCard } from "@/components/ui/section-document-card"`,
     exampleCode: `<SectionDocumentCard title="Solution Overview" status="approved" onEdit={() => {}} aiActions={[...]} />`,
     variants: [
-      { label: "approved", node: <SectionDocumentCardDemo /> },
-      { label: "draft", node: <SectionDocumentCardDraftDemo /> },
+      { label: "approved", node: <SectionDocumentCardDemo />,
+      code: `<SectionDocumentCardDemo />` },
+      { label: "draft", node: <SectionDocumentCardDraftDemo />,
+      code: `<SectionDocumentCardDraftDemo />` },
     ],
   },
 
@@ -3758,6 +5496,15 @@ toast.error("Something went wrong.")`,
             health="healthy"
           />
         ),
+        code: `<L1ComponentCard
+            name="Clinical Intake"
+            description="Patient onboarding and eligibility capture flow."
+            type="Experience"
+            epicCount={8}
+            estimate={42}
+            phases={["Phase 1", "Phase 2"]}
+            health="healthy"
+          />`,
       },
       {
         label: "Workflow",
@@ -3772,6 +5519,15 @@ toast.error("Something went wrong.")`,
             health="warning"
           />
         ),
+        code: `<L1ComponentCard
+            name="Case Management"
+            description="Care-team task routing and case lifecycle."
+            type="Workflow"
+            epicCount={6}
+            estimate={28}
+            phases={["Phase 2"]}
+            health="warning"
+          />`,
       },
       {
         label: "Integration",
@@ -3786,6 +5542,15 @@ toast.error("Something went wrong.")`,
             health="error"
           />
         ),
+        code: `<L1ComponentCard
+            name="EHR Integration"
+            description="Bi-directional sync with the hospital EHR system."
+            type="Integration"
+            epicCount={4}
+            estimate={18}
+            phases={["Phase 1"]}
+            health="error"
+          />`,
       },
       {
         label: "Foundation",
@@ -3801,6 +5566,16 @@ toast.error("Something went wrong.")`,
             status="Approved"
           />
         ),
+        code: `<L1ComponentCard
+            name="Auth & Permissions"
+            description="Role-based access control and session management."
+            type="Foundation"
+            epicCount={3}
+            estimate={12}
+            phases={["Phase 1"]}
+            health="healthy"
+            status="Approved"
+          />`,
       },
     ],
   },
@@ -3822,6 +5597,15 @@ toast.error("Something went wrong.")`,
             status="approved"
           />
         ),
+        code: `<EpicCard
+            epicId="EPIC-014"
+            title="Patient eligibility API"
+            l1Type="Integration"
+            units={8}
+            hours={32}
+            milestone="Phase 1"
+            status="approved"
+          />`,
       },
       {
         label: "draft",
@@ -3836,6 +5620,15 @@ toast.error("Something went wrong.")`,
             status="draft"
           />
         ),
+        code: `<EpicCard
+            epicId="EPIC-031"
+            title="AI-assisted intake form routing"
+            l1Type="Experience"
+            units={13}
+            hours={52}
+            depCount={2}
+            status="draft"
+          />`,
       },
       {
         label: "conflict",
@@ -3851,6 +5644,16 @@ toast.error("Something went wrong.")`,
             conflictMessage="Overlaps with EPIC-018 in Phase 2"
           />
         ),
+        code: `<EpicCard
+            epicId="EPIC-022"
+            title="Insurance payer network sync"
+            l1Type="Integration"
+            units={10}
+            hours={40}
+            status="estimated"
+            hasConflict
+            conflictMessage="Overlaps with EPIC-018 in Phase 2"
+          />`,
       },
     ],
   },
@@ -3880,6 +5683,23 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-64">
+            <PhaseColumnHeader
+              name="Phase 1 — Foundation"
+              dateRange="Jan – Mar 2026"
+              epicCount={12}
+              units={68}
+              hours={272}
+              envelope={72}
+              variance={-4}
+              distributionSegments={[
+                { type: "Experience", value: 8 },
+                { type: "Workflow", value: 10 },
+                { type: "Integration", value: 6 },
+                { type: "Foundation", value: 8 },
+              ]}
+            />
+          </div>`,
       },
       {
         label: "over envelope",
@@ -3902,6 +5722,23 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-64">
+            <PhaseColumnHeader
+              name="Phase 2 — Core Workflows"
+              dateRange="Apr – Jun 2026"
+              epicCount={18}
+              units={95}
+              hours={380}
+              envelope={80}
+              variance={15}
+              distributionSegments={[
+                { type: "Experience", value: 14 },
+                { type: "Workflow", value: 20 },
+                { type: "Integration", value: 8 },
+                { type: "Foundation", value: 4 },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -3927,6 +5764,16 @@ toast.error("Something went wrong.")`,
             ]}
           />
         ),
+        code: `<RiskHeatmap
+            risks={[
+              { likelihood: "high", impact: "high", count: 2 },
+              { likelihood: "high", impact: "medium", count: 3 },
+              { likelihood: "medium", impact: "high", count: 1 },
+              { likelihood: "medium", impact: "medium", count: 4 },
+              { likelihood: "low", impact: "low", count: 2 },
+              { likelihood: "low", impact: "medium", count: 1 },
+            ]}
+          />`,
       },
     ],
   },
@@ -3950,6 +5797,17 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <OpenQuestionRow
+              id="Q-01"
+              impactArea="Estimate"
+              status="open"
+              question="Does data migration include historical records beyond 2 years, or only active patient records?"
+              askedBy={{ name: "Alice Johnson", initials: "AJ", role: "Solution Architect" }}
+              timestamp="3 days ago"
+              linkedItems={[{ id: "EPIC-031", type: "epic" }]}
+            />
+          </div>`,
       },
       {
         label: "answered",
@@ -3965,6 +5823,16 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <OpenQuestionRow
+              id="Q-02"
+              impactArea="Scope"
+              status="answered"
+              question="Will the client provide a dedicated API sandbox environment for integration testing?"
+              askedBy={{ name: "Ben Carter", initials: "BC", role: "Delivery Lead" }}
+              timestamp="1 week ago"
+            />
+          </div>`,
       },
     ],
   },
@@ -3986,6 +5854,15 @@ toast.error("Something went wrong.")`,
             requiredFor="2 decisions"
           />
         ),
+        code: `<ApprovalWorkflowCard
+            steps={[
+              { role: "Solution Architect", reviewer: "Sarah Chen", status: "complete", timestamp: "May 20" },
+              { role: "Delivery Lead", reviewer: "Mark Torres", status: "pending" },
+              { role: "Client Sponsor", status: "pending" },
+            ]}
+            canApprove={false}
+            requiredFor="2 decisions"
+          />`,
       },
       {
         label: "can approve",
@@ -3999,6 +5876,14 @@ toast.error("Something went wrong.")`,
             canApprove={true}
           />
         ),
+        code: `<ApprovalWorkflowCard
+            steps={[
+              { role: "Solution Architect", reviewer: "Sarah Chen", status: "complete", timestamp: "May 20" },
+              { role: "Delivery Lead", reviewer: "Mark Torres", status: "complete", timestamp: "May 21" },
+              { role: "Client Sponsor", status: "pending" },
+            ]}
+            canApprove={true}
+          />`,
       },
     ],
   },
@@ -4027,6 +5912,22 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="flex flex-col gap-2 w-full">
+            <ReviewChecklistRow
+              label="Domain Model reviewed"
+              status="complete"
+              reviewer={{ name: "Sarah Chen", initials: "SC" }}
+            />
+            <ReviewChecklistRow
+              label="Estimation reviewed"
+              status="in-progress"
+              reviewer={{ name: "Mark Torres", initials: "MT" }}
+            />
+            <ReviewChecklistRow
+              label="Risk register reviewed"
+              status="not-started"
+            />
+          </div>`,
       },
     ],
   },
@@ -4052,6 +5953,19 @@ toast.error("Something went wrong.")`,
             ]}
           />
         ),
+        code: `<OutputCard
+            title="Client Scope Document"
+            format="pdf"
+            audience="Client"
+            version="1.3"
+            lastGenerated="May 24, 2026"
+            status="up-to-date"
+            readinessItems={[
+              { label: "Domain model approved", status: "pass" },
+              { label: "Estimates finalised", status: "pass" },
+              { label: "Open questions resolved", status: "warning" },
+            ]}
+          />`,
       },
       {
         label: "blocked",
@@ -4069,6 +5983,18 @@ toast.error("Something went wrong.")`,
             ]}
           />
         ),
+        code: `<OutputCard
+            title="Estimation Package"
+            format="package"
+            audience="Internal"
+            status="stale"
+            isBlocked
+            blockReason="3 epics missing estimates in Phase 2"
+            readinessItems={[
+              { label: "All epics have estimates", status: "fail" },
+              { label: "Reconciliation complete", status: "fail" },
+            ]}
+          />`,
       },
     ],
   },
@@ -4088,6 +6014,13 @@ toast.error("Something went wrong.")`,
             discoveryExcerpt="We need to reduce intake processing time by 60% while maintaining HIPAA compliance across all touchpoints."
           />
         ),
+        code: `<IntakeSnapshotCard
+            businessArea="Clinical Operations"
+            budget="$180,000"
+            timeline="6 months"
+            systems={["Epic", "Salesforce", "Azure AD", "Twilio"]}
+            discoveryExcerpt="We need to reduce intake processing time by 60% while maintaining HIPAA compliance across all touchpoints."
+          />`,
       },
     ],
   },
@@ -4128,6 +6061,34 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <EstimationRollUpTree
+              data={[
+                {
+                  id: "p1", name: "Phase 1 — Foundation", type: "phase",
+                  units: 68, hours: 272, envelope: 72, variance: -4,
+                  children: [
+                    {
+                      id: "l1-1", name: "Clinical Intake Experience", type: "l1",
+                      units: 42, hours: 168, envelope: 40, variance: 2,
+                      children: [
+                        { id: "l2-1", name: "Intake Form", type: "l2", units: 18, hours: 72, variance: 0 },
+                        { id: "l2-2", name: "Eligibility Check", type: "l2", units: 24, hours: 96, variance: 2 },
+                      ],
+                    },
+                    {
+                      id: "l1-2", name: "Auth & Permissions", type: "l1",
+                      units: 26, hours: 104, envelope: 32, variance: -6,
+                    },
+                  ],
+                },
+                {
+                  id: "p2", name: "Phase 2 — Core Workflows", type: "phase",
+                  units: 95, hours: 380, envelope: 80, variance: 15,
+                },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -4136,7 +6097,8 @@ toast.error("Something went wrong.")`,
     importLine: `import { EstimateDetailDrawer } from "@/components/ui/estimate-detail-drawer"`,
     exampleCode: `<EstimateDetailDrawer open={open} onClose={() => setOpen(false)} storyId="STORY-047" ... />`,
     variants: [
-      { label: "trigger", node: <EstimateDetailDrawerDemo /> },
+      { label: "trigger", node: <EstimateDetailDrawerDemo />,
+      code: `<EstimateDetailDrawerDemo />` },
     ],
   },
 
@@ -4161,6 +6123,19 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <ReconciliationPanel
+              phases={[
+                { phase: "Phase 1", topDownEnvelope: 72, bottomsUpEstimate: 68, variance: -4, variancePercent: -6 },
+                { phase: "Phase 2", topDownEnvelope: 80, bottomsUpEstimate: 95, variance: 15, variancePercent: 19 },
+              ]}
+              decisionOptions={[
+                "Accept bottoms-up and revise envelope",
+                "Reduce scope to fit envelope",
+                "Defer decision to client review",
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -4187,6 +6162,20 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <TeamRosterPanel
+              phases={["P1", "P2", "P3"]}
+              nymblRoles={[
+                { role: "Solution Architect", name: "Sarah Chen", initials: "SC", type: "billable", allocations: { P1: 100, P2: 50, P3: 20 } },
+                { role: "Delivery Lead", name: "Mark Torres", initials: "MT", type: "billable", allocations: { P1: 50, P2: 100, P3: 100 } },
+                { role: "QA Engineer", type: "billable", allocations: { P1: 0, P2: 50, P3: 100 } },
+              ]}
+              clientRoles={[
+                { role: "Product Owner", name: "Alice Johnson", initials: "AJ", type: "non-billable", allocations: { P1: 20, P2: 30, P3: 20 } },
+                { role: "Technical Lead", type: "non-billable", allocations: { P1: 30, P2: 50, P3: 50 } },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -4209,6 +6198,16 @@ toast.error("Something went wrong.")`,
             />
           </div>
         ),
+        code: `<div className="w-full">
+            <PortfolioPipelineView
+              defaultView="table"
+              engagements={[
+                { id: "1", client: "Acme Health", solution: "Clinical Intake Platform", stage: "Estimation", leads: [{ name: "Sarah Chen", initials: "SC" }], budget: 180000, probability: 75, status: "In Progress" },
+                { id: "2", client: "Northstar HealthTech", solution: "Patient Portal", stage: "Client Review", leads: [{ name: "Mark Torres", initials: "MT" }], budget: 240000, probability: 90, status: "Active" },
+                { id: "3", client: "Meridian Medical", solution: "Scheduling Automation", stage: "Triage", leads: [{ name: "Alice Johnson", initials: "AJ" }], budget: 120000, probability: 40, status: "New" },
+              ]}
+            />
+          </div>`,
       },
     ],
   },
@@ -4222,14 +6221,17 @@ toast.error("Something went wrong.")`,
       {
         label: "app navigation",
         node: <NymblAppSidebar />,
+        code: `<NymblAppSidebar />`,
       },
       {
         label: "subproduct",
         node: <NymblAppSidebar appName="Scope" />,
+        code: `<NymblAppSidebar appName="Scope" />`,
       },
       {
         label: "engagement workflow",
         node: <NymblEngagementSidebar appName="Engage" />,
+        code: `<NymblEngagementSidebar appName="Engage" />`,
       },
     ],
   },
@@ -4239,11 +6241,16 @@ toast.error("Something went wrong.")`,
     importLine: `import { CompactButton } from "@/components/ui/compact-button"`,
     exampleCode: `<CompactButton variant="stroke"><SearchIcon className="size-4" /></CompactButton>`,
     variants: [
-      { label: "stroke", node: <CompactButton variant="stroke"><SearchIcon className="size-4" /></CompactButton> },
-      { label: "ghost", node: <CompactButton variant="ghost"><SearchIcon className="size-4" /></CompactButton> },
-      { label: "white", node: <div className="p-2 bg-muted rounded"><CompactButton variant="white"><SearchIcon className="size-4" /></CompactButton></div> },
-      { label: "sm size", node: <CompactButton size="sm" variant="stroke"><SearchIcon className="size-3.5" /></CompactButton> },
-      { label: "full radius", node: <CompactButton fullRadius variant="stroke"><SearchIcon className="size-4" /></CompactButton> },
+      { label: "stroke", node: <CompactButton variant="stroke"><SearchIcon className="size-4" /></CompactButton>,
+      code: `<CompactButton variant="stroke"><SearchIcon className="size-4" /></CompactButton>` },
+      { label: "ghost", node: <CompactButton variant="ghost"><SearchIcon className="size-4" /></CompactButton>,
+      code: `<CompactButton variant="ghost"><SearchIcon className="size-4" /></CompactButton>` },
+      { label: "white", node: <div className="p-2 bg-muted rounded"><CompactButton variant="white"><SearchIcon className="size-4" /></CompactButton></div>,
+      code: `<div className="p-2 bg-muted rounded"><CompactButton variant="white"><SearchIcon className="size-4" /></CompactButton></div>` },
+      { label: "sm size", node: <CompactButton size="sm" variant="stroke"><SearchIcon className="size-3.5" /></CompactButton>,
+      code: `<CompactButton size="sm" variant="stroke"><SearchIcon className="size-3.5" /></CompactButton>` },
+      { label: "full radius", node: <CompactButton fullRadius variant="stroke"><SearchIcon className="size-4" /></CompactButton>,
+      code: `<CompactButton fullRadius variant="stroke"><SearchIcon className="size-4" /></CompactButton>` },
     ],
   },
 
@@ -4251,11 +6258,16 @@ toast.error("Something went wrong.")`,
     importLine: `import { LinkButton } from "@/components/ui/link-button"`,
     exampleCode: `<LinkButton variant="primary" href="#">Learn more</LinkButton>`,
     variants: [
-      { label: "gray", node: <LinkButton variant="gray" href="#">Gray link</LinkButton> },
-      { label: "primary", node: <LinkButton variant="primary" href="#">Primary link</LinkButton> },
-      { label: "error", node: <LinkButton variant="error" href="#">Error link</LinkButton> },
-      { label: "no underline", node: <LinkButton variant="gray" underline={false} href="#">No underline</LinkButton> },
-      { label: "sm", node: <LinkButton variant="primary" size="sm" href="#">Small</LinkButton> },
+      { label: "gray", node: <LinkButton variant="gray" href="#">Gray link</LinkButton>,
+      code: `<LinkButton variant="gray" href="#">Gray link</LinkButton>` },
+      { label: "primary", node: <LinkButton variant="primary" href="#">Primary link</LinkButton>,
+      code: `<LinkButton variant="primary" href="#">Primary link</LinkButton>` },
+      { label: "error", node: <LinkButton variant="error" href="#">Error link</LinkButton>,
+      code: `<LinkButton variant="error" href="#">Error link</LinkButton>` },
+      { label: "no underline", node: <LinkButton variant="gray" underline={false} href="#">No underline</LinkButton>,
+      code: `<LinkButton variant="gray" underline={false} href="#">No underline</LinkButton>` },
+      { label: "sm", node: <LinkButton variant="primary" size="sm" href="#">Small</LinkButton>,
+      code: `<LinkButton variant="primary" size="sm" href="#">Small</LinkButton>` },
     ],
   },
 
@@ -4263,14 +6275,22 @@ toast.error("Something went wrong.")`,
     importLine: `import { Banner } from "@/components/ui/banner"`,
     exampleCode: `<Banner status="info" variant="light">Maintenance scheduled for Sunday 2 AM UTC.</Banner>`,
     variants: [
-      { label: "info · light", node: <div className="w-full"><Banner status="info" variant="light">Your session will expire in 10 minutes.</Banner></div> },
-      { label: "success · light", node: <div className="w-full"><Banner status="success" variant="light">Changes saved successfully.</Banner></div> },
-      { label: "warning · light", node: <div className="w-full"><Banner status="warning" variant="light">Some items require attention.</Banner></div> },
-      { label: "error · light", node: <div className="w-full"><Banner status="error" variant="light">Failed to save changes. Please try again.</Banner></div> },
-      { label: "feature · light", node: <div className="w-full"><Banner status="feature" variant="light">New AI estimation features are now available.</Banner></div> },
-      { label: "info · filled", node: <div className="w-full"><Banner status="info" variant="filled">Maintenance scheduled for Sunday 2 AM.</Banner></div> },
-      { label: "success · filled", node: <div className="w-full"><Banner status="success" variant="filled">Deployment complete.</Banner></div> },
-      { label: "info · stroke", node: <div className="w-full"><Banner status="info" variant="stroke">Review period ends in 3 days.</Banner></div> },
+      { label: "info · light", node: <div className="w-full"><Banner status="info" variant="light">Your session will expire in 10 minutes.</Banner></div>,
+      code: `<div className="w-full"><Banner status="info" variant="light">Your session will expire in 10 minutes.</Banner></div>` },
+      { label: "success · light", node: <div className="w-full"><Banner status="success" variant="light">Changes saved successfully.</Banner></div>,
+      code: `<div className="w-full"><Banner status="success" variant="light">Changes saved successfully.</Banner></div>` },
+      { label: "warning · light", node: <div className="w-full"><Banner status="warning" variant="light">Some items require attention.</Banner></div>,
+      code: `<div className="w-full"><Banner status="warning" variant="light">Some items require attention.</Banner></div>` },
+      { label: "error · light", node: <div className="w-full"><Banner status="error" variant="light">Failed to save changes. Please try again.</Banner></div>,
+      code: `<div className="w-full"><Banner status="error" variant="light">Failed to save changes. Please try again.</Banner></div>` },
+      { label: "feature · light", node: <div className="w-full"><Banner status="feature" variant="light">New AI estimation features are now available.</Banner></div>,
+      code: `<div className="w-full"><Banner status="feature" variant="light">New AI estimation features are now available.</Banner></div>` },
+      { label: "info · filled", node: <div className="w-full"><Banner status="info" variant="filled">Maintenance scheduled for Sunday 2 AM.</Banner></div>,
+      code: `<div className="w-full"><Banner status="info" variant="filled">Maintenance scheduled for Sunday 2 AM.</Banner></div>` },
+      { label: "success · filled", node: <div className="w-full"><Banner status="success" variant="filled">Deployment complete.</Banner></div>,
+      code: `<div className="w-full"><Banner status="success" variant="filled">Deployment complete.</Banner></div>` },
+      { label: "info · stroke", node: <div className="w-full"><Banner status="info" variant="stroke">Review period ends in 3 days.</Banner></div>,
+      code: `<div className="w-full"><Banner status="info" variant="stroke">Review period ends in 3 days.</Banner></div>` },
     ],
   },
 
@@ -4278,10 +6298,14 @@ toast.error("Something went wrong.")`,
     importLine: `import { ProgressCircle } from "@/components/ui/progress-circle"`,
     exampleCode: `<ProgressCircle value={72} size={64} />`,
     variants: [
-      { label: "80px — 85%", node: <ProgressCircle value={85} size={80}><span className="text-xs font-medium">85%</span></ProgressCircle> },
-      { label: "64px — 60%", node: <ProgressCircle value={60} size={64}><span className="text-xs font-medium">60%</span></ProgressCircle> },
-      { label: "48px — 33%", node: <ProgressCircle value={33} size={48}><span className="text-[10px] font-medium">33%</span></ProgressCircle> },
-      { label: "44px — no label", node: <ProgressCircle value={72} size={44} /> },
+      { label: "80px — 85%", node: <ProgressCircle value={85} size={80}><span className="text-xs font-medium">85%</span></ProgressCircle>,
+      code: `<ProgressCircle value={85} size={80}><span className="text-xs font-medium">85%</span></ProgressCircle>` },
+      { label: "64px — 60%", node: <ProgressCircle value={60} size={64}><span className="text-xs font-medium">60%</span></ProgressCircle>,
+      code: `<ProgressCircle value={60} size={64}><span className="text-xs font-medium">60%</span></ProgressCircle>` },
+      { label: "48px — 33%", node: <ProgressCircle value={33} size={48}><span className="text-[10px] font-medium">33%</span></ProgressCircle>,
+      code: `<ProgressCircle value={33} size={48}><span className="text-[10px] font-medium">33%</span></ProgressCircle>` },
+      { label: "44px — no label", node: <ProgressCircle value={72} size={44} />,
+      code: `<ProgressCircle value={72} size={44} />` },
     ],
   },
 
@@ -4289,14 +6313,22 @@ toast.error("Something went wrong.")`,
     importLine: `import { StatusBadge } from "@/components/ui/status-badge"`,
     exampleCode: `<StatusBadge status="completed" />`,
     variants: [
-      { label: "completed · light", node: <StatusBadge status="completed" variant="light" /> },
-      { label: "pending · light", node: <StatusBadge status="pending" variant="light" /> },
-      { label: "failed · light", node: <StatusBadge status="failed" variant="light" /> },
-      { label: "disabled · light", node: <StatusBadge status="disabled" variant="light" /> },
-      { label: "completed · stroke", node: <StatusBadge status="completed" variant="stroke" /> },
-      { label: "pending · stroke", node: <StatusBadge status="pending" variant="stroke" /> },
-      { label: "failed · stroke", node: <StatusBadge status="failed" variant="stroke" /> },
-      { label: "with icon", node: <StatusBadge status="completed" showIcon showDot={false} /> },
+      { label: "completed · light", node: <StatusBadge status="completed" variant="light" />,
+      code: `<StatusBadge status="completed" variant="light" />` },
+      { label: "pending · light", node: <StatusBadge status="pending" variant="light" />,
+      code: `<StatusBadge status="pending" variant="light" />` },
+      { label: "failed · light", node: <StatusBadge status="failed" variant="light" />,
+      code: `<StatusBadge status="failed" variant="light" />` },
+      { label: "disabled · light", node: <StatusBadge status="disabled" variant="light" />,
+      code: `<StatusBadge status="disabled" variant="light" />` },
+      { label: "completed · stroke", node: <StatusBadge status="completed" variant="stroke" />,
+      code: `<StatusBadge status="completed" variant="stroke" />` },
+      { label: "pending · stroke", node: <StatusBadge status="pending" variant="stroke" />,
+      code: `<StatusBadge status="pending" variant="stroke" />` },
+      { label: "failed · stroke", node: <StatusBadge status="failed" variant="stroke" />,
+      code: `<StatusBadge status="failed" variant="stroke" />` },
+      { label: "with icon", node: <StatusBadge status="completed" showIcon showDot={false} />,
+      code: `<StatusBadge status="completed" showIcon showDot={false} />` },
     ],
   },
 
@@ -4304,11 +6336,16 @@ toast.error("Something went wrong.")`,
     importLine: `import { Tag } from "@/components/ui/tag"`,
     exampleCode: `<Tag variant="stroke" onDismiss={() => {}}>Healthcare</Tag>`,
     variants: [
-      { label: "stroke", node: <Tag variant="stroke">Healthcare</Tag> },
-      { label: "gray", node: <Tag variant="gray">Integration</Tag> },
-      { label: "with icon", node: <TagWithIconDemo /> },
-      { label: "dismissible", node: <TagDismissibleDemo /> },
-      { label: "disabled", node: <Tag variant="stroke" disabled>Disabled</Tag> },
+      { label: "stroke", node: <Tag variant="stroke">Healthcare</Tag>,
+      code: `<Tag variant="stroke">Healthcare</Tag>` },
+      { label: "gray", node: <Tag variant="gray">Integration</Tag>,
+      code: `<Tag variant="gray">Integration</Tag>` },
+      { label: "with icon", node: <TagWithIconDemo />,
+      code: `<TagWithIconDemo />` },
+      { label: "dismissible", node: <TagDismissibleDemo />,
+      code: `<TagDismissibleDemo />` },
+      { label: "disabled", node: <Tag variant="stroke" disabled>Disabled</Tag>,
+      code: `<Tag variant="stroke" disabled>Disabled</Tag>` },
     ],
   },
 
@@ -4316,11 +6353,16 @@ toast.error("Something went wrong.")`,
     importLine: `import { Hint } from "@/components/ui/hint"`,
     exampleCode: `<Hint>Must be at least 8 characters.</Hint>`,
     variants: [
-      { label: "default", node: <Hint>Must be at least 8 characters.</Hint> },
-      { label: "with icon", node: <Hint icon={<InfoIcon />}>Passwords are case-sensitive.</Hint> },
-      { label: "error", node: <Hint hasError>This field is required.</Hint> },
-      { label: "error with icon", node: <Hint hasError icon={<AlertCircle />}>Invalid email address.</Hint> },
-      { label: "disabled", node: <Hint disabled>Field is locked during review.</Hint> },
+      { label: "default", node: <Hint>Must be at least 8 characters.</Hint>,
+      code: `<Hint>Must be at least 8 characters.</Hint>` },
+      { label: "with icon", node: <Hint icon={<InfoIcon />}>Passwords are case-sensitive.</Hint>,
+      code: `<Hint icon={<InfoIcon />}>Passwords are case-sensitive.</Hint>` },
+      { label: "error", node: <Hint hasError>This field is required.</Hint>,
+      code: `<Hint hasError>This field is required.</Hint>` },
+      { label: "error with icon", node: <Hint hasError icon={<AlertCircle />}>Invalid email address.</Hint>,
+      code: `<Hint hasError icon={<AlertCircle />}>Invalid email address.</Hint>` },
+      { label: "disabled", node: <Hint disabled>Field is locked during review.</Hint>,
+      code: `<Hint disabled>Field is locked during review.</Hint>` },
     ],
   },
 
@@ -4343,6 +6385,12 @@ toast.error("Something went wrong.")`,
             </SegmentedControlList>
           </SegmentedControl>
         ),
+        code: `<SegmentedControl defaultValue="list">
+            <SegmentedControlList>
+              <SegmentedControlTrigger value="list">List</SegmentedControlTrigger>
+              <SegmentedControlTrigger value="board">Board</SegmentedControlTrigger>
+            </SegmentedControlList>
+          </SegmentedControl>`,
       },
       {
         label: "3-option",
@@ -4355,6 +6403,13 @@ toast.error("Something went wrong.")`,
             </SegmentedControlList>
           </SegmentedControl>
         ),
+        code: `<SegmentedControl defaultValue="day">
+            <SegmentedControlList>
+              <SegmentedControlTrigger value="day">Day</SegmentedControlTrigger>
+              <SegmentedControlTrigger value="week">Week</SegmentedControlTrigger>
+              <SegmentedControlTrigger value="month">Month</SegmentedControlTrigger>
+            </SegmentedControlList>
+          </SegmentedControl>`,
       },
       {
         label: "with icons",
@@ -4366,6 +6421,12 @@ toast.error("Something went wrong.")`,
             </SegmentedControlList>
           </SegmentedControl>
         ),
+        code: `<SegmentedControl defaultValue="grid">
+            <SegmentedControlList>
+              <SegmentedControlTrigger value="grid"><LayoutGrid className="size-3.5" />Grid</SegmentedControlTrigger>
+              <SegmentedControlTrigger value="list"><FileText className="size-3.5" />List</SegmentedControlTrigger>
+            </SegmentedControlList>
+          </SegmentedControl>`,
       },
     ],
   },
@@ -4393,6 +6454,16 @@ toast.error("Something went wrong.")`,
             </TabMenuHorizontal>
           </div>
         ),
+        code: `<div className="w-full">
+            <TabMenuHorizontal defaultValue="overview">
+              <TabMenuHorizontalList>
+                <TabMenuHorizontalTrigger value="overview">Overview</TabMenuHorizontalTrigger>
+                <TabMenuHorizontalTrigger value="epics">Epics</TabMenuHorizontalTrigger>
+                <TabMenuHorizontalTrigger value="risks">Risks</TabMenuHorizontalTrigger>
+                <TabMenuHorizontalTrigger value="outputs">Outputs</TabMenuHorizontalTrigger>
+              </TabMenuHorizontalList>
+            </TabMenuHorizontal>
+          </div>`,
       },
       {
         label: "with icons",
@@ -4407,6 +6478,15 @@ toast.error("Something went wrong.")`,
             </TabMenuHorizontal>
           </div>
         ),
+        code: `<div className="w-full">
+            <TabMenuHorizontal defaultValue="dashboard">
+              <TabMenuHorizontalList>
+                <TabMenuHorizontalTrigger value="dashboard" icon={<Home className="size-4" />}>Dashboard</TabMenuHorizontalTrigger>
+                <TabMenuHorizontalTrigger value="settings" icon={<Settings className="size-4" />}>Settings</TabMenuHorizontalTrigger>
+                <TabMenuHorizontalTrigger value="profile" icon={<User className="size-4" />}>Profile</TabMenuHorizontalTrigger>
+              </TabMenuHorizontalList>
+            </TabMenuHorizontal>
+          </div>`,
       },
     ],
   },
@@ -4434,6 +6514,16 @@ toast.error("Something went wrong.")`,
             </TabMenuVertical>
           </div>
         ),
+        code: `<div className="w-48">
+            <TabMenuVertical defaultValue="overview">
+              <TabMenuVerticalList>
+                <TabMenuVerticalTrigger value="overview" icon={<Home className="size-4" />}>Overview</TabMenuVerticalTrigger>
+                <TabMenuVerticalTrigger value="docs" icon={<BookOpen className="size-4" />}>Documents</TabMenuVerticalTrigger>
+                <TabMenuVerticalTrigger value="settings" icon={<Settings className="size-4" />}>Settings</TabMenuVerticalTrigger>
+                <TabMenuVerticalTrigger value="profile" icon={<User className="size-4" />}>Profile</TabMenuVerticalTrigger>
+              </TabMenuVerticalList>
+            </TabMenuVertical>
+          </div>`,
       },
     ],
   },
@@ -4442,11 +6532,16 @@ toast.error("Something went wrong.")`,
     importLine: `import { Rating } from "@/components/ui/rating"`,
     exampleCode: `<Rating value={4} onChange={(v) => console.log(v)} />`,
     variants: [
-      { label: "interactive — 5 stars", node: <RatingInteractiveDemo /> },
-      { label: "read-only — 4.5 stars", node: <Rating value={4.5} readOnly /> },
-      { label: "heart variant", node: <Rating symbol="heart" value={3} /> },
-      { label: "sm size", node: <Rating value={4} size="sm" readOnly /> },
-      { label: "lg size", node: <Rating value={4} size="lg" readOnly /> },
+      { label: "interactive — 5 stars", node: <RatingInteractiveDemo />,
+      code: `<RatingInteractiveDemo />` },
+      { label: "read-only — 4.5 stars", node: <Rating value={4.5} readOnly />,
+      code: `<Rating value={4.5} readOnly />` },
+      { label: "heart variant", node: <Rating symbol="heart" value={3} />,
+      code: `<Rating symbol="heart" value={3} />` },
+      { label: "sm size", node: <Rating value={4} size="sm" readOnly />,
+      code: `<Rating value={4} size="sm" readOnly />` },
+      { label: "lg size", node: <Rating value={4} size="lg" readOnly />,
+      code: `<Rating value={4} size="lg" readOnly />` },
     ],
   },
 
@@ -4455,14 +6550,141 @@ toast.error("Something went wrong.")`,
     exampleCode: `<FileUpload accept="image/*" onFiles={(files) => console.log(files)} />`,
     variantSpan: "full",
     variants: [
-      { label: "default", node: <div className="w-full"><FileUpload description="PNG, JPG, PDF up to 10MB" /></div> },
-      { label: "with accept", node: <div className="w-full"><FileUpload accept=".pdf,.docx" description=".pdf or .docx only" /></div> },
-      { label: "scope evidence", node: <FileUploadScopeEvidenceDemo /> },
-      { label: "proposal assets", node: <FileUploadProposalAssetsDemo /> },
-      { label: "case study", node: <FileUploadCaseStudyDemo /> },
-      { label: "receipts", node: <FileUploadReceiptsDemo /> },
-      { label: "QA evidence", node: <FileUploadQAEvidenceDemo /> },
-      { label: "disabled", node: <div className="w-full"><FileUpload disabled description="Upload is disabled" /></div> },
+      {
+        label: "default",
+        node: <div className="w-full"><FileUpload description="PNG, JPG, PDF up to 10MB" /></div>,
+        code: `<FileUpload description="PNG, JPG, PDF up to 10MB" />`,
+      },
+      {
+        label: "with accept",
+        node: <div className="w-full"><FileUpload accept=".pdf,.docx" description=".pdf or .docx only" /></div>,
+        code: `<FileUpload accept=".pdf,.docx" description=".pdf or .docx only" />`,
+      },
+      {
+        label: "scope evidence",
+        node: <FileUploadScopeEvidenceDemo />,
+        importLine: `import { FileUpload } from "@/components/ui/file-upload"\nimport { FileCheck2 } from "lucide-react"`,
+        code: `<div className="w-full rounded-lg border border-border bg-background p-4">
+  <div className="mb-3 flex items-center gap-3">
+    <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+      <FileCheck2 className="size-5" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-foreground">Scope evidence</div>
+      <div className="text-xs text-muted-foreground">
+        Attach discovery notes, diagrams, or client source material.
+      </div>
+    </div>
+  </div>
+  <FileUpload
+    accept=".pdf,.doc,.docx,.png,.jpg"
+    multiple
+    description="Attach discovery notes, diagrams, or client source material."
+    className="rounded-lg p-6"
+  />
+</div>`,
+      },
+      {
+        label: "proposal assets",
+        node: <FileUploadProposalAssetsDemo />,
+        importLine: `import { FileUpload } from "@/components/ui/file-upload"\nimport { FileImage } from "lucide-react"`,
+        code: `<div className="w-full rounded-lg border border-border bg-background p-4">
+  <div className="mb-3 flex items-center gap-3">
+    <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+      <FileImage className="size-5" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-foreground">Proposal assets</div>
+      <div className="text-xs text-muted-foreground">
+        Upload client logos, diagrams, and supporting proposal imagery.
+      </div>
+    </div>
+  </div>
+  <FileUpload
+    accept="image/*,.pdf"
+    multiple
+    description="Upload client logos, diagrams, and supporting proposal imagery."
+    className="rounded-lg p-6"
+  />
+</div>`,
+      },
+      {
+        label: "case study",
+        node: <FileUploadCaseStudyDemo />,
+        importLine: `import { FileUpload } from "@/components/ui/file-upload"\nimport { FileArchive } from "lucide-react"`,
+        code: `<div className="w-full rounded-lg border border-border bg-background p-4">
+  <div className="mb-3 flex items-center gap-3">
+    <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+      <FileArchive className="size-5" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-foreground">Case study source pack</div>
+      <div className="text-xs text-muted-foreground">
+        Collect source documents for reusable commercial stories.
+      </div>
+    </div>
+  </div>
+  <FileUpload
+    accept=".pdf,.doc,.docx,.ppt,.pptx"
+    multiple
+    description="Collect source documents for reusable commercial stories."
+    className="rounded-lg p-6"
+  />
+</div>`,
+      },
+      {
+        label: "receipts",
+        node: <FileUploadReceiptsDemo />,
+        importLine: `import { FileUpload } from "@/components/ui/file-upload"\nimport { ReceiptText } from "lucide-react"`,
+        code: `<div className="w-full rounded-lg border border-border bg-background p-4">
+  <div className="mb-3 flex items-center gap-3">
+    <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+      <ReceiptText className="size-5" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-foreground">Receipts and expenses</div>
+      <div className="text-xs text-muted-foreground">
+        Capture Budget receipts for reimbursement or client billing.
+      </div>
+    </div>
+  </div>
+  <FileUpload
+    accept="image/*,.pdf"
+    multiple
+    description="Capture Budget receipts for reimbursement or client billing."
+    className="rounded-lg p-6"
+  />
+</div>`,
+      },
+      {
+        label: "QA evidence",
+        node: <FileUploadQAEvidenceDemo />,
+        importLine: `import { FileUpload } from "@/components/ui/file-upload"\nimport { UploadCloud } from "lucide-react"`,
+        code: `<div className="w-full rounded-lg border border-border bg-background p-4">
+  <div className="mb-3 flex items-center gap-3">
+    <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+      <UploadCloud className="size-5" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-foreground">QA evidence</div>
+      <div className="text-xs text-muted-foreground">
+        Upload screenshots, recordings, and validation artifacts.
+      </div>
+    </div>
+  </div>
+  <FileUpload
+    accept="image/*,.mp4,.webm,.pdf"
+    multiple
+    description="Upload screenshots, recordings, and validation artifacts."
+    className="rounded-lg p-6"
+  />
+</div>`,
+      },
+      {
+        label: "disabled",
+        node: <div className="w-full"><FileUpload disabled description="Upload is disabled" /></div>,
+        code: `<FileUpload disabled description="Upload is disabled" />`,
+      },
     ],
   },
 
@@ -4470,13 +6692,20 @@ toast.error("Something went wrong.")`,
     importLine: `import { Notification } from "@/components/ui/notification"`,
     exampleCode: `<Notification status="success" title="Saved" description="Your changes have been saved." />`,
     variants: [
-      { label: "success · light", node: <Notification status="success" variant="light" title="Estimation saved" description="Your changes have been saved successfully." /> },
-      { label: "warning · light", node: <Notification status="warning" variant="light" title="Scope drift detected" description="Phase 2 is 13% over the envelope." /> },
-      { label: "error · light", node: <Notification status="error" variant="light" title="Save failed" description="Check your connection and try again." /> },
-      { label: "info · light", node: <Notification status="info" variant="light" title="Review requested" description="Sarah Chen has requested your review." /> },
-      { label: "feature · light", node: <Notification status="feature" variant="light" title="AI estimation ready" description="Draft estimates have been generated." /> },
-      { label: "success · filled", node: <Notification status="success" variant="filled" title="Approved" description="Scope document approved by client." /> },
-      { label: "error · stroke", node: <Notification status="error" variant="stroke" title="Conflict found" description="EPIC-031 has a dependency conflict." /> },
+      { label: "success · light", node: <Notification status="success" variant="light" title="Estimation saved" description="Your changes have been saved successfully." />,
+      code: `<Notification status="success" variant="light" title="Estimation saved" description="Your changes have been saved successfully." />` },
+      { label: "warning · light", node: <Notification status="warning" variant="light" title="Scope drift detected" description="Phase 2 is 13% over the envelope." />,
+      code: `<Notification status="warning" variant="light" title="Scope drift detected" description="Phase 2 is 13% over the envelope." />` },
+      { label: "error · light", node: <Notification status="error" variant="light" title="Save failed" description="Check your connection and try again." />,
+      code: `<Notification status="error" variant="light" title="Save failed" description="Check your connection and try again." />` },
+      { label: "info · light", node: <Notification status="info" variant="light" title="Review requested" description="Sarah Chen has requested your review." />,
+      code: `<Notification status="info" variant="light" title="Review requested" description="Sarah Chen has requested your review." />` },
+      { label: "feature · light", node: <Notification status="feature" variant="light" title="AI estimation ready" description="Draft estimates have been generated." />,
+      code: `<Notification status="feature" variant="light" title="AI estimation ready" description="Draft estimates have been generated." />` },
+      { label: "success · filled", node: <Notification status="success" variant="filled" title="Approved" description="Scope document approved by client." />,
+      code: `<Notification status="success" variant="filled" title="Approved" description="Scope document approved by client." />` },
+      { label: "error · stroke", node: <Notification status="error" variant="stroke" title="Conflict found" description="EPIC-031 has a dependency conflict." />,
+      code: `<Notification status="error" variant="stroke" title="Conflict found" description="EPIC-031 has a dependency conflict." />` },
     ],
   },
 

@@ -53,7 +53,7 @@ export function ProgressCircle({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          className="text-primary transition-[stroke-dashoffset] duration-300 ease-[var(--ease-standard)]"
+          className="text-primary transition-[stroke-dashoffset] duration-[var(--duration-normal)] ease-[var(--ease-standard)]"
         />
       </svg>
       {children && (

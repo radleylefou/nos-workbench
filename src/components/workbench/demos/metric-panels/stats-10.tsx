@@ -141,8 +141,7 @@ export function Stats10() {
           const sanitizedName = sanitizeName(item.name)
           const gradientId = `gradient-${sanitizedName}`
 
-          const color =
-            item.changeType === "positive" ? "hsl(142.1 76.2% 36.3%)" : "hsl(0 72.2% 50.6%)"
+          const color = item.changeType === "positive" ? "var(--success)" : "var(--error)"
 
           return (
             <Card key={item.name} className="p-0 shadow-2xs">

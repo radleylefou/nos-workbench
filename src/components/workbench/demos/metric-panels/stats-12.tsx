@@ -64,21 +64,21 @@ const usageData: UsageItem[] = [
 const chartConfig = {
   used: {
     label: "Used",
-    color: "hsl(var(--primary))",
+    color: "var(--primary)",
   },
   remaining: {
     label: "Remaining",
-    color: "hsl(var(--muted))",
+    color: "var(--muted)",
   },
 } satisfies ChartConfig
 
 function DonutChart({ percentage }: { percentage: number }) {
-  const backgroundData = [{ name: "background", value: 100, fill: "#E5E7EB" }]
+  const backgroundData = [{ name: "background", value: 100, fill: "var(--border)" }]
   const foregroundData = [
     {
       name: "used",
       value: Math.max(0, Math.min(100, Number(percentage))),
-      fill: "#3B82F6",
+      fill: "var(--primary)",
     },
     {
       name: "empty",

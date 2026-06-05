@@ -299,11 +299,17 @@ function patternToManifestEntry(pattern) {
 }
 
 function componentToManifestEntry(component, componentExports) {
-  const filePath = `src/components/ui/${component.slug}.tsx`
+  const kind = component.manifestKind ?? "primitive"
+  const filePath = component.sourcePath ?? `src/components/ui/${component.slug}.tsx`
+  const importPath =
+    Object.hasOwn(component, "importPath") ? component.importPath : `@/components/ui/${component.slug}`
   const exports = componentExports.get(filePath) ?? []
   const expectedName = normalizeName(titleToComponentName(component.name))
+  const expectedPrimaryName = component.primaryExport ? normalizeName(component.primaryExport) : expectedName
   const primaryExport =
-    exports.find((item) => normalizeName(item.name) === expectedName) ?? exports[0] ?? { name: component.name, props: [] }
+    exports.find((item) => normalizeName(item.name) === expectedPrimaryName) ??
+    exports[0] ??
+    { name: component.primaryExport ?? component.name, props: [] }
   const variantProp = primaryExport.props.find((prop) => prop.name === "variant")
   const sizeProp = primaryExport.props.find((prop) => prop.name === "size")
   const variants = component.variants?.length
@@ -319,7 +325,9 @@ function componentToManifestEntry(component, componentExports) {
     category: component.category,
     description: component.description,
     whenToUse: component.whenToUse,
-    importPath: `@/components/ui/${component.slug}`,
+    kind,
+    importPath,
+    sourcePath: filePath,
     workbenchUrl: `${WORKBENCH_URL}/workbench/components/${component.slug}`,
     variants,
     sizes,

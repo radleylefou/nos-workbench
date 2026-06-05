@@ -24,29 +24,68 @@ export function generateStaticParams() {
   return components.map((c) => ({ slug: c.slug }))
 }
 
-type DemoGroup = { label: string; node: ReactNode; span?: "full" }
+type DemoGroup = {
+  label: string
+  node: ReactNode
+  span?: "full"
+  code?: string
+  importLine?: string
+}
 
-function DemoGrid({ items, variantSpan }: { items: DemoGroup[]; variantSpan?: "full" }) {
+function createDemoCode({
+  entryImportLine,
+  entryExampleCode,
+  item,
+}: {
+  entryImportLine: string
+  entryExampleCode: string
+  item: DemoGroup
+}) {
+  const code =
+    item.code ??
+    `// Variant-specific code has not been documented yet.\n// Use the canonical example as a starting point.\n${entryExampleCode}`
+
+  return `${item.importLine ?? entryImportLine}\n\n${code}`
+}
+
+function DemoGrid({
+  entryExampleCode,
+  entryImportLine,
+  items,
+  variantSpan,
+}: {
+  entryExampleCode: string
+  entryImportLine: string
+  items: DemoGroup[]
+  variantSpan?: "full"
+}) {
   return (
     <div className="grid grid-flow-dense grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-4">
-      {items.map((item) => (
-        <div
-          key={item.label}
-          className={`flex min-h-40 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-zinc-950${(item.span === "full" || variantSpan === "full") ? " col-span-full" : ""}`}
-        >
-          <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-3 py-2">
-            <div className="min-w-0 truncate text-xs font-medium capitalize text-zinc-700">
+      {items.map((item) => {
+        const code = createDemoCode({ entryExampleCode, entryImportLine, item })
+
+        return (
+          <div
+            key={item.label}
+            className={`flex min-h-40 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-zinc-950${(item.span === "full" || variantSpan === "full") ? " col-span-full" : ""}`}
+          >
+            <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-3 py-2">
+              <div className="min-w-0 truncate text-xs font-medium capitalize text-zinc-700">
+                {item.label}
+              </div>
+            </div>
+            <div className="flex flex-1 items-center justify-center px-5 py-6">
+              {item.node}
+            </div>
+            <div className="border-t border-zinc-200 px-3 py-2 font-mono text-[11px] text-zinc-400">
               {item.label}
             </div>
+            <div className="px-3 pb-3">
+              <ShowCode code={code} />
+            </div>
           </div>
-          <div className="flex flex-1 items-center justify-center px-5 py-6">
-            {item.node}
-          </div>
-          <div className="border-t border-zinc-200 px-3 py-2 font-mono text-[11px] text-zinc-400">
-            {item.label}
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
@@ -160,10 +199,12 @@ export default async function ComponentPage({
 
         <TabsContent value="variants" className="m-0">
           {entry.variants ? (
-            <>
-              <DemoGrid items={entry.variants} variantSpan={entry.variantSpan} />
-              <ShowCode code={codeSnippet} />
-            </>
+            <DemoGrid
+              entryExampleCode={entry.exampleCode}
+              entryImportLine={entry.importLine}
+              items={entry.variants}
+              variantSpan={entry.variantSpan}
+            />
           ) : (
             <p className="text-sm text-muted-foreground">
               No variants defined.
@@ -173,8 +214,12 @@ export default async function ComponentPage({
 
         {entry.sizes ? (
           <TabsContent value="sizes" className="m-0">
-            <DemoGrid items={entry.sizes} variantSpan={entry.variantSpan} />
-            <ShowCode code={codeSnippet} />
+            <DemoGrid
+              entryExampleCode={entry.exampleCode}
+              entryImportLine={entry.importLine}
+              items={entry.sizes}
+              variantSpan={entry.variantSpan}
+            />
           </TabsContent>
         ) : null}
 

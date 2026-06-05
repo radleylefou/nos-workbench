@@ -3,6 +3,10 @@ export type ComponentMeta = {
   name: string
   description: string
   category: string
+  importPath?: string | null
+  sourcePath?: string
+  manifestKind?: "primitive" | "composition" | "docs"
+  primaryExport?: string
   variants?: string[]
   /** 1-2 sentence comparative guidance: when to pick this over a sibling. */
   whenToUse?: string
@@ -41,6 +45,8 @@ export const components: ComponentMeta[] = [
     whenToUse: "Use to caption a form control and bind it for accessibility. For helper or error text beneath a field use hint; for body prose use typography." },
   { slug: "typography", name: "Typography", category: "Typography",
     description: "Styles for headings, paragraphs, lists and more.",
+    importPath: null,
+    manifestKind: "docs",
     whenToUse: "Use for long-form prose styling such as headings, paragraphs, and lists. For a single inline caption use label; for keyboard keys use kbd." },
 
   // Buttons & Actions
@@ -76,6 +82,9 @@ export const components: ComponentMeta[] = [
     whenToUse: "Use for searchable single-select with free-text filtering. For a plain list use select; for a global action launcher use command." },
   { slug: "date-picker", name: "Date Picker", category: "Forms & Inputs",
     description: "A date picker with range and presets.",
+    importPath: null,
+    sourcePath: "src/components/workbench/demos/date-picker-demo.tsx",
+    manifestKind: "composition",
     whenToUse: "Use for date or range selection from a compact input with presets. For an always-visible grid use calendar." },
   { slug: "date-selector", name: "Date Selector", category: "Forms & Inputs",
     description: "Compact operational period selector for days, months, quarters, half-years, and years.",
@@ -91,6 +100,9 @@ export const components: ComponentMeta[] = [
     whenToUse: "Use for drag-and-drop or click file selection. Prefer this styled zone over a plain file input." },
   { slug: "form-layouts", name: "Form Layouts", category: "Forms & Inputs",
     description: "Production form compositions for registration, settings, and plan selection flows.",
+    importPath: null,
+    sourcePath: "src/components/workbench/demos/form-layouts/index.tsx",
+    manifestKind: "composition",
     whenToUse: "Use as a reference for composing full forms from field, input, and card. Copy the pattern rather than treating it as one component." },
   { slug: "input", name: "Input", category: "Forms & Inputs",
     description: "Displays a form input field.",
@@ -226,6 +238,10 @@ export const components: ComponentMeta[] = [
     whenToUse: "Use for short indeterminate waits on a control or button. For content placeholders use skeleton; for measurable progress use progress." },
   { slug: "toast", name: "Toast", category: "Feedback",
     description: "A succinct message that is displayed temporarily.",
+    importPath: "sonner",
+    sourcePath: "src/components/ui/sonner.tsx",
+    manifestKind: "composition",
+    primaryExport: "Toaster",
     whenToUse: "Use for brief, auto-dismissing confirmations. For persistent inline messages use alert; for richer positioned cards use notification. Sonner is the preferred implementation." },
 
   // Data Display
@@ -237,6 +253,9 @@ export const components: ComponentMeta[] = [
     whenToUse: "Use to represent a single user or entity. For a stack of several use avatar-group." },
   { slug: "avatar-group", name: "Avatar Group", category: "Data Display",
     description: "Overlapping avatar stack with overflow count, plus compact and sizing variants.",
+    importPath: "@/components/ui/avatar",
+    sourcePath: "src/components/ui/avatar.tsx",
+    primaryExport: "AvatarGroup",
     variants: ["default","compact","sm","lg"],
     whenToUse: "Use to show several overlapping avatars with an overflow count; includes a compact variant. For one user use avatar." },
   { slug: "badge", name: "Badge", category: "Data Display",
@@ -296,8 +315,15 @@ export const components: ComponentMeta[] = [
   { slug: "l1-distribution-bar", name: "L1 Distribution Bar", category: "Data Viz & Metrics",
     description: "Segmented bar showing Experience, Workflow, Integration, Foundation split.",
     whenToUse: "Use for the segmented Experience/Workflow/Integration/Foundation split. For generic linear progress use progress." },
+  { slug: "animated-number", name: "Animated Number", category: "Data Viz & Metrics",
+    description: "Digit pop-in number treatment for headline values and changing KPIs.",
+    variants: ["number","currency","percentage"],
+    whenToUse: "Use for large KPI values in stat-card, metric-panels, dashboards, and summary headers when numbers should pop in on render or update. For labels and small inline counts use plain text." },
   { slug: "metric-panels", name: "Metric Panels", category: "Data Viz & Metrics",
     description: "Composed metric panels for KPI rows, usage dashboards, quota tracking, and trend summaries.",
+    importPath: null,
+    sourcePath: "src/components/workbench/demos/metric-panels/index.tsx",
+    manifestKind: "composition",
     whenToUse: "Use for composed KPI rows, usage dashboards, and quota tracking. For one metric use stat-card." },
   { slug: "readiness-item", name: "Readiness Item", category: "Data Viz & Metrics",
     description: "Display-only checklist row with pass, warning, or fail status.",

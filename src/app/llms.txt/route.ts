@@ -7,7 +7,8 @@ export function GET() {
     "NOS Workbench",
     "",
     "NOS is the canonical design-system reference for Nymbl internal product UI.",
-    "Use the machine-readable manifest as the source of truth for available components, tokens, patterns, import paths, and prop surfaces.",
+    "Use the machine-readable manifest as the source of truth for available primitives, compositions, docs pages, tokens, patterns, import paths, source paths, and prop surfaces.",
+    "Check each manifest entry's kind before importing: primitive entries are direct UI components, while composition and docs entries are implementation references.",
     "Use the hosted workbench as the visual reference for implementation parity.",
     "",
     `Manifest: ${MANIFEST_URL}`,
@@ -25,4 +26,3 @@ export function GET() {
     },
   })
 }
-
