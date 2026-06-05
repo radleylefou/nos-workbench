@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {
   Component,
   FileText,
@@ -7,7 +6,6 @@ import {
   SwatchBook,
 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { InstructionGeneratorDialog } from "@/components/onboarding/instruction-generator-dialog"
 import { CopyButton } from "@/components/workbench/copy-button"
 import {
@@ -19,6 +17,7 @@ import {
 import { starterPrompt } from "@/lib/agent-instructions"
 import { components } from "@/lib/component-registry"
 import { navigation } from "@/lib/workbench-data"
+import type { ProjectType } from "@content/instructions"
 
 const sections = [
   {
@@ -71,19 +70,55 @@ function RevealedStatement() {
   )
 }
 
+function HeroStartCard({
+  description,
+  image,
+  imageAlt,
+  title,
+  type,
+}: {
+  description: string
+  image: string
+  imageAlt: string
+  title: string
+  type: ProjectType
+}) {
+  return (
+    <InstructionGeneratorDialog
+      initialProjectType={type}
+      triggerCard={{ description, image, imageAlt, title }}
+    />
+  )
+}
+
 export default function WorkbenchHome() {
   return (
     <div className="flex flex-col">
       <WorkbenchHero
         eyebrow="NOS Workbench"
         title="The operating reference for building Nymbl apps."
-        description="Browse canonical components, tokens, agent instructions, and composed patterns in one dense documentation surface."
+        description="Build apps, browse canonical components, tokens, agent instructions, and composed patterns in one documentation surface."
       >
-        <div className="flex flex-wrap items-center gap-3">
-          <InstructionGeneratorDialog triggerClassName="bg-zinc-950 text-white hover:bg-zinc-800" />
-          <Button asChild variant="outline" className="border-zinc-300 text-zinc-950 hover:border-zinc-950">
-            <Link href="/workbench/components/button">Browse components</Link>
-          </Button>
+        <div className="flex flex-col gap-5">
+          <h2 className="text-2xl font-semibold tracking-[-0.025em] text-zinc-950">
+            Where do you want to start?
+          </h2>
+          <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+            <HeroStartCard
+              type="new"
+              image="/nos-new.svg"
+              imageAlt="New NOS app illustration"
+              title="I'm building a new NOS app"
+              description="Start fresh from a spec or PRD."
+            />
+            <HeroStartCard
+              type="existing"
+              image="/nos-existing.svg"
+              imageAlt="Existing NOS app illustration"
+              title="I'm updating an existing NOS app"
+              description="Convert an app that already exists."
+            />
+          </div>
         </div>
       </WorkbenchHero>
 

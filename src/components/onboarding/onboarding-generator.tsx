@@ -37,6 +37,7 @@ type Step = "project" | "environment" | "result"
 
 type OnboardingGeneratorProps = {
   className?: string
+  initialProjectType?: ProjectType
   onClose?: () => void
 }
 
@@ -165,16 +166,29 @@ function InstructionStepCard({
   )
 }
 
-export function OnboardingGenerator({ className, onClose }: OnboardingGeneratorProps) {
-  const [step, setStep] = useState<Step>("project")
-  const [projectType, setProjectTypeState] = useState<ProjectType | null>(null)
+export function OnboardingGenerator({
+  className,
+  initialProjectType,
+  onClose,
+}: OnboardingGeneratorProps) {
+  const [step, setStep] = useState<Step>(initialProjectType ? "environment" : "project")
+  const [projectType, setProjectTypeState] = useState<ProjectType | null>(
+    initialProjectType ?? null,
+  )
   const [llm, setLlmState] = useState<LlmTarget | null>(null)
 
   const result = useMemo(
     () => (projectType && llm ? assemble(projectType, llm) : null),
     [projectType, llm],
   )
-  const displayStep = step === "project" ? "Step 1 of 2" : step === "environment" ? "Step 2 of 2" : "Ready"
+  const displayStep =
+    step === "project"
+      ? "Step 1 of 2"
+      : step === "environment"
+        ? initialProjectType
+          ? `${getProjectTypeLabel(initialProjectType)} · Step 1 of 1`
+          : "Step 2 of 2"
+        : "Ready"
 
   function setProjectType(value: ProjectType) {
     setProjectTypeState(value)
@@ -198,9 +212,9 @@ export function OnboardingGenerator({ className, onClose }: OnboardingGeneratorP
   }
 
   function handleStartOver() {
-    setProjectTypeState(null)
+    setProjectTypeState(initialProjectType ?? null)
     setLlmState(null)
-    setStep("project")
+    setStep(initialProjectType ? "environment" : "project")
   }
 
   return (
@@ -248,10 +262,11 @@ export function OnboardingGenerator({ className, onClose }: OnboardingGeneratorP
             <div className="flex flex-col gap-6">
               <div className="max-w-2xl">
                 <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                  What are you building with?
+                  Choose your build environment
                 </h2>
                 <p className="mt-3 text-base leading-7 text-muted-foreground">
-                  Choose the environment that should receive the generated instruction file.
+                  Choose the environment that should receive the generated instruction file
+                  {projectType ? ` for this ${getProjectTypeLabel(projectType).toLowerCase()} flow.` : "."}
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
