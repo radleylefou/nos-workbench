@@ -3,7 +3,8 @@ import path from "node:path"
 import { notFound, redirect } from "next/navigation"
 import { FileText } from "lucide-react"
 
-import { baseMarkdown, designPrinciplesMarkdown } from "@content/instructions"
+import { designPrinciplesMarkdown } from "@content/instructions"
+import { InlineInstructionConfigurator } from "@/components/onboarding/inline-instruction-configurator"
 import { InstructionGeneratorDialog } from "@/components/onboarding/instruction-generator-dialog"
 import { Badge } from "@/components/ui/badge"
 import { CopyButton } from "@/components/workbench/copy-button"
@@ -28,14 +29,6 @@ const fragmentPages: Partial<
     }
   >
 > = {
-  agents: {
-    title: "Agent Instructions",
-    description:
-      "Core NOS rules shared by the onboarding generator and the workbench reference pages.",
-    sourceLabel: "content/instructions/base.ts",
-    source: baseMarkdown,
-    note: "For tailored, project-specific instructions, use the instruction generator on the workbench homepage.",
-  },
   rules: {
     title: "Design Rules",
     description:
@@ -73,6 +66,11 @@ export default async function InstructionPage({
   }
 
   const instructionSlug = slug as InstructionSlug
+
+  if (instructionSlug === "agents") {
+    return <AgentsConfiguratorPage />
+  }
+
   const fragmentPage = fragmentPages[instructionSlug]
 
   if (fragmentPage) {
@@ -103,6 +101,22 @@ export default async function InstructionPage({
       sourceLabel={`instructions/${filePage.file}`}
       source={source}
     />
+  )
+}
+
+function AgentsConfiguratorPage() {
+  return (
+    <WorkbenchDocsShell toc={[{ href: "#configurator", label: "Configurator" }]}>
+      <WorkbenchHero
+        eyebrow="Instructions"
+        title="Agent Instructions"
+        description="Pick your project type and agent to generate a tailored NOS context file and runbook. The assembled file always includes the shared NOS core."
+      />
+
+      <WorkbenchSection id="configurator" title="Configurator">
+        <InlineInstructionConfigurator />
+      </WorkbenchSection>
+    </WorkbenchDocsShell>
   )
 }
 

@@ -487,12 +487,58 @@
   transform: scale(var(--icon-swap-start-scale));
 }
 
+/* NOS Workbench — homepage start-card spotlight border */
+.homepage-start-card {
+  --start-card-spotlight-x: 50%;
+  --start-card-spotlight-y: 50%;
+}
+
+.homepage-start-card-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    280px circle at var(--start-card-spotlight-x) var(--start-card-spotlight-y),
+    var(--brand-400) 0%,
+    var(--brand-500) 38%,
+    var(--brand-600) 68%,
+    transparent 100%
+  );
+  transition: opacity var(--duration-normal) var(--ease-standard);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.homepage-start-card:hover .homepage-start-card-spotlight,
+.homepage-start-card:focus-visible .homepage-start-card-spotlight {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .t-dropdown { transition: none !important; }
   .t-digit-group .t-digit { animation: none !important; }
   .t-page-slide .t-page { transition: none !important; }
   .t-icon-swap .t-icon { transition: none !important; }
   [data-slot="tabs-content"].t-page { transition: none !important; }
+  .homepage-start-card-spotlight {
+    background: radial-gradient(
+      280px circle at 50% 50%,
+      var(--brand-400) 0%,
+      var(--brand-500) 38%,
+      var(--brand-600) 68%,
+      transparent 100%
+    );
+  }
 }
 
 @layer base {

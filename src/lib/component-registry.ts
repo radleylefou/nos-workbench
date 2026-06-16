@@ -170,7 +170,7 @@ export const components: ComponentMeta[] = [
   { slug: "tabs", name: "Tabs", category: "Navigation",
     description: "A set of layered sections of content.",
     variants: ["default"],
-    whenToUse: "Use to switch between equal-weight content panels within a view. For a compact 2-3 option toggle use segmented-control; for page-level section nav use tab-menu-horizontal." },
+    whenToUse: "Use to switch between equal-weight content panels within a view. For a compact 2-4 option toggle use segmented-control; for page-level section nav use tab-menu-horizontal." },
 
   // Overlays
   { slug: "alert-dialog", name: "Alert Dialog", category: "Overlays",

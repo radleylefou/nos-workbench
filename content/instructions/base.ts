@@ -84,22 +84,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 1. Read the project instructions for whether this is a new build or an existing-app conversion.
 2. Check the workbench for the component, token, and pattern you need before creating new UI.
-3. Components to check early: \`StatCard\`, \`StatusBadge\`, \`HealthIndicator\`, \`Tag\`, \`Empty\`, \`Rating\`, \`Stepper\`, \`Banner\`, \`Notification\`, \`IdChip\`, \`LinkedChip\`, and \`Timeline\`.
-4. Build one approved chunk at a time.
-5. Verify each chunk in the browser before proceeding.
+3. Build one approved chunk at a time.
+4. Verify each chunk in the browser before proceeding.
 
-## Visual parity checks
+## Choosing between similar components
 
-Before marking any generated app complete, confirm:
+Many NOS components overlap. Pick the right one at the decision point - do not default to the most generic option. Each rule below names the sibling to use instead.
 
-- The sidebar matches the App Sidebar component.
-- Brand purple appears only in primary actions and selected states.
-- No decorative card accents are present.
-- No custom shell or custom sidebar exists.
-- Token names match NOS exactly.
-- No \`next-themes\` or dark mode setup exists.
+- Buttons: \`Button\` for labelled primary and secondary actions; \`CompactButton\` for icon-only actions in dense toolbars and table rows; \`LinkButton\` for low-emphasis inline actions inside or beside text; \`ButtonGroup\` to join related buttons; \`ToggleGroup\` for a set of two-state buttons such as alignment.
+- Badges and chips: \`Badge\` for generic counts, labels, and categorisation; \`StatusBadge\` for semantic lifecycle states (completed, pending, failed, disabled) where colour and icon follow the status; \`Tag\` for dismissible, user-applied labels such as filters; \`IdChip\` for non-interactive monospace reference IDs (EPIC-014); \`LinkedChip\` for a clickable chip that links to a domain object with a type icon.
+- Overlays: \`Dialog\` for focused modal tasks; \`AlertDialog\` for destructive or irreversible confirmations; \`Sheet\` for an edge-anchored side panel of supporting content or forms (record detail, secondary form); \`Drawer\` for bottom or mobile-friendly edge panels; \`Popover\` for lightweight content anchored to a trigger; \`HoverCard\` for non-interactive hover previews.
+- Messages: \`Alert\` for an inline, persistent message tied to a region; \`Banner\` for a full-width announcement across the top of a page or app; \`Notification\` for a positioned status card with title, description, and optional action; toast (\`sonner\`) for brief, auto-dismissing confirmations.
+- Tabs and switchers: \`Tabs\` to switch between equal-weight content panels in place; \`SegmentedControl\` for a compact 2-4 option toggle such as a view switch; \`TabMenuHorizontal\` for page-level section navigation with an underline indicator; \`TabMenuVertical\` for a stacked left-rail menu.
+- Selection inputs: \`Checkbox\` for independent boolean or multi-select choices; \`RadioGroup\` to pick exactly one from a small visible set; \`Switch\` for an instant on/off setting that applies immediately; \`Toggle\` for a single button-style on/off control; \`Select\` for one option from a medium-to-long list; \`Combobox\` for searchable single-select with free-text filtering; \`NativeSelect\` only when OS-native behaviour is required.
+- Progress and loading: \`Progress\` for a linear determinate bar; \`ProgressCircle\` for compact circular progress, often with a centered value; \`Spinner\` for short indeterminate waits on a control; \`Skeleton\` to placeholder content layout while data loads.
+- Metrics: \`StatCard\` for a single KPI with trend and optional icon; \`MetricPanels\` for a composed row of several KPIs; \`Chart\` for plotted data such as lines, bars, and areas; \`AnimatedNumber\` for large KPI values that should pop in on render. Never hand-build a metric out of a \`Card\` plus a number when \`StatCard\` fits.
+- Tables and lists: \`Table\` for static or lightly interactive tabular data; \`DataTable\` when sort, filter, selection, and pagination are needed; \`DataGrid\` for high-density operational workspaces with toolbar, column controls, and expandable rows; \`Item\` for a generic list or menu row.
+- Menus: \`DropdownMenu\` for a menu of actions opened from a button; \`ContextMenu\` for right-click actions; \`Menubar\` for desktop-app-style menu bars; \`NavigationMenu\` for top-level site navigation; \`Command\` for a searchable command palette.
+- Date inputs: \`Calendar\` for an always-visible month grid; \`DatePicker\` for date or range selection from a compact input with presets; \`DateSelector\` for operational periods (days, months, quarters, halves, years) with an operator.
+- Hierarchy: \`Accordion\` for multiple independently collapsible sections; \`Collapsible\` for a single show/hide region; \`Tree\` for nested structures where hierarchy is the primary thing users scan.
+
+The NOS manifest carries a \`whenToUse\` field with the full comparative rule for every component - fetch it and respect it before building or substituting any component.
+
+## Self-audit before presenting work
+
+This checklist is yours to run, not the user's. Before you present any chunk or declare work done, audit your own output against every item below and fix anything that fails. Do not show the user a first draft you have not self-audited. Run it after every chunk, not just at the end.
+
+- The sidebar matches the App Sidebar component; no custom shell or custom sidebar exists.
+- Brand purple appears only in primary actions, active states, and selected states - never as decorative card chrome.
+- No decorative card accents are present (no colored top borders, side stripes, or corner dots).
+- Token names match NOS exactly; no hardcoded colors, spacing, radius, shadow, or motion values.
+- No \`next-themes\`, ThemeProvider, or dark mode setup exists.
+- Each chosen component is the correct one per "Choosing between similar components"; no hand-built component duplicates an existing NOS one.
 - Every data surface has empty, loading, and error states.
-- Desktop and mobile browser screenshots have been reviewed after each chunk.`
+- Transitions use motion tokens only and animate \`transform\`/\`opacity\`; no hover lift on cards or surfaces.
+- Desktop and mobile browser screenshots have been reviewed for this chunk.
+
+State the result of this self-audit (pass, or the items you fixed) when you hand the chunk back.`
 
 export const designPrinciplesMarkdown = `# NOS Design Principles
 
