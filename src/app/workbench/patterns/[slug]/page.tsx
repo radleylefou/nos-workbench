@@ -21,6 +21,13 @@ import {
   StaffingCapacityPlannerPattern,
 } from "@/components/workbench/patterns/research-backed"
 import {
+  NewLeadPattern,
+  NewEngagementPattern,
+  AddTeamMemberPattern,
+  CreateScopeItemPattern,
+  LogActivityPattern,
+} from "@/components/workbench/patterns/form-modals"
+import {
   WorkbenchDocsShell,
   WorkbenchHero,
   WorkbenchPanel,
@@ -49,6 +56,11 @@ const patternComponents: Record<string, ComponentType> = {
   "budget-control-center": BudgetControlCenterPattern,
   "spend-approval-queue": SpendApprovalQueuePattern,
   "guide-priority-command": GuidePriorityCommandPattern,
+  "form-modal-new-lead": NewLeadPattern,
+  "form-modal-new-engagement": NewEngagementPattern,
+  "form-modal-add-team-member": AddTeamMemberPattern,
+  "form-modal-create-scope-item": CreateScopeItemPattern,
+  "form-modal-log-activity": LogActivityPattern,
 }
 
 export function generateStaticParams() {

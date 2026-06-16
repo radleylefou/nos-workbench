@@ -137,7 +137,8 @@ import {
 } from "@/components/ui/input-otp"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Label } from "@/components/ui/label"
-import { NymblAppSidebar, NymblEngagementSidebar } from "@/components/ui/app-sidebar"
+import { NymblAppSidebar, NymblEngagementSidebar, NymblNestedSidebar } from "@/components/ui/app-sidebar"
+import { FormModal } from "@/components/ui/form-modal"
 import {
   Menubar,
   MenubarContent,
@@ -2622,6 +2623,304 @@ export const demos: Record<string, ComponentDemo> = {
               </DialogFooter>
             </DialogContent>
           </Dialog>`,
+      },
+    ],
+  },
+
+  "form-modal": {
+    importLine: `import { FormModal } from "@/components/ui/form-modal"`,
+    exampleCode: `<FormModal trigger={<Button>New Lead</Button>} title="New Lead" primaryLabel="Add Lead">
+  <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1.5">
+      <Label>Name</Label>
+      <Input placeholder="Jane Smith" />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>Email</Label>
+      <Input type="email" placeholder="jane@acme.com" />
+    </div>
+  </div>
+</FormModal>`,
+    variants: [
+      {
+        label: "single step",
+        node: (
+          <FormModal
+            trigger={<Button>New Lead</Button>}
+            title="New Lead"
+            description="Add a new prospect to your pipeline."
+            primaryLabel="Add Lead"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label>First name</Label>
+                  <Input placeholder="Jane" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label>Last name</Label>
+                  <Input placeholder="Smith" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Email</Label>
+                <Input type="email" placeholder="jane@acme.com" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Company</Label>
+                <Input placeholder="Acme Corp" />
+              </div>
+            </div>
+          </FormModal>
+        ),
+        code: `<FormModal
+  trigger={<Button>New Lead</Button>}
+  title="New Lead"
+  description="Add a new prospect to your pipeline."
+  primaryLabel="Add Lead"
+>
+  <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-1.5">
+        <Label>First name</Label>
+        <Input placeholder="Jane" />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label>Last name</Label>
+        <Input placeholder="Smith" />
+      </div>
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>Email</Label>
+      <Input type="email" placeholder="jane@acme.com" />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>Company</Label>
+      <Input placeholder="Acme Corp" />
+    </div>
+  </div>
+</FormModal>`,
+      },
+      {
+        label: "with badge",
+        node: (
+          <FormModal
+            trigger={<Button>New Engagement</Button>}
+            title="New Engagement"
+            description="Start a new client engagement."
+            badge="Engage"
+            primaryLabel="Create Engagement"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label>Client</Label>
+                <Input placeholder="Acme Health Systems" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label>Type</Label>
+                  <Select>
+                    <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="consulting">Consulting</SelectItem>
+                      <SelectItem value="implementation">Implementation</SelectItem>
+                      <SelectItem value="managed">Managed Services</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label>Stage</Label>
+                  <Select>
+                    <SelectTrigger><SelectValue placeholder="Select stage" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="triage">Triage</SelectItem>
+                      <SelectItem value="scoping">Scoping</SelectItem>
+                      <SelectItem value="estimation">Estimation</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Owner</Label>
+                <Input placeholder="Sarah Chen" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Start date</Label>
+                <Input type="date" />
+              </div>
+            </div>
+          </FormModal>
+        ),
+        code: `<FormModal
+  trigger={<Button>New Engagement</Button>}
+  title="New Engagement"
+  description="Start a new client engagement."
+  badge="Engage"
+  primaryLabel="Create Engagement"
+>
+  {/* fields */}
+</FormModal>`,
+      },
+      {
+        label: "scrollable body",
+        node: (
+          <FormModal
+            trigger={<Button>Add Team Member</Button>}
+            title="Add Team Member"
+            description="Assign a person to this engagement."
+            primaryLabel="Add Member"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label>Person</Label>
+                <Input placeholder="Search by name..." />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label>Role</Label>
+                  <Select>
+                    <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="lead">Engagement Lead</SelectItem>
+                      <SelectItem value="delivery">Delivery Manager</SelectItem>
+                      <SelectItem value="solution">Solution Lead</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label>Allocation (%)</Label>
+                  <Input type="number" placeholder="100" min={0} max={100} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label>Start date</Label>
+                  <Input type="date" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label>End date</Label>
+                  <Input type="date" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Engagement</Label>
+                <Select>
+                  <SelectTrigger><SelectValue placeholder="Select engagement" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="acme">Acme Health Systems</SelectItem>
+                    <SelectItem value="northstar">Northstar HealthTech</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Notes</Label>
+                <Textarea placeholder="Any context for this assignment..." className="resize-none" rows={3} />
+              </div>
+            </div>
+          </FormModal>
+        ),
+        code: `<FormModal
+  trigger={<Button>Add Team Member</Button>}
+  title="Add Team Member"
+  description="Assign a person to this engagement."
+  primaryLabel="Add Member"
+>
+  {/* long form with 6+ fields — body scrolls at max-h-[60vh] */}
+</FormModal>`,
+      },
+      {
+        label: "multi-step",
+        node: (
+          <FormModal
+            trigger={<Button>Create Scope Item</Button>}
+            primaryLabel="Create Item"
+            steps={[
+              {
+                title: "Basics",
+                description: "Name the scope item and assign it.",
+                content: (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <Label>Title</Label>
+                      <Input placeholder="e.g. Patient intake form redesign" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Label>Phase</Label>
+                        <Select>
+                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="phase1">Phase 1</SelectItem>
+                            <SelectItem value="phase2">Phase 2</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <Label>Component</Label>
+                        <Select>
+                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="frontend">Frontend</SelectItem>
+                            <SelectItem value="backend">Backend</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <Label>Owner</Label>
+                      <Input placeholder="Assign to..." />
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                title: "Details",
+                description: "Add estimation and context.",
+                content: (
+                  <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Label>Story points</Label>
+                        <Input type="number" placeholder="0" min={0} />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <Label>Priority</Label>
+                        <Select>
+                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="low">Low</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <Label>Notes</Label>
+                      <Textarea placeholder="Additional context..." className="resize-none" rows={3} />
+                    </div>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        ),
+        code: `<FormModal
+  trigger={<Button>Create Scope Item</Button>}
+  primaryLabel="Create Item"
+  steps={[
+    {
+      title: "Basics",
+      description: "Name the scope item and assign it.",
+      content: <Step1Fields />,
+    },
+    {
+      title: "Details",
+      description: "Add estimation and context.",
+      content: <Step2Fields />,
+    },
+  ]}
+/>`,
       },
     ],
   },
@@ -6213,10 +6512,11 @@ toast.error("Something went wrong.")`,
   },
 
   "app-sidebar": {
-    importLine: `import { NymblAppSidebar, NymblEngagementSidebar } from "@/components/ui/app-sidebar"`,
+    importLine: `import { NymblAppSidebar, NymblEngagementSidebar, NymblNestedSidebar } from "@/components/ui/app-sidebar"`,
     exampleCode: `<NymblAppSidebar />
 <NymblAppSidebar appName="Scope" />
-<NymblEngagementSidebar />`,
+<NymblEngagementSidebar />
+<NymblNestedSidebar />`,
     variants: [
       {
         label: "app navigation",
@@ -6232,6 +6532,11 @@ toast.error("Something went wrong.")`,
         label: "engagement workflow",
         node: <NymblEngagementSidebar appName="Engage" />,
         code: `<NymblEngagementSidebar appName="Engage" />`,
+      },
+      {
+        label: "nested nav",
+        node: <NymblNestedSidebar />,
+        code: `<NymblNestedSidebar />`,
       },
     ],
   },

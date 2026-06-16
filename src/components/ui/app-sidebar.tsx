@@ -7,10 +7,13 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ChevronsUpDown,
+  ChevronRight,
   Circle,
   Clock3,
   CreditCard,
+  Folder,
   Home,
+  LayoutDashboard,
   Phone,
   Search,
   Sun,
@@ -18,6 +21,11 @@ import {
 } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { Kbd } from "@/components/ui/kbd"
 import { cn } from "@/lib/utils"
 
@@ -299,6 +307,121 @@ export function NymblEngagementSidebar({ className, appName, ...props }: AppSide
       <EngagementHeader />
       <WorkflowNav />
       <TeamFooter />
+    </SidebarShell>
+  )
+}
+
+// ─── Nested nav sidebar ───────────────────────────────────────────────────────
+
+const nestedMainSections: { label: string; items: SidebarItem[] }[] = [
+  {
+    label: "Main",
+    items: [
+      { label: "Home", icon: Home, active: true },
+      { label: "Dashboard", icon: LayoutDashboard },
+    ],
+  },
+]
+
+type NestedChild = {
+  label: string
+  active?: boolean
+}
+
+type NestedGroup = {
+  label: string
+  defaultOpen?: boolean
+  children: NestedChild[]
+}
+
+type NestedNavSection = {
+  label: string
+  groups: NestedGroup[]
+}
+
+const nestedSections: NestedNavSection[] = [
+  {
+    label: "Projects",
+    groups: [
+      {
+        label: "Active Projects",
+        defaultOpen: true,
+        children: [
+          { label: "Project Alpha" },
+          { label: "Project Beta", active: true },
+          { label: "Project Gamma" },
+        ],
+      },
+      {
+        label: "Archived",
+        defaultOpen: false,
+        children: [
+          { label: "2024 Archive" },
+          { label: "2023 Archive" },
+        ],
+      },
+    ],
+  },
+]
+
+function NestedNavGroup({ group }: { group: NestedGroup }) {
+  return (
+    <Collapsible defaultOpen={group.defaultOpen} className="group/collapsible">
+      <CollapsibleTrigger asChild>
+        <button
+          type="button"
+          className="flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-sm text-white/88 transition-colors hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+        >
+          <Folder className="size-4 shrink-0 text-white/55" />
+          <span className="min-w-0 flex-1 truncate text-left">{group.label}</span>
+          <ChevronRight className="size-3.5 shrink-0 text-white/45 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-standard)] group-data-[state=open]/collapsible:rotate-90" />
+        </button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="mt-0.5 flex flex-col gap-0.5 pl-9">
+          {group.children.map((child) => (
+            <a
+              key={child.label}
+              href="#"
+              className={cn(
+                "flex h-8 items-center rounded-md px-2.5 text-sm text-white/70 transition-colors hover:bg-white/8 hover:text-white/88 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+                child.active && "bg-primary/32 text-white"
+              )}
+            >
+              <span className="truncate">{child.label}</span>
+            </a>
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+function NestedSection({ section }: { section: NestedNavSection }) {
+  return (
+    <section className="flex flex-col gap-1 px-2.5">
+      <h2 className="px-2.5 pb-0.5 text-sm font-medium text-white/45">{section.label}</h2>
+      {section.groups.map((group) => (
+        <NestedNavGroup key={group.label} group={group} />
+      ))}
+    </section>
+  )
+}
+
+export function NymblNestedSidebar({ className, appName, ...props }: AppSidebarProps) {
+  return (
+    <SidebarShell className={className} {...props}>
+      <SidebarTop appName={appName} />
+      <SidebarSearch />
+      <nav className="flex flex-col gap-7 overflow-y-auto pt-5" aria-label="Main navigation">
+        {nestedMainSections.map((section) => (
+          <NavSection key={section.label} label={section.label} items={section.items} />
+        ))}
+        {nestedSections.map((section) => (
+          <NestedSection key={section.label} section={section} />
+        ))}
+      </nav>
+      <UserFooter />
     </SidebarShell>
   )
 }

@@ -39,9 +39,7 @@ export function AISuggestionCard({
         <Icon className="absolute right-5 top-5 size-4 text-muted-foreground" aria-hidden="true" />
         <div className="min-w-0 pr-8">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
-              {label}
-            </Badge>
+            <Badge variant="outline">{label}</Badge>
           </div>
           <h3 className="mt-2 text-sm font-semibold leading-snug text-foreground">
             {title}
