@@ -635,17 +635,17 @@ export const brandScale = [
 ]
 
 export const neutralScale = [
-  { name: "zinc-50", value: "#fafafa" },
-  { name: "zinc-100", value: "#f4f4f5" },
-  { name: "zinc-200", value: "#e4e4e7" },
-  { name: "zinc-300", value: "#d4d4d8" },
-  { name: "zinc-400", value: "#a1a1aa" },
-  { name: "zinc-500", value: "#71717a" },
-  { name: "zinc-600", value: "#52525b" },
-  { name: "zinc-700", value: "#3f3f46" },
-  { name: "zinc-800", value: "#27272a" },
-  { name: "zinc-900", value: "#18181b" },
-  { name: "zinc-950", value: "#09090b" },
+  { name: "zinc-50", value: "#F7F7FB" },
+  { name: "zinc-100", value: "#F2F2F7" },
+  { name: "zinc-200", value: "#E2E2E9" },
+  { name: "zinc-300", value: "#D2D2DA" },
+  { name: "zinc-400", value: "#9E9EAD" },
+  { name: "zinc-500", value: "#6D6D7E" },
+  { name: "zinc-600", value: "#4F4F5E" },
+  { name: "zinc-700", value: "#3D3D48" },
+  { name: "zinc-800", value: "#24242D" },
+  { name: "zinc-900", value: "#17171C" },
+  { name: "zinc-950", value: "#09090B" },
 ]
 
 export const semanticColorScales = [
