@@ -9,7 +9,6 @@ import {
   FileText,
   Home,
   Layers3,
-  LayoutGrid,
   PanelLeft,
   SwatchBook,
 } from "lucide-react"
@@ -108,7 +107,7 @@ function FlatNavGroup({ basePath, items }: FlatNavGroupProps) {
   )
 }
 
-type SectionKey = "home" | "tokens" | "components" | "instructions" | "patterns" | "pages"
+type SectionKey = "home" | "tokens" | "components" | "instructions" | "patterns"
 
 type TopLevelItem = {
   key: SectionKey
@@ -153,13 +152,6 @@ const topLevelItems: TopLevelItem[] = [
     icon: PanelLeft,
     count: navigation.patterns.length,
   },
-  {
-    key: "pages",
-    label: "Pages",
-    href: "/workbench/pages/app-home",
-    icon: LayoutGrid,
-    count: navigation.pages.length,
-  },
 ]
 
 function getActiveSection(pathname: string): SectionKey {
@@ -167,7 +159,6 @@ function getActiveSection(pathname: string): SectionKey {
   if (pathname.startsWith("/workbench/tokens")) return "tokens"
   if (pathname.startsWith("/workbench/instructions")) return "instructions"
   if (pathname.startsWith("/workbench/patterns")) return "patterns"
-  if (pathname.startsWith("/workbench/pages")) return "pages"
   return "components"
 }
 
@@ -229,9 +220,7 @@ function SecondaryHeader({ item }: { item: TopLevelItem }) {
                   ? "Agent and implementation rules"
                   : item.key === "patterns"
                     ? "Composed product patterns"
-                    : item.key === "pages"
-                      ? "Full reusable app screens"
-                      : "Operating reference overview"}
+                    : "Operating reference overview"}
           </p>
         </div>
       </div>
@@ -304,18 +293,6 @@ export function SidebarNav() {
 
           {activeSection === "patterns" ? (
             <FlatNavGroup basePath="/workbench/patterns" items={navigation.patterns} />
-          ) : null}
-
-          {activeSection === "pages" ? (
-            <div className="px-3 py-1.5">
-              <ul className="flex flex-col gap-0.5">
-                {navigation.pages.map((page) => (
-                  <li key={page.slug}>
-                    <NavItem href={`/workbench/pages/${page.slug}`} label={page.label} />
-                  </li>
-                ))}
-              </ul>
-            </div>
           ) : null}
         </nav>
         <div className="border-t border-zinc-200 p-4">

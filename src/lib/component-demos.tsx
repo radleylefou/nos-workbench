@@ -52,7 +52,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { AppCard } from "@/components/ui/app-card"
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -619,39 +618,6 @@ export const demos: Record<string, ComponentDemo> = {
   },
 
   // ─── Typography ───────────────────────────────────────────────────────────
-
-  "app-card": {
-    importLine: `import { AppCard } from "@/components/ui/app-card"`,
-    exampleCode: `<AppCard name="Sign" status="live" />`,
-    variants: [
-      {
-        label: "Live",
-        node: <AppCard name="Sign" status="live" />,
-        code: `<AppCard name="Sign" status="live" />`,
-      },
-      {
-        label: "POC",
-        node: <AppCard name="Enable" status="poc" />,
-        code: `<AppCard name="Enable" status="poc" />`,
-      },
-      {
-        label: "Coming Soon",
-        node: <AppCard name="Engage" status="coming-soon" />,
-        code: `<AppCard name="Engage" status="coming-soon" />`,
-      },
-      {
-        label: "List variant",
-        node: (
-          <div className="flex w-72 flex-col gap-2">
-            <AppCard name="Sign" status="live" variant="list" />
-            <AppCard name="Enable" status="poc" variant="list" />
-            <AppCard name="Engage" status="coming-soon" variant="list" />
-          </div>
-        ),
-        code: `<AppCard name="Sign" status="live" variant="list" />`,
-      },
-    ],
-  },
 
   "badge": {
     importLine: `import { Badge } from "@/components/ui/badge"`,
