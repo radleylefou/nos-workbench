@@ -1,6 +1,8 @@
 export const specTemplateMarkdown = `# SPEC.md - <App name>
 
-This is the build contract for the app. Fill in every section before the build prompt runs. The agent reads this file to know the object model, every screen, sample data, and which NOS component each surface uses. Do not leave placeholders.
+This is the build contract for the app. If you have a PRD, product brief, or rough notes, paste them to your agent and have it fill out this template from that source; otherwise complete each section yourself. Either way, a human must review and approve the finished SPEC.md before the build prompt runs - it is the source of truth, not the PRD. The agent reads this file to know the object model, every screen, sample data, and which NOS component each surface uses. Do not leave placeholders.
+
+> **Source material:** If a PRD or brief was provided, populate every section below from it and flag anything the source does not specify rather than inventing it. If no source was provided, ask for one or fill the template in manually before building.
 
 ## 1. Overview
 

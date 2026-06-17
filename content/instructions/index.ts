@@ -195,7 +195,7 @@ export function assemble(projectType: ProjectType, llm: LlmTarget): InstructionK
           saveStep,
           {
             kind: "save" as const,
-            title: "Add your SPEC.md",
+            title: "Draft SPEC.md from your PRD",
             filename: "SPEC.md" as const,
             body: specTemplateMarkdown,
           },
