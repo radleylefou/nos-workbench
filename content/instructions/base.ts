@@ -2,6 +2,8 @@ import type { InstructionFragment } from "./types"
 
 export const agentCoreMarkdown = `# NOS Design System - Agent Instructions
 
+You are building or updating a Nymbl internal app using the NOS design system. Your job is to produce an app that looks and behaves like a native part of NOS: it consumes NOS components, tokens, and patterns rather than inventing its own UI. Whether you are scaffolding a new app or extending an existing one, the same rule holds - reuse the system first, and match it exactly where you must extend it.
+
 ## What this is
 
 NOS is the shared component and token library for Nymbl internal apps. It is built on Shadcn/ui (Vega style) with NOS brand tokens applied. Every Nymbl app should import from this system and use the hosted workbench as the visual reference:
