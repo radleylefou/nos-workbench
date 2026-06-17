@@ -92,6 +92,7 @@ export const navigation = {
   tokens: ["color", "typography", "spacing", "radius", "shadow", "motion"] as const,
   instructions: ["agents", "rules", "compositions"] as const,
   patterns: productPatternSlugs,
+  pages: [{ slug: "app-home", label: "App Home" }] as const,
 }
 
 export type ComponentSlug = (typeof navigation.components)[number]
