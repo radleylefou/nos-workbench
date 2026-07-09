@@ -6,15 +6,25 @@ Do NOT start from a PRD. This app already exists. Your job is to bring its UI in
 
 ### Step 1 - Inventory before changing anything
 
-Scan the existing app and produce a component inventory: list every distinct UI element in use (buttons, inputs, selects, cards, tables, modals/dialogs, tabs, badges, navigation, etc.), where each appears, and how it is currently built (custom CSS, another component library, inline styles). Output this as a table. Do not change any code in this step.
+Scan the existing app and produce a component inventory: list every distinct UI element in use (buttons, inputs, selects, cards, tables, modals/dialogs, tabs, badges, navigation, detail panels, metric cards, etc.), where each appears, and its component provenance: canonical NOS import, local custom component, raw HTML, inline styles, or third-party UI. Output this as a table. Do not change any code in this step.
 
 ### Step 2 - Map each element to a NOS equivalent
 
-For every item in the inventory, find the matching NOS component in the workbench. Produce a mapping table: existing element -> NOS component -> notes on prop or markup differences. Reference the workbench, not your assumptions, for what NOS components exist.
+For every item in the inventory, find the matching NOS component in the workbench and manifest. Produce a mapping table: existing element -> provenance -> NOS component -> import path -> notes on prop or markup differences. Reference the workbench, not your assumptions, for what NOS components exist.
+
+### Step 2.5 - Call out structural drift
+
+Before planning swaps, identify structural drift in the surfaces most likely to fragment the design system:
+
+- Sidebars and app shells: must map to \`NymblAppSidebar\`, \`NymblEngagementSidebar\`, or \`NymblNestedSidebar\`.
+- Tables and data workspaces: must map to \`DataGrid\`, \`DataTable\`, or \`Table\` based on density and behavior.
+- Metrics and KPI rows: must map to \`StatCard\` or an approved \`MetricPanels\` composition.
+- Badges, status cells, and health indicators: must map to \`StatusBadge\`, \`HealthIndicator\`, \`Badge\`, or another named NOS primitive.
+- Detail panels and record views: must map to the approved detail-column, \`Sheet\`, or \`Drawer\` pattern.
 
 ### Step 3 - Flag gaps, do not invent
 
-Where an existing element has no NOS equivalent, list it under "Needs review." Do NOT silently create a new component to fill the gap. Surface it so a designer can decide whether to add it to NOS or replace it with an existing pattern.
+Where an existing element has no NOS equivalent, list it under "Needs review." Do NOT silently create a new component to fill the gap, and do not ship a local semantic tile, custom table, custom sidebar, or local pill/status system as if it were NOS. Surface it so a designer can decide whether to add it to NOS or replace it with an existing pattern.
 
 ### Step 4 - Migrate the token layer first
 
@@ -22,9 +32,9 @@ Before swapping components, replace hardcoded colors, spacing, and radius values
 
 ### Step 5 - Swap one component type at a time
 
-Replace all instances of a single element type (for example, every button -> NOS \`Button\`), verify in the browser, then commit, before moving to the next type. Never bulk-replace the whole app in one pass.
+Replace all instances of a single surface type, verify in the browser, then commit, before moving to the next type. Never bulk-replace the whole app in one pass.
 
-Suggested order: buttons -> inputs/selects -> cards/surfaces -> tables -> dialogs/overlays -> navigation.
+Conversion order: shell/navigation -> tables/data surfaces -> metrics/status surfaces -> detail panels -> remaining controls and surfaces.
 
 ### Step 6 - Preserve application logic
 

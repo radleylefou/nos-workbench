@@ -182,7 +182,7 @@ export function assemble(projectType: ProjectType, llm: LlmTarget): InstructionK
             kind: "checkpoint" as const,
             title: "Review the plan",
             body:
-              "Open CONVERSION_PLAN.md and review the Component mapping, Token mapping, and Needs review sections before continuing. Add human decisions for anything under Needs review. Do not run the conversion prompt until the plan is approved.",
+              "Open CONVERSION_PLAN.md and review the Component mapping, Token mapping, Structural drift, and Needs review sections before continuing. Add human decisions for anything under Needs review. Do not run the conversion prompt until the plan is approved.",
           },
           {
             kind: "prompt" as const,

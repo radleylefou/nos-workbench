@@ -51,17 +51,26 @@ type AccountRow = {
 
 ## 5. Per-screen component mapping
 
-For each screen, map every surface to a specific NOS component. Pick the precise component using the "Choosing between similar components" guide in the context file and the manifest's \`whenToUse\` field. Never invent a component that is not in the manifest.
+For each screen, map every surface to a specific NOS component or approved composition. Pick the precise component using the "Choosing between similar components" guide in the context file and the manifest's \`whenToUse\` field. Never invent a component that is not in the manifest. Valid NOS tokens on custom markup do not count as NOS component provenance.
 
-| Screen | Surface | NOS component |
-| --- | --- | --- |
-| Accounts list | Page header + primary action | Page header + \`Button\` |
-| Accounts list | KPI row | 3-4 \`StatCard\` |
-| Accounts list | Table | \`DataTable\` with \`StatusBadge\`, \`IdChip\`, \`Avatar\` |
-| Accounts list | Empty / loading / error | \`Empty\` / \`Skeleton\` / \`Alert\` |
-| Account detail | Record panel | \`Sheet\` or detail column |
+| Screen | Surface | Exact NOS component or composition | Import path / source | Notes |
+| --- | --- | --- | --- | --- |
+| Accounts list | App shell | \`NymblAppSidebar\` | \`@/components/ui/app-sidebar\` | Standard page shell |
+| Accounts list | Page header + primary action | Page header + \`Button\` | \`@/components/ui/button\` | Use one primary action |
+| Accounts list | KPI row | 3-4 \`StatCard\` or approved \`MetricPanels\` composition | \`@/components/ui/stat-card\` | Do not hand-build status tiles |
+| Accounts list | Table | \`DataTable\` with \`StatusBadge\`, \`IdChip\`, \`Avatar\` | \`@/components/ui/data-table\` | Use \`DataGrid\` instead if dense workspace controls are required |
+| Accounts list | Empty / loading / error | \`Empty\` / \`Skeleton\` / \`Alert\` | \`@/components/ui/empty\`, \`@/components/ui/skeleton\`, \`@/components/ui/alert\` | Required for every data surface |
+| Account detail | Record panel | Detail column, \`Sheet\`, or \`Drawer\` | \`@/components/ui/sheet\` or \`@/components/ui/drawer\` | Pick one approved detail pattern |
 
-## 6. Required states
+## 6. Needs review
+
+List any required surface that does not have a clean NOS component or approved composition. A human must decide whether to add it to NOS or replace it with an existing pattern before the build starts.
+
+| Screen | Surface | Why no NOS match exists | Proposed decision |
+| --- | --- | --- | --- |
+| <Accounts list> | <Semantic status summary tiles> | <No approved NOS status-metric component in manifest> | <Use StatCard / add NOS component / remove surface> |
+
+## 7. Required states
 
 Confirm every data surface defines all three. The agent must build these, not just the happy path.
 
@@ -69,7 +78,7 @@ Confirm every data surface defines all three. The agent must build these, not ju
 - **Loading:** <skeleton shape matching the loaded layout>
 - **Error:** <error message and retry action>
 
-## 7. Out of scope
+## 8. Out of scope
 
 List anything explicitly NOT being built so the agent does not invent it.
 

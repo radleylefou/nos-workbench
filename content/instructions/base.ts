@@ -30,6 +30,7 @@ https://github.com/radleylefou/nos-workbench
 - Required token blocks include \`:root\` color tokens, \`--brand-50\` through \`--brand-950\`, semantic ramps and aliases (\`--success-*\`, \`--warning-*\`, \`--error-*\`, \`--info-*\`), shadow tokens (\`--shadow-*\`), motion tokens (\`--duration-*\`, \`--ease-*\`), and sidebar tokens (\`--sidebar-*\`).
 - Use existing NOS components before creating new ones.
 - Copy canonical NOS components from the workbench before editing behavior. Do not recreate existing NOS components from memory.
+- Valid NOS tokens are necessary but not sufficient. Visible product surfaces must come from canonical NOS components or approved NOS compositions, not custom markup that merely uses NOS colors.
 - Components are presentational. Do not put API calls, routing, global state, or app-specific data fetching inside NOS components.
 - If a needed component does not exist, build it as a Shadcn-compatible component in \`components/ui/\` following the existing file conventions.
 - Do not install other component libraries such as MUI, Chakra, or Radix directly. Shadcn already wraps Radix where needed.
@@ -41,7 +42,7 @@ https://github.com/radleylefou/nos-workbench
 - Brand purple is reserved for primary actions, active states, selected states, and real orientation cues.
 - Apps are light mode only. Do not install \`next-themes\`, add a ThemeProvider, or add a dark mode toggle. The only dark surface is \`NymblAppSidebar\`.
 - Wrap \`children\` in \`TooltipProvider\` in \`app/layout.tsx\`.
-- Generated apps must not contain \`--motion-duration-*\`, custom app shells, custom sidebars, or local rewrites of existing NOS components such as \`StatCard\`, \`StatusBadge\`, or \`HealthIndicator\`.
+- Generated apps must not contain \`--motion-duration-*\`, custom app shells, custom sidebars, raw table shells, custom data grids, hand-built metric cards, local status badge systems, or local rewrites of existing NOS components such as \`NymblAppSidebar\`, \`DataGrid\`, \`DataTable\`, \`Table\`, \`StatCard\`, \`StatusBadge\`, or \`HealthIndicator\`.
 
 ## App shell
 
@@ -89,6 +90,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 3. Build one approved chunk at a time.
 4. Verify each chunk in the browser before proceeding.
 
+## Component provenance
+
+Every visible product surface must have a clear NOS origin. Before implementing a screen, identify the canonical NOS component or approved composition powering each shell, table, metric row, badge/status cell, form, overlay, and detail panel.
+
+- If the surface maps to an existing NOS component, import and use that component. Do not recreate it locally with raw HTML, \`Card\` wrappers, or copied Tailwind classes.
+- If the surface has no clean NOS equivalent, list it under "Needs review" and ask for a human decision. Do not silently invent a new local component or semantic tile pattern.
+- For sidebars, use \`NymblAppSidebar\`, \`NymblEngagementSidebar\`, or \`NymblNestedSidebar\`; never create a custom \`aside\`, navigation shell, or dark rail that only approximates the sidebar.
+- For tables, use \`DataGrid\` for dense operational workspaces with toolbar controls, column visibility, selection, expandable rows, or high-density scanning; use \`DataTable\` for sortable/filterable/paginated datasets; use \`Table\` only for simple static or lightly interactive rows.
+- For metrics, use \`StatCard\` for individual KPIs and \`MetricPanels\` for grouped KPI rows. Custom semantic status tiles belong in "Needs review" unless NOS already provides an approved component or composition for that exact pattern.
+- For status cells and health indicators, use \`StatusBadge\`, \`HealthIndicator\`, \`Badge\`, or the matching NOS primitive. Do not build local colored pill systems.
+- For record details, use the approved shell pattern: a right detail column, \`Sheet\`, or \`Drawer\` depending on context. Do not invent a separate modal/panel language.
+
 ## Choosing between similar components
 
 Many NOS components overlap. Pick the right one at the decision point - do not default to the most generic option. Each rule below names the sibling to use instead.
@@ -101,7 +114,7 @@ Many NOS components overlap. Pick the right one at the decision point - do not d
 - Selection inputs: \`Checkbox\` for independent boolean or multi-select choices; \`RadioGroup\` to pick exactly one from a small visible set; \`Switch\` for an instant on/off setting that applies immediately; \`Toggle\` for a single button-style on/off control; \`Select\` for one option from a medium-to-long list; \`Combobox\` for searchable single-select with free-text filtering; \`NativeSelect\` only when OS-native behaviour is required.
 - Progress and loading: \`Progress\` for a linear determinate bar; \`ProgressCircle\` for compact circular progress, often with a centered value; \`Spinner\` for short indeterminate waits on a control; \`Skeleton\` to placeholder content layout while data loads.
 - Metrics: \`StatCard\` for a single KPI with trend and optional icon; \`MetricPanels\` for a composed row of several KPIs; \`Chart\` for plotted data such as lines, bars, and areas; \`AnimatedNumber\` for large KPI values that should pop in on render. Never hand-build a metric out of a \`Card\` plus a number when \`StatCard\` fits.
-- Tables and lists: \`Table\` for static or lightly interactive tabular data; \`DataTable\` when sort, filter, selection, and pagination are needed; \`DataGrid\` for high-density operational workspaces with toolbar, column controls, and expandable rows; \`Item\` for a generic list or menu row.
+- Tables and lists: \`DataGrid\` for high-density operational workspaces with toolbar controls, column visibility, row selection, expandable rows, or dense scanning; \`DataTable\` for rich tabular data needing sort, filter, selection, and pagination; \`Table\` only for static or lightly interactive tabular data; \`Item\` for a generic list or menu row.
 - Menus: \`DropdownMenu\` for a menu of actions opened from a button; \`ContextMenu\` for right-click actions; \`Menubar\` for desktop-app-style menu bars; \`NavigationMenu\` for top-level site navigation; \`Command\` for a searchable command palette.
 - Date inputs: \`Calendar\` for an always-visible month grid; \`DatePicker\` for date or range selection from a compact input with presets; \`DateSelector\` for operational periods (days, months, quarters, halves, years) with an operator.
 - Hierarchy: \`Accordion\` for multiple independently collapsible sections; \`Collapsible\` for a single show/hide region; \`Tree\` for nested structures where hierarchy is the primary thing users scan.
@@ -113,11 +126,13 @@ The NOS manifest carries a \`whenToUse\` field with the full comparative rule fo
 This checklist is yours to run, not the user's. Before you present any chunk or declare work done, audit your own output against every item below and fix anything that fails. Do not show the user a first draft you have not self-audited. Run it after every chunk, not just at the end.
 
 - The sidebar matches the App Sidebar component; no custom shell or custom sidebar exists.
+- The implementation can name the NOS component or approved composition behind every shell, table/data surface, metric row, status cell, and detail panel.
 - Brand purple appears only in primary actions, active states, and selected states - never as decorative card chrome.
 - No decorative card accents are present (no colored top borders, side stripes, or corner dots).
 - Token names match NOS exactly; no hardcoded colors, spacing, radius, shadow, or motion values.
 - No \`next-themes\`, ThemeProvider, or dark mode setup exists.
 - Each chosen component is the correct one per "Choosing between similar components"; no hand-built component duplicates an existing NOS one.
+- Custom semantic tiles, local table shells, local pill systems, and detail panels with no NOS equivalent are listed under "Needs review" rather than shipped as invented components.
 - Every data surface has empty, loading, and error states.
 - Transitions use motion tokens only and animate \`transform\`/\`opacity\`; no hover lift on cards or surfaces.
 - Desktop and mobile browser screenshots have been reviewed for this chunk.
@@ -166,6 +181,7 @@ Balanced and enterprise-appropriate: clear hierarchy with moderate whitespace. L
 ## Components
 
 - Reuse before inventing.
+- Component provenance matters: using NOS tokens on custom markup does not make a surface NOS-compliant.
 - Components are presentational.
 - Every new component needs the \`.tsx\` file, export, and workbench demo.
 - L1 component cards communicate type through structured content such as badges and metadata, never through top accent borders.
@@ -183,8 +199,8 @@ Every app screen uses one of three shell patterns. Never build a full-page layou
 The canonical dashboard layout:
 
 1. Page header with title, short description, and one primary action.
-2. KPI stat row with 3-4 \`StatCard\` components.
-3. Primary data surface such as \`DataTable\`, \`Table\`, or a card grid.
+2. KPI stat row with 3-4 \`StatCard\` components or an approved \`MetricPanels\` composition.
+3. Primary data surface such as \`DataGrid\`, \`DataTable\`, \`Table\`, or a card grid.
 4. Optional secondary panel for activity, alerts, or timeline context.
 
 ## Required states
@@ -197,7 +213,7 @@ Every list, table, and data surface must implement:
 
 ## Table composition
 
-Every \`DataTable\` or \`Table\` instance must have:
+Every \`DataGrid\`, \`DataTable\`, or \`Table\` instance must have:
 
 - Header row above the table with title, count badge, search input, and primary action.
 - Row hover style with \`hover:bg-muted/50\`.
