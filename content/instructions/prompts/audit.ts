@@ -13,7 +13,7 @@ export const auditPromptTemplate = `You are converting this existing app to the 
 3. Map it:
    - Each inventoried element -> current provenance -> matching NOS component in the manifest -> import path.
    - Each current token -> its matching NOS token variable or scale in the manifest.
-   - For tables, choose \`DataGrid\`, \`DataTable\`, or \`Table\` based on the manifest's \`whenToUse\` field; do not label all tables generically.
+   - For tables, choose \`DataGrid\` or \`Table\` based on the manifest's \`whenToUse\` field; do not label all tables generically.
    - For metrics, choose \`StatCard\` or an approved \`MetricPanels\` composition; if the app uses semantic status tiles with no NOS equivalent, list them under "Needs review."
 
 4. Write your findings to a file named CONVERSION_PLAN.md at the project root, with four sections:

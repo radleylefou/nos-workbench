@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { StatCard } from "@/components/ui/stat-card"
-import { DataTable } from "@/components/ui/data-table"
+import { DataGrid } from "@/components/ui/data-grid"
 import { EstimationRollUpTree } from "@/components/ui/estimation-rollup-tree"
 import { ReconciliationPanel } from "@/components/ui/reconciliation-panel"
 import { type ColumnDef } from "@tanstack/react-table"
@@ -147,7 +147,7 @@ export function EstimationScreenPattern() {
         </TabsContent>
 
         <TabsContent value="l3" className="pt-4">
-          <DataTable
+          <DataGrid
             data={l3Data}
             columns={l3Columns}
             searchKey="name"
@@ -176,7 +176,7 @@ export function EstimationScreenPattern() {
       <div className="rounded-lg border border-border bg-muted/30 p-4">
         <h3 className="mb-2 text-sm font-medium">Composes</h3>
         <div className="flex flex-wrap gap-2">
-          {["StatCard (T2-03)", "DataTable (T2-06)", "EstimationRollUpTree (T3-07)", "ReconciliationPanel (T3-09)", "Tabs (underline variant)"].map((c) => (
+          {["StatCard (T2-03)", "DataGrid (T2-06)", "EstimationRollUpTree (T3-07)", "ReconciliationPanel (T3-09)", "Tabs (underline variant)"].map((c) => (
             <Badge key={c} variant="secondary" className="font-mono text-xs">{c}</Badge>
           ))}
         </div>

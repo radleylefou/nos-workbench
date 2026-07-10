@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 import {
   Component,
   FileText,
+  History,
   Home,
   Layers3,
   PanelLeft,
@@ -17,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { navigation } from "@/lib/workbench-data"
 import { components, categories } from "@/lib/component-registry"
+import { changelogEntries } from "@/lib/changelog-data"
 
 type NavItemProps = {
   href: string
@@ -107,7 +109,7 @@ function FlatNavGroup({ basePath, items }: FlatNavGroupProps) {
   )
 }
 
-type SectionKey = "home" | "tokens" | "components" | "instructions" | "patterns"
+type SectionKey = "home" | "tokens" | "components" | "instructions" | "patterns" | "changelog"
 
 type TopLevelItem = {
   key: SectionKey
@@ -152,6 +154,13 @@ const topLevelItems: TopLevelItem[] = [
     icon: PanelLeft,
     count: navigation.patterns.length,
   },
+  {
+    key: "changelog",
+    label: "Changelog",
+    href: "/workbench/changelog",
+    icon: History,
+    count: changelogEntries.length,
+  },
 ]
 
 function getActiveSection(pathname: string): SectionKey {
@@ -159,6 +168,7 @@ function getActiveSection(pathname: string): SectionKey {
   if (pathname.startsWith("/workbench/tokens")) return "tokens"
   if (pathname.startsWith("/workbench/instructions")) return "instructions"
   if (pathname.startsWith("/workbench/patterns")) return "patterns"
+  if (pathname.startsWith("/workbench/changelog")) return "changelog"
   return "components"
 }
 
@@ -220,7 +230,9 @@ function SecondaryHeader({ item }: { item: TopLevelItem }) {
                   ? "Agent and implementation rules"
                   : item.key === "patterns"
                     ? "Composed product patterns"
-                    : "Operating reference overview"}
+                    : item.key === "changelog"
+                      ? "Release history and notable changes"
+                      : "Operating reference overview"}
           </p>
         </div>
       </div>
@@ -289,6 +301,12 @@ export function SidebarNav() {
 
           {activeSection === "instructions" ? (
             <FlatNavGroup basePath="/workbench/instructions" items={navigation.instructions} />
+          ) : null}
+
+          {activeSection === "changelog" ? (
+            <div className="px-5 text-sm leading-6 text-zinc-500">
+              {changelogEntries.length} release{changelogEntries.length === 1 ? "" : "s"} recorded.
+            </div>
           ) : null}
 
           {activeSection === "patterns" ? (

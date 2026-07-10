@@ -80,7 +80,7 @@ export const buildPlanTemplate = String.raw`# SPEC.md
 ### Chunk 4: Secondary screens, tables, forms, and overlays
 - Scope:
 - Acceptance checks:
-  - Tables/data surfaces use DataGrid, DataTable, or Table according to NOS whenToUse guidance.
+  - Tables/data surfaces use DataGrid or Table according to NOS whenToUse guidance.
   - Metrics/status surfaces use StatCard, MetricPanels, StatusBadge, HealthIndicator, Badge, or another named NOS primitive.
   - Detail panels use the approved detail-column, Sheet, or Drawer pattern.
 - Browser verification:

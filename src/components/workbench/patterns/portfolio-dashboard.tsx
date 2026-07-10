@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { StatCard } from "@/components/ui/stat-card"
-import { DataTable } from "@/components/ui/data-table"
+import { DataGrid } from "@/components/ui/data-grid"
 import { ActivityFeed } from "@/components/ui/activity-feed"
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar"
 import { type ColumnDef } from "@tanstack/react-table"
@@ -128,7 +128,7 @@ export function PortfolioDashboardPattern() {
       <div className="flex gap-6">
         <div className="flex-1 min-w-0">
           <h2 className="mb-3 text-sm font-semibold">Engagement Pipeline</h2>
-          <DataTable
+          <DataGrid
             data={engagements}
             columns={columns}
             searchKey="client"
@@ -147,7 +147,7 @@ export function PortfolioDashboardPattern() {
       <div className="rounded-lg border border-border bg-muted/30 p-4">
         <h3 className="mb-2 text-sm font-medium">Composes</h3>
         <div className="flex flex-wrap gap-2">
-          {["StatCard (T2-03)", "AvatarGroup (T2-02)", "DataTable (T2-06)", "ActivityFeed (T2-04)"].map((c) => (
+          {["StatCard (T2-03)", "AvatarGroup (T2-02)", "DataGrid (T2-06)", "ActivityFeed (T2-04)"].map((c) => (
             <Badge key={c} variant="secondary" className="font-mono text-xs">{c}</Badge>
           ))}
         </div>

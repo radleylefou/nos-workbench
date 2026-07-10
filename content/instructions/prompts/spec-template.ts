@@ -58,7 +58,7 @@ For each screen, map every surface to a specific NOS component or approved compo
 | Accounts list | App shell | \`NymblAppSidebar\` | \`@/components/ui/app-sidebar\` | Standard page shell |
 | Accounts list | Page header + primary action | Page header + \`Button\` | \`@/components/ui/button\` | Use one primary action |
 | Accounts list | KPI row | 3-4 \`StatCard\` or approved \`MetricPanels\` composition | \`@/components/ui/stat-card\` | Do not hand-build status tiles |
-| Accounts list | Table | \`DataTable\` with \`StatusBadge\`, \`IdChip\`, \`Avatar\` | \`@/components/ui/data-table\` | Use \`DataGrid\` instead if dense workspace controls are required |
+| Accounts list | Table | \`DataGrid\` with \`StatusBadge\`, \`IdChip\`, \`Avatar\` | \`@/components/ui/data-grid\` | Use plain \`Table\` instead for simple static rows |
 | Accounts list | Empty / loading / error | \`Empty\` / \`Skeleton\` / \`Alert\` | \`@/components/ui/empty\`, \`@/components/ui/skeleton\`, \`@/components/ui/alert\` | Required for every data surface |
 | Account detail | Record panel | Detail column, \`Sheet\`, or \`Drawer\` | \`@/components/ui/sheet\` or \`@/components/ui/drawer\` | Pick one approved detail pattern |
 

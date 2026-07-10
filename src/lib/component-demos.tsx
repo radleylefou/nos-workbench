@@ -277,7 +277,6 @@ import {
   StepperDescription,
 } from "@/components/ui/stepper"
 import { Loader2 } from "lucide-react"
-import { DataTableDemo } from "@/components/workbench/demos/data-table-demo"
 import {
   DataGridDemo,
   DataGridDenseDemo,
@@ -5450,20 +5449,6 @@ toast.error("Something went wrong.")`,
     ],
   },
 
-  "data-table": {
-    importLine: `import { DataTable } from "@/components/ui/data-table"`,
-    exampleCode: `<DataTable
-  columns={columns}
-  data={data}
-  searchKey="client"
-  rowSelection
-/>`,
-    variants: [
-      { label: "full featured", node: <DataTableDemo />,
-      code: `<DataTableDemo />` },
-    ],
-  },
-
   "filters": {
     importLine: `import { Filters, type Filter, type FilterFieldConfig } from "@/components/ui/filters"`,
     exampleCode: `const [filters, setFilters] = useState<Filter[]>([])
@@ -5516,7 +5501,6 @@ toast.error("Something went wrong.")`,
   columns={operationColumns}
   data={operations}
   density="compact"
-  cellBorders
   stickyHeader
   rowSelection
 />`,

@@ -609,7 +609,7 @@ export const productPatterns: ProductPatternDefinition[] = [
     workflow: "Pipeline and portfolio health review",
     layoutVariation: "Pipeline health dashboard",
     referenceBuckets: ["Salesforce", "HubSpot", "Gainsight", "Planhat", "Asana Portfolios"],
-    composedComponents: ["StatCard", "DataTable", "ActivityFeed", "AvatarGroup"],
+    composedComponents: ["StatCard", "DataGrid", "ActivityFeed", "AvatarGroup"],
     acceptanceCheck: "A leadership user can scan active engagement value, stage, probability, owner coverage, and recent movement without changing pages.",
   },
   {
@@ -631,7 +631,7 @@ export const productPatterns: ProductPatternDefinition[] = [
     workflow: "Effort and budget estimation",
     layoutVariation: "Estimate workspace",
     referenceBuckets: ["Productive", "Kantata", "Scoro", "Runn"],
-    composedComponents: ["Tabs", "StatCard", "DataTable", "EstimationRollUpTree", "ReconciliationPanel"],
+    composedComponents: ["Tabs", "StatCard", "DataGrid", "EstimationRollUpTree", "ReconciliationPanel"],
     acceptanceCheck: "A delivery lead can compare detailed work, phase rollups, and variance decisions in one estimation surface.",
   },
   {

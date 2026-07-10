@@ -695,7 +695,6 @@ export function DataGridDenseDemo() {
       searchPlaceholder="Search dense grid..."
       density="compact"
       striped
-      cellBorders
       stickyHeader
       pageSize={6}
     />
@@ -735,7 +734,6 @@ export function DataGridRiskDemo() {
       columns={riskColumns}
       searchKey="risk"
       searchPlaceholder="Search risks..."
-      cellBorders
       pageSize={5}
     />
   )
@@ -863,7 +861,6 @@ export function DataGridResizableColumnsDemo() {
         columns={resizableLookingColumns}
         searchKey="client"
         searchPlaceholder="Search wide grid..."
-        cellBorders
         pageSize={5}
       />
     </div>

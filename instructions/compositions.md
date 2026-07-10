@@ -26,13 +26,13 @@ Use dashboards for overview, monitoring, or triage pages.
 Structure:
 1. Page header with title, short description, and one primary action.
 2. KPI row with 3-4 `StatCard` components.
-3. Primary work surface: `DataTable`, card grid, or workflow panel.
+3. Primary work surface: `DataGrid`, card grid, or workflow panel.
 4. Optional secondary panel for activity, alerts, or timeline context.
 
 Required components:
 - `StatCard`
 - `Badge` or `StatusBadge`
-- `DataTable` or `Table` when listing records
+- `DataGrid` or `Table` when listing records
 - `ActivityFeed`, `Timeline`, or `Empty` when relevant
 
 Acceptance checks:
@@ -53,7 +53,7 @@ Structure:
 Required components:
 - `Input`
 - `Select` or `Combobox`
-- `DataTable`, `Table`, or repeated `Card`
+- `DataGrid`, `Table`, or repeated `Card`
 - `StatusBadge`, `IdChip`, `Avatar`, and `Tag` when the data shape calls for them
 
 Acceptance checks:

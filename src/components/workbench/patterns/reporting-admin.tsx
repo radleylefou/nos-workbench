@@ -174,7 +174,7 @@ export function ReportingAdminPattern() {
       <div className="rounded-lg border border-border bg-muted/30 p-4">
         <h3 className="mb-2 text-sm font-medium">Composes</h3>
         <div className="flex flex-wrap gap-2">
-          {["StatCard (T2-03)", "Chart (existing)", "DataTable (T2-06)", "Tabs", "Select", "Switch", "Input"].map((c) => (
+          {["StatCard (T2-03)", "Chart (existing)", "DataGrid (T2-06)", "Tabs", "Select", "Switch", "Input"].map((c) => (
             <Badge key={c} variant="secondary" className="font-mono text-xs">{c}</Badge>
           ))}
         </div>

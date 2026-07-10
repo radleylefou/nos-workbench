@@ -17,7 +17,7 @@ For every item in the inventory, find the matching NOS component in the workbenc
 Before planning swaps, identify structural drift in the surfaces most likely to fragment the design system:
 
 - Sidebars and app shells: must map to \`NymblAppSidebar\`, \`NymblEngagementSidebar\`, or \`NymblNestedSidebar\`.
-- Tables and data workspaces: must map to \`DataGrid\`, \`DataTable\`, or \`Table\` based on density and behavior.
+- Tables and data workspaces: must map to \`DataGrid\` or \`Table\` based on density and behavior.
 - Metrics and KPI rows: must map to \`StatCard\` or an approved \`MetricPanels\` composition.
 - Badges, status cells, and health indicators: must map to \`StatusBadge\`, \`HealthIndicator\`, \`Badge\`, or another named NOS primitive.
 - Detail panels and record views: must map to the approved detail-column, \`Sheet\`, or \`Drawer\` pattern.
